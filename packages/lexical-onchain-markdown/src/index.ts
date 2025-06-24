@@ -38,6 +38,7 @@ import {
 import {$convertToMarkdownString} from './toMarkdownString';
 import {
   ELEMENT_TRANSFORMERS,
+  getInstanceTransformers,
   MULTILINE_ELEMENT_TRANSFORMERS,
   TEXT_FORMAT_TRANSFORMERS,
   TEXT_MATCH_TRANSFORMERS,
@@ -56,6 +57,7 @@ export {
   CODE,
   ELEMENT_TRANSFORMERS,
   type ElementTransformer,
+  getInstanceTransformers,
   HEADING,
   HIGHLIGHT,
   INLINE_CODE,

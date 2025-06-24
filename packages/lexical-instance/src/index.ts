@@ -41,7 +41,6 @@ export {
   InstanceListItemNode,
 } from './list/item';
 export * from './list/utils';
-export {getInstanceTransformers} from './markdownTransformers';
 export {
   $createNumberDecoratorNode,
   $isNumberDecoratorNode,

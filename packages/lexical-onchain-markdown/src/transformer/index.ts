@@ -90,4 +90,8 @@ TransFormerGather.register(InstanceHeadingTransformer);
 TransFormerGather.register(HR);
 TransFormerGather.register(TABLE);
 
-export {TransFormerGather};
+function getInstanceTransformers() {
+  return TransFormerGather.value;
+}
+
+export {getInstanceTransformers, TransFormerGather};

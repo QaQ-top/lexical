@@ -18,7 +18,6 @@
     "@lexical/selection": "^0.30.0",
     "@lexical/table": "^0.30.0",
     "@lexical/utils": "^0.30.0",
-    "@onchain/lexical-markdown": "^0.0.1",
     "lexical": "0.30.0"
   },
   "repository": {
