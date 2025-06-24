@@ -109,6 +109,7 @@ module.exports = {
         'packages/**/src/__tests__/**',
         'packages/lexical-playground/**',
         'packages/lexical-devtools/**',
+        'packages/lexical-instance/**',
       ],
       rules: {
         'lexical/no-optional-chaining': OFF,
@@ -232,7 +233,7 @@ module.exports = {
 
     'no-restricted-syntax': [ERROR, 'WithStatement'],
 
-    'no-shadow': ERROR,
+    'no-shadow': OFF,
 
     'no-unused-expressions': ERROR,
 

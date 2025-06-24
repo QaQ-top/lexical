@@ -1,0 +1,48 @@
+{
+  "name": "@onchain/lexical-instance",
+  "description": "This package provides the list feature for Lexical.",
+  "keywords": [
+    "lexical",
+    "editor",
+    "instance"
+  ],
+  "license": "MIT",
+  "version": "0.0.1",
+  "main": "OnchainLexicalInstance.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@lexical/code": "^0.30.0",
+    "@lexical/list": "^0.30.0",
+    "@lexical/react": "^0.30.0",
+    "@lexical/rich-text": "^0.30.0",
+    "@lexical/selection": "^0.30.0",
+    "@lexical/table": "^0.30.0",
+    "@lexical/utils": "^0.30.0",
+    "@onchain/lexical-markdown": "^0.0.1",
+    "lexical": "0.30.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/lexical",
+    "directory": "packages/lexical-instance"
+  },
+  "module": "OnchainLexicalInstance.mjs",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./index.d.ts",
+        "development": "./OnchainLexicalInstance.dev.mjs",
+        "production": "./OnchainLexicalInstance.prod.mjs",
+        "node": "./OnchainLexicalInstance.node.mjs",
+        "default": "./OnchainLexicalInstance.mjs"
+      },
+      "require": {
+        "types": "./index.d.ts",
+        "development": "./OnchainLexicalInstance.dev.js",
+        "production": "./OnchainLexicalInstance.prod.js",
+        "default": "./OnchainLexicalInstance.js"
+      }
+    }
+  }
+}

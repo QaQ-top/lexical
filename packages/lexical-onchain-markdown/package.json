@@ -1,0 +1,50 @@
+{
+  "name": "@onchain/lexical-markdown",
+  "description": "This package contains Markdown helpers and functionality for Lexical.",
+  "keywords": [
+    "lexical",
+    "editor",
+    "rich-text",
+    "markdown"
+  ],
+  "license": "MIT",
+  "version": "0.0.1",
+  "main": "OnchainLexicalMarkdown.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@lexical/code": "0.30.0",
+    "@lexical/link": "0.30.0",
+    "@lexical/list": "0.30.0",
+    "@lexical/react": "^0.30.0",
+    "@lexical/rich-text": "0.30.0",
+    "@lexical/table": "^0.30.0",
+    "@lexical/text": "0.30.0",
+    "@lexical/utils": "0.30.0",
+    "@onchain/lexical-instance": "^0.0.1",
+    "lexical": "0.30.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/lexical",
+    "directory": "packages/lexical-markdown"
+  },
+  "module": "OnchainLexicalMarkdown.mjs",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./index.d.ts",
+        "development": "./OnchainLexicalMarkdown.dev.mjs",
+        "production": "./OnchainLexicalMarkdown.prod.mjs",
+        "node": "./OnchainLexicalMarkdown.node.mjs",
+        "default": "./OnchainLexicalMarkdown.mjs"
+      },
+      "require": {
+        "types": "./index.d.ts",
+        "development": "./OnchainLexicalMarkdown.dev.js",
+        "production": "./OnchainLexicalMarkdown.prod.js",
+        "default": "./OnchainLexicalMarkdown.js"
+      }
+    }
+  }
+}

@@ -19,6 +19,7 @@ const replace = require('@rollup/plugin-replace');
 const json = require('@rollup/plugin-json');
 const alias = require('@rollup/plugin-alias');
 const terser = require('@rollup/plugin-terser');
+const postcss = require('rollup-plugin-postcss');
 const {exec} = require('child-process-promise');
 const {packagesManager} = require('./shared/packagesManager');
 const npmToWwwName = require('./www/npmToWwwName');
@@ -245,6 +246,15 @@ async function build(
           return `${getComment()}\n${patchedSource}`;
         },
       },
+      postcss({
+        autoModules: true,
+        extract: false,
+        inject: true,
+        minimize: true,
+        modules: true,
+        plugins: [],
+        use: ['less'],
+      }),
     ],
     // This ensures PrismJS imports get included in the bundle
     treeshake: name !== 'Lexical Code' ? 'smallest' : false,
