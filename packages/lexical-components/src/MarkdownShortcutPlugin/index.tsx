@@ -7,7 +7,7 @@
  */
 
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import {getInstanceTransformers} from '@onchain/lexical-markdown';
+import {getInstanceTransformers} from 'onchain-lexical-markdown';
 import {type JSX} from 'react';
 
 export default function MarkdownPlugin(): JSX.Element {

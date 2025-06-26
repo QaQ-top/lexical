@@ -12,8 +12,8 @@ import {$generateHtmlFromNodes, $generateNodesFromDOM} from '@lexical/html';
 import {$createLinkNode, LinkNode} from '@lexical/link';
 import {ListItemNode, ListNode} from '@lexical/list';
 import {HeadingNode, QuoteNode} from '@lexical/rich-text';
-import {$createInstanceCodeNode} from '@onchain/lexical-instance';
 import {$createTextNode, $getRoot, $insertNodes} from 'lexical';
+import {$createInstanceCodeNode} from 'onchain-lexical-instance';
 
 import {
   $convertFromMarkdownString,

@@ -17,7 +17,7 @@ import {
   InstanceNode,
   InstanceParagraphNode,
   InstanceTitleNode,
-} from '@onchain/lexical-instance';
+} from 'onchain-lexical-instance';
 
 import {createBlockNode, ElementTransformer} from '../MarkdownTransformers';
 import {$convertToMarkdownString} from '../toMarkdownString';

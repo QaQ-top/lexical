@@ -8,9 +8,9 @@
 import type {JSX} from 'react';
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$createInstanceNode} from '@onchain/lexical-instance';
 // import {DraggableBlockPlugin_EXPERIMENTAL} from '@lexical/react/LexicalDraggableBlockPlugin';
 import {$getNearestNodeFromDOMNode} from 'lexical';
+import {$createInstanceNode} from 'onchain-lexical-instance';
 import {useRef, useState} from 'react';
 
 import {DraggableBlockPlugin_EXPERIMENTAL} from './draggableBlockPlugin';

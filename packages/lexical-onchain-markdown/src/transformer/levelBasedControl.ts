@@ -6,13 +6,13 @@
  *
  */
 
+import {ElementNode} from 'lexical';
 import {
   $isInstanceHeadingNode,
   $isInstanceNode,
   $isNumberDecoratorNode,
   Instance,
-} from '@onchain/lexical-instance';
-import {ElementNode} from 'lexical';
+} from 'onchain-lexical-instance';
 
 export default class LevelBasedControl {
   ancestor: Map<number, ElementNode> = new Map();

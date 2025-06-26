@@ -6,7 +6,6 @@
  *
  */
 import {addClassNamesToElement} from '@lexical/utils';
-import {dfs} from '@onchain/utility/traversal';
 import {
   $applyNodeReplacement,
   BaseSelection,
@@ -18,6 +17,7 @@ import {
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
+import {dfs} from 'onchain-utility/traversal';
 
 import {$isInstanceNode, InstanceNode} from '../base';
 import {$isInstanceParagraphNode} from '../paragraph';

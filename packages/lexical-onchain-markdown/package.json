@@ -1,5 +1,5 @@
 {
-  "name": "@onchain/lexical-markdown",
+  "name": "onchain-lexical-markdown",
   "description": "This package contains Markdown helpers and functionality for Lexical.",
   "keywords": [
     "lexical",
@@ -20,8 +20,8 @@
     "@lexical/table": "^0.30.0",
     "@lexical/text": "0.30.0",
     "@lexical/utils": "0.30.0",
-    "@onchain/lexical-instance": "^0.0.1",
-    "lexical": "0.30.0"
+    "lexical": "0.30.0",
+    "onchain-lexical-instance": "^0.0.1"
   },
   "repository": {
     "type": "git",

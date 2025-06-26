@@ -24,13 +24,6 @@ import {
   QuoteNode,
 } from '@lexical/rich-text';
 import {
-  $createInstanceCodeNode,
-  $createInstanceHeadingNode,
-  $createInstanceListItemNode,
-  $createInstanceListNode,
-  $createInstanceQuoteNode,
-} from '@onchain/lexical-instance';
-import {
   $createLineBreakNode,
   $createTextNode,
   ElementNode,
@@ -39,6 +32,13 @@ import {
   TextFormatType,
   TextNode,
 } from 'lexical';
+import {
+  $createInstanceCodeNode,
+  $createInstanceHeadingNode,
+  $createInstanceListItemNode,
+  $createInstanceListNode,
+  $createInstanceQuoteNode,
+} from 'onchain-lexical-instance';
 
 export type Transformer =
   | ElementTransformer

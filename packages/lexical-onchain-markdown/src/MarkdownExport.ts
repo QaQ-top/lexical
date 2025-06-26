@@ -9,16 +9,16 @@
 import type {ElementNode, LexicalNode, TextFormatType, TextNode} from 'lexical';
 
 import {
-  $isBarDecoratorNode,
-  $isNumberDecoratorNode,
-} from '@onchain/lexical-instance';
-import {
   $getRoot,
   $isDecoratorNode,
   $isElementNode,
   $isLineBreakNode,
   $isTextNode,
 } from 'lexical';
+import {
+  $isBarDecoratorNode,
+  $isNumberDecoratorNode,
+} from 'onchain-lexical-instance';
 
 import {
   ElementTransformer,

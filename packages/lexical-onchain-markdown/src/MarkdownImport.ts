@@ -18,11 +18,6 @@ import {$isListItemNode, $isListNode, ListItemNode} from '@lexical/list';
 import {$isQuoteNode} from '@lexical/rich-text';
 import {$findMatchingParent} from '@lexical/utils';
 import {
-  $createFragmentNode,
-  $createInstanceParagraphNode,
-  Instance,
-} from '@onchain/lexical-instance';
-import {
   $createLineBreakNode,
   $createTextNode,
   $getRoot,
@@ -30,6 +25,11 @@ import {
   $isParagraphNode,
   ElementNode,
 } from 'lexical';
+import {
+  $createFragmentNode,
+  $createInstanceParagraphNode,
+  Instance,
+} from 'onchain-lexical-instance';
 
 import {importTextTransformers} from './importTextTransformers';
 import {INSTANCE_END_REGEX, INSTANCE_START_REGEX} from './transformer/const';

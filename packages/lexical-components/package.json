@@ -1,5 +1,5 @@
 {
-  "name": "@onchain/lexical-components",
+  "name": "onchain-lexical-components",
   "description": "This package provides Lexical components and hooks for React applications.",
   "keywords": [
     "react",
@@ -13,10 +13,10 @@
     "@lexical/react": "^0.30.0",
     "@lexical/rich-text": "^0.30.0",
     "@lexical/utils": "^0.30.0",
-    "@onchain/lexical-instance": "^0.0.1",
-    "@onchain/lexical-markdown": "^0.0.1",
-    "@onchain/utility": "^0.0.1",
-    "lexical": "0.30.0"
+    "lexical": "0.30.0",
+    "onchain-lexical-instance": "^0.0.1",
+    "onchain-lexical-markdown": "^0.0.1",
+    "onchain-utility": "^0.0.1"
   },
   "peerDependencies": {
     "react": ">=17.x",

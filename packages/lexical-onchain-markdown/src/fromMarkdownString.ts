@@ -6,8 +6,8 @@
  *
  */
 
-import {Instance} from '@onchain/lexical-instance';
 import {ElementNode} from 'lexical';
+import {Instance} from 'onchain-lexical-instance';
 
 import {createMarkdownImport} from './MarkdownImport';
 import {normalizeMarkdown, Transformer} from './MarkdownTransformers';

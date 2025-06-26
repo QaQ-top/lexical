@@ -16,8 +16,6 @@ import {
   isHTMLElement,
   mergeRegister,
 } from '@lexical/utils';
-import {$isInstanceNode} from '@onchain/lexical-instance';
-import {dfs} from '@onchain/utility/traversal';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -32,6 +30,8 @@ import {
   LexicalEditor,
   LexicalNode,
 } from 'lexical';
+import {$isInstanceNode} from 'onchain-lexical-instance';
+import {dfs} from 'onchain-utility/traversal';
 import {
   DragEvent as ReactDragEvent,
   ReactNode,
