@@ -1,0 +1,38 @@
+{
+  "name": "@onchain/utility",
+  "description": "This package contains misc utilities for onchain.",
+  "license": "MIT",
+  "version": "0.0.1",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainUtility.mjs"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainUtility.js"
+      }
+    },
+    "./language": {
+      "import": {
+        "types": "./src/Language/index.ts",
+        "default": "./dist/Language.mjs"
+      },
+      "require": {
+        "types": "./src/Language/index.ts",
+        "default": "./dist/Language.js"
+      }
+    },
+    "./traversal": {
+      "import": {
+        "types": "./src/Traversal/index.ts",
+        "default": "./dist/Traversal.mjs"
+      },
+      "require": {
+        "types": "./src/Traversal/index.ts",
+        "default": "./dist/Traversal.js"
+      }
+    }
+  }
+}

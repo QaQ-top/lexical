@@ -28,7 +28,13 @@ export default function lexicalMonorepoPlugin(): Plugin {
                 : env.command === 'serve'
                 ? 'source'
                 : 'development',
-            ),
+            ).map(({find, replacement}) => {
+              // 通过正则的完整匹配 解决 @onchain/utility @onchain/utility/traversal 模块匹配错误的问题
+              return {
+                find: typeof find === 'string' ? new RegExp(`^${find}$`) : find,
+                replacement,
+              };
+            }),
           },
         }),
         config,

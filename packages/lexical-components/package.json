@@ -15,6 +15,7 @@
     "@lexical/utils": "^0.30.0",
     "@onchain/lexical-instance": "^0.0.1",
     "@onchain/lexical-markdown": "^0.0.1",
+    "@onchain/utility": "^0.0.1",
     "lexical": "0.30.0"
   },
   "peerDependencies": {
@@ -30,31 +31,21 @@
     "./DraggableBlockPlugin": {
       "import": {
         "types": "./DraggableBlockPlugin.d.ts",
-        "development": "./DraggableBlockPlugin.dev.mjs",
-        "production": "./DraggableBlockPlugin.prod.mjs",
-        "node": "./DraggableBlockPlugin.node.mjs",
-        "default": "./DraggableBlockPlugin.mjs"
+        "default": "./dist/DraggableBlockPlugin.mjs"
       },
       "require": {
         "types": "./DraggableBlockPlugin.d.ts",
-        "development": "./DraggableBlockPlugin.dev.js",
-        "production": "./DraggableBlockPlugin.prod.js",
-        "default": "./DraggableBlockPlugin.js"
+        "default": "./dist/DraggableBlockPlugin.js"
       }
     },
     "./MarkdownShortcutPlugin": {
       "import": {
         "types": "./MarkdownShortcutPlugin.d.ts",
-        "development": "./MarkdownShortcutPlugin.dev.mjs",
-        "production": "./MarkdownShortcutPlugin.prod.mjs",
-        "node": "./MarkdownShortcutPlugin.node.mjs",
-        "default": "./MarkdownShortcutPlugin.mjs"
+        "default": "./dist/MarkdownShortcutPlugin.mjs"
       },
       "require": {
         "types": "./MarkdownShortcutPlugin.d.ts",
-        "development": "./MarkdownShortcutPlugin.dev.js",
-        "production": "./MarkdownShortcutPlugin.prod.js",
-        "default": "./MarkdownShortcutPlugin.js"
+        "default": "./dist/MarkdownShortcutPlugin.js"
       }
     }
   }

@@ -34,16 +34,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./OnchainLexicalMarkdown.dev.mjs",
-        "production": "./OnchainLexicalMarkdown.prod.mjs",
-        "node": "./OnchainLexicalMarkdown.node.mjs",
-        "default": "./OnchainLexicalMarkdown.mjs"
+        "default": "./dist/OnchainLexicalMarkdown.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./OnchainLexicalMarkdown.dev.js",
-        "production": "./OnchainLexicalMarkdown.prod.js",
-        "default": "./OnchainLexicalMarkdown.js"
+        "default": "./dist/OnchainLexicalMarkdown.js"
       }
     }
   }

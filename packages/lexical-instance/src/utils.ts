@@ -95,22 +95,6 @@ export function $isRemoved<T extends LexicalNode>(node: T) {
   return !node.getParent() && !$isRootNode(node);
 }
 
-/** 按顺序深度优先 */
-export function dfs<T = unknown>(data: T[], getNewStack: (node: T) => T[]) {
-  const stack = [...data];
-  const result = [];
-  while (stack.length > 0) {
-    const node = stack.shift()!;
-    result.push(node);
-    const children = getNewStack(node);
-    for (let i = children.length - 1; i >= 0; i--) {
-      const child = children[i];
-      stack.unshift(child);
-    }
-  }
-  return result;
-}
-
 export function setInstanceAttrValue<T extends keyof Instance>(
   __instance: Instance,
   key: T,

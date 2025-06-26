@@ -28,16 +28,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalUtils.dev.mjs",
-        "production": "./LexicalUtils.prod.mjs",
-        "node": "./LexicalUtils.node.mjs",
-        "default": "./LexicalUtils.mjs"
+        "default": "./dist/LexicalUtils.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalUtils.dev.js",
-        "production": "./LexicalUtils.prod.js",
-        "default": "./LexicalUtils.js"
+        "default": "./dist/LexicalUtils.js"
       }
     }
   }

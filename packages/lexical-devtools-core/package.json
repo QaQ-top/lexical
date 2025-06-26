@@ -34,16 +34,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalDevtoolsCore.dev.mjs",
-        "production": "./LexicalDevtoolsCore.prod.mjs",
-        "node": "./LexicalDevtoolsCore.node.mjs",
-        "default": "./LexicalDevtoolsCore.mjs"
+        "default": "./dist/LexicalDevtoolsCore.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalDevtoolsCore.dev.js",
-        "production": "./LexicalDevtoolsCore.prod.js",
-        "default": "./LexicalDevtoolsCore.js"
+        "default": "./dist/LexicalDevtoolsCore.js"
       }
     }
   }

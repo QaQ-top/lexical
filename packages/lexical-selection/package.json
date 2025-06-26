@@ -23,16 +23,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalSelection.dev.mjs",
-        "production": "./LexicalSelection.prod.mjs",
-        "node": "./LexicalSelection.node.mjs",
-        "default": "./LexicalSelection.mjs"
+        "default": "./dist/LexicalSelection.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalSelection.dev.js",
-        "production": "./LexicalSelection.prod.js",
-        "default": "./LexicalSelection.js"
+        "default": "./dist/LexicalSelection.js"
       }
     }
   },

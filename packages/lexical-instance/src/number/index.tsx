@@ -6,6 +6,7 @@
  *
  */
 import {addClassNamesToElement} from '@lexical/utils';
+import {dfs} from '@onchain/utility/traversal';
 import {
   $applyNodeReplacement,
   BaseSelection,
@@ -21,7 +22,6 @@ import {
 import {$isInstanceNode, InstanceNode} from '../base';
 import {$isInstanceParagraphNode} from '../paragraph';
 import {Instance} from '../types';
-import {dfs} from '../utils';
 import Styles from './styles.module.less';
 
 export type SerializedNumberDecoratorNode = Spread<

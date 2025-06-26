@@ -30,16 +30,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalCode.dev.mjs",
-        "production": "./LexicalCode.prod.mjs",
-        "node": "./LexicalCode.node.mjs",
-        "default": "./LexicalCode.mjs"
+        "default": "./dist/LexicalCode.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalCode.dev.js",
-        "production": "./LexicalCode.prod.js",
-        "default": "./LexicalCode.js"
+        "default": "./dist/LexicalCode.js"
       }
     }
   }

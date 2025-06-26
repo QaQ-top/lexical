@@ -9,3 +9,15 @@ declare module '*.less' {
   const styles: Record<string, string>;
   export default styles;
 }
+
+declare type TranslateI18nParams = [
+  string,
+  {
+    variate?: object;
+    placeholder?: string;
+  },
+];
+
+interface Window {
+  translateI18n: (...params: TranslateI18nParams) => string;
+}

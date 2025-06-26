@@ -26,16 +26,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalHistory.dev.mjs",
-        "production": "./LexicalHistory.prod.mjs",
-        "node": "./LexicalHistory.node.mjs",
-        "default": "./LexicalHistory.mjs"
+        "default": "./dist/LexicalHistory.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalHistory.dev.js",
-        "production": "./LexicalHistory.prod.js",
-        "default": "./LexicalHistory.js"
+        "default": "./dist/LexicalHistory.js"
       }
     }
   }

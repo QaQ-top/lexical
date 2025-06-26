@@ -16,7 +16,8 @@ import {
   isHTMLElement,
   mergeRegister,
 } from '@lexical/utils';
-import {$isInstanceNode, dfs} from '@onchain/lexical-instance';
+import {$isInstanceNode} from '@onchain/lexical-instance';
+import {dfs} from '@onchain/utility/traversal';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,

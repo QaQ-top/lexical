@@ -6,6 +6,7 @@ base-build
 build
 coverage
 dist
+lib
 npm
 !scripts/npm
 .DS_Store
