@@ -162,14 +162,20 @@ export class InstanceNode extends ElementNode {
     return newElement;
   }
 
-  getParagraphChildren<T extends LexicalNode>(): Array<T> {
+  getTextContent(): string {
+    const children = this.getPracticalChildren();
+    return children
+      .map((node) => {
+        return node.getTextContent().trim();
+      })
+      .join('');
+  }
+
+  getPracticalChildren<T extends LexicalNode>(): Array<T> {
     return super
       .getChildren<T>()
       .filter(
-        (node) =>
-          !$isBarDecoratorNode(node) &&
-          !$isNumberDecoratorNode(node) &&
-          !$isInstanceNode(node),
+        (node) => !$isBarDecoratorNode(node) && !$isNumberDecoratorNode(node),
       );
   }
 
@@ -191,7 +197,7 @@ export class InstanceNode extends ElementNode {
   }
 
   collapseAtStart(): boolean {
-    const children = this.getParagraphChildren<InstanceParagraphNode>();
+    const children = this.getPracticalChildren<InstanceParagraphNode>();
     // If we have an empty (trimmed) first paragraph and try and remove it,
     // delete the paragraph as long as we have another sibling to go to
     if (children.every((child) => $isEmptyParagraphNode(child))) {
@@ -259,10 +265,19 @@ export function $isInstanceNode(
 export function $remove(node: LexicalNode) {
   const parent = node.getParent();
   if ($isInstanceNode(parent)) {
-    const paragraph = parent.getParagraphChildren();
-    const removedSize = paragraph.length - 1;
-    if (removedSize < InstanceNode.DEFAULT_PARAGRAPHS) {
-      if ($isInstanceParagraphNode(node.getPreviousSibling())) {
+    const practicals = parent.getPracticalChildren();
+    const removedSize = practicals.length - 1;
+    if (
+      removedSize < InstanceNode.DEFAULT_PARAGRAPHS ||
+      $isInstanceNode(practicals[InstanceNode.DEFAULT_PARAGRAPHS])
+    ) {
+      if (
+        practicals.findIndex(
+          (practical) => practical.getKey() === node.getKey(),
+        ) > InstanceNode.DEFAULT_PARAGRAPHS
+      ) {
+        return true;
+      } else if ($isInstanceParagraphNode(node.getPreviousSibling())) {
         node.selectPrevious();
       } else {
         const allEmpty = $checkAllParagraphsEmpty(parent);
@@ -319,7 +334,7 @@ function $replaceWithParagraph(node: ElementNode) {
 
 /** 检查所有段落是否为空 */
 export function $checkAllParagraphsEmpty(parent: InstanceNode) {
-  return parent.getParagraphChildren().every((paragraph) => {
+  return parent.getPracticalChildren().every((paragraph) => {
     return paragraph.getTextContent().trim() === '';
   });
 }

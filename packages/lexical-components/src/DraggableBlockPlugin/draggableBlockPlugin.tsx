@@ -544,15 +544,17 @@ function useDraggableBlockMenu(
         return true;
       }
       if (isPlacementAreaDown(mouseY, targetBlockElemTop)) {
-        if (isAddChild && $isElementNode(targetNode)) {
-          targetNode.append(draggedNode);
+        if (isAddChild) {
+          if ($isInstanceNode(targetNode)) {
+            targetNode.append(draggedNode);
+          }
         } else {
           targetNode.insertAfter(draggedNode);
         }
       } else {
         if (isAddChild && $isElementNode(targetNode)) {
           const previous = targetNode.getPreviousSibling();
-          if ($isElementNode(previous)) {
+          if ($isInstanceNode(previous)) {
             previous.append(draggedNode);
           }
         } else {

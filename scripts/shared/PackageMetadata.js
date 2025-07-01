@@ -116,6 +116,9 @@ class PackageMetadata {
         'This package should have exports, try `npm run update-version` first',
       );
     }
+    if (this.packageJson.name === 'onchain-rich-text-editor') {
+      return [];
+    }
     /** @type {Array<NpmModuleExportEntry>} */
     const entries = [];
     for (const [key, value] of Object.entries(this.packageJson.exports)) {

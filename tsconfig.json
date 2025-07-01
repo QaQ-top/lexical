@@ -236,6 +236,7 @@
   "exclude": [
     "./libdefs/*.js",
     "**/build/**",
+    "**/lib/**",
     "**/dist/**",
     "**/npm/**",
     "**/node_modules/**",

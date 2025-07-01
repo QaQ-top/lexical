@@ -194,6 +194,7 @@
     "./libdefs/*.js",
     "**/__tests__/**",
     "**/dist/**",
+    "**/lib/**",
     "**/npm/**",
     "**/node_modules/**",
     "./packages/lexical-devtools/**",

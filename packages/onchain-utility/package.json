@@ -33,6 +33,19 @@
         "types": "./src/Traversal/index.ts",
         "default": "./dist/Traversal.js"
       }
+    },
+    "./hooks": {
+      "import": {
+        "types": "./src/Hooks/index.ts",
+        "default": "./dist/Hooks.mjs"
+      },
+      "require": {
+        "types": "./src/Hooks/index.ts",
+        "default": "./dist/Hooks.js"
+      }
     }
+  },
+  "dependencies": {
+    "ahooks": "^3.9.0"
   }
 }
