@@ -21,6 +21,16 @@ export {
   $isInstanceCodeNode,
   InstanceCodeNode,
 } from './code';
+export {registerCodeHighlighting} from './code/codeHighlighter';
+export {
+  $createInstanceCodeHighlightNode,
+  $isInstanceCodeHighlightNode,
+  getCodeLanguages,
+  getDefaultCodeLanguage,
+  getLanguageFriendlyName,
+  InstanceCodeHighlightNode,
+  normalizeCodeLang,
+} from './code/codeHighlightNode';
 export {InstanceParagraphType} from './const';
 export {
   $createInstanceEquationNode,

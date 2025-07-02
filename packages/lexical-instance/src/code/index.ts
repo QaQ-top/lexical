@@ -17,14 +17,7 @@ import type {
   TabNode,
 } from 'lexical';
 
-import {
-  $createCodeHighlightNode,
-  $getFirstCodeNodeOfLine,
-  $isCodeHighlightNode,
-  $isCodeNode,
-  type CodeHighlightNode,
-  CodeNode,
-} from '@lexical/code';
+import {CodeNode} from '@lexical/code';
 import {isHTMLElement} from '@lexical/utils';
 import {
   $applyNodeReplacement,
@@ -36,6 +29,12 @@ import {
 
 import {$removedFixedParagraph} from '../base';
 import {$createInstanceParagraphNode} from '../paragraph';
+import {
+  $createInstanceCodeHighlightNode,
+  $getFirstCodeNodeOfLine,
+  $isInstanceCodeHighlightNode,
+  InstanceCodeHighlightNode,
+} from './codeHighlightNode';
 
 export type SerializedCodeNode = Spread<
   {
@@ -141,7 +140,7 @@ export class InstanceCodeNode extends CodeNode {
   insertNewAfter(
     selection: RangeSelection,
     restoreSelection = true,
-  ): null | ParagraphNode | CodeHighlightNode | TabNode {
+  ): null | ParagraphNode | InstanceCodeHighlightNode | TabNode {
     const children = this.getChildren();
     const childrenLength = children.length;
 
@@ -175,7 +174,7 @@ export class InstanceCodeNode extends CodeNode {
         if ($isTabNode(node)) {
           insertNodes.push($createTabNode());
           node = node.getNextSibling();
-        } else if ($isCodeHighlightNode(node)) {
+        } else if ($isInstanceCodeHighlightNode(node)) {
           let spaces = 0;
           const text = node.getTextContent();
           const textSize = node.getTextContentSize();
@@ -183,7 +182,9 @@ export class InstanceCodeNode extends CodeNode {
             spaces++;
           }
           if (spaces !== 0) {
-            insertNodes.push($createCodeHighlightNode(' '.repeat(spaces)));
+            insertNodes.push(
+              $createInstanceCodeHighlightNode(' '.repeat(spaces)),
+            );
           }
           if (spaces !== textSize) {
             break;
@@ -208,7 +209,7 @@ export class InstanceCodeNode extends CodeNode {
         split.getNextSibling()!.selectNext(0, 0);
       }
     }
-    if ($isCodeNode(firstSelectionNode)) {
+    if ($isInstanceCodeNode(firstSelectionNode)) {
       const {offset} = selection.anchor;
       firstSelectionNode.splice(offset, 0, [$createLineBreakNode()]);
       firstSelectionNode.select(offset + 1, offset + 1);
