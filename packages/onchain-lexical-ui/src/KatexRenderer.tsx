@@ -15,10 +15,12 @@ import {useEffect, useRef} from 'react';
 export default function KatexRenderer({
   equation,
   inline,
+  height,
   onDoubleClick,
 }: Readonly<{
   equation: string;
   inline: boolean;
+  height?: React.CSSProperties['height'];
   onDoubleClick: () => void;
 }>): JSX.Element {
   const katexElementRef = useRef(null);
@@ -54,6 +56,11 @@ export default function KatexRenderer({
         tabIndex={-1}
         onDoubleClick={onDoubleClick}
         ref={katexElementRef}
+        style={{
+          display: 'inline-block',
+          height,
+          width: !inline ? '100%' : undefined,
+        }}
       />
       <img
         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"

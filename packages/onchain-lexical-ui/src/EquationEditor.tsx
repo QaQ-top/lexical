@@ -8,10 +8,9 @@
 
 import type {JSX, Ref, RefObject} from 'react';
 
-import './EquationEditor.css';
-
-import {isHTMLElement} from 'lexical';
 import {ChangeEvent, forwardRef} from 'react';
+
+import Styles from './EquationEditor.module.less';
 
 type BaseEquationEditorProps = {
   equation: string;
@@ -27,28 +26,22 @@ function EquationEditor(
     setEquation((event.target as HTMLInputElement).value);
   };
 
-  return inline && isHTMLElement(forwardedRef) ? (
-    <span className="EquationEditor_inputBackground">
-      <span className="EquationEditor_dollarSign">$</span>
-      <input
-        className="EquationEditor_inlineEditor"
-        value={equation}
-        onChange={onChange}
-        autoFocus={true}
-        ref={forwardedRef as RefObject<HTMLInputElement>}
-      />
-      <span className="EquationEditor_dollarSign">$</span>
-    </span>
-  ) : (
-    <div className="EquationEditor_inputBackground">
-      <span className="EquationEditor_dollarSign">{'$$\n'}</span>
+  return (
+    <div className={Styles.EquationEditor_inputBackground}>
+      <span className={Styles.EquationEditor_dollarSign}>
+        {inline ? '' : '$'}
+        {'$'}
+      </span>
       <textarea
-        className="EquationEditor_blockEditor"
+        className={Styles.EquationEditor_blockEditor}
         value={equation}
         onChange={onChange}
         ref={forwardedRef as RefObject<HTMLTextAreaElement>}
       />
-      <span className="EquationEditor_dollarSign">{'\n$$'}</span>
+      <span className={Styles.EquationEditor_dollarSign}>
+        {'$'}
+        {inline ? '' : '$'}
+      </span>
     </div>
   );
 }

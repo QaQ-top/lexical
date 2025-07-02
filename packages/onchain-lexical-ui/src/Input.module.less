@@ -6,6 +6,7 @@
  *
  *
  */
+ @import './const.less';
 
 .Input__wrapper {
   display: flex;
@@ -27,6 +28,11 @@
   padding-left: 10px;
   padding-right: 10px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 2px;
   min-width: 0;
+  height: @inputHeight;
+  &:focus-visible {
+    outline: none;
+    border-color: @themeColor;
+  };
 }

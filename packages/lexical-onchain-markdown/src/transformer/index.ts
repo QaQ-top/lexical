@@ -32,6 +32,7 @@ import {
   STRIKETHROUGH,
   UNORDERED_LIST,
 } from '../MarkdownTransformers';
+import {BLOCK_EQUATION, EQUATION} from './equation';
 import {HR} from './hr';
 import {InstanceHeadingTransformer, InstanceTransformer} from './instance';
 import {TABLE} from './table';
@@ -89,6 +90,8 @@ TransFormerGather.register(InstanceTransformer);
 TransFormerGather.register(InstanceHeadingTransformer);
 TransFormerGather.register(HR);
 TransFormerGather.register(TABLE);
+TransFormerGather.register(EQUATION);
+TransFormerGather.register(BLOCK_EQUATION);
 
 function getInstanceTransformers() {
   return TransFormerGather.value;

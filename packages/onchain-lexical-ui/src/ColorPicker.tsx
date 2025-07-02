@@ -8,12 +8,11 @@
 
 import type {JSX} from 'react';
 
-import './ColorPicker.css';
-
 import {calculateZoomLevel} from '@lexical/utils';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import * as React from 'react';
 
+import Styles from './ColorPicker.module.less';
 import TextInput from './TextInput';
 
 let skipAddingToHistoryStack = false;
@@ -117,7 +116,7 @@ export default function ColorPicker({
 
   return (
     <div
-      className="color-picker-wrapper"
+      className={Styles['color-picker-wrapper']}
       style={{width: WIDTH}}
       ref={innerDivRef}>
       <TextInput label="Hex" onChange={onSetHex} value={inputColor} />

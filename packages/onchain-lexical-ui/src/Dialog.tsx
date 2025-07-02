@@ -8,10 +8,10 @@
 
 import type {JSX} from 'react';
 
-import './Dialog.css';
-
 import * as React from 'react';
 import {ReactNode} from 'react';
+
+import Styles from './Dialog.module.less';
 
 type Props = Readonly<{
   'data-test-id'?: string;
@@ -19,7 +19,7 @@ type Props = Readonly<{
 }>;
 
 export function DialogButtonsList({children}: Props): JSX.Element {
-  return <div className="DialogButtonsList">{children}</div>;
+  return <div className={Styles.DialogButtonsList}>{children}</div>;
 }
 
 export function DialogActions({
@@ -27,7 +27,7 @@ export function DialogActions({
   children,
 }: Props): JSX.Element {
   return (
-    <div className="DialogActions" data-test-id={dataTestId}>
+    <div className={Styles.DialogActions} data-test-id={dataTestId}>
       {children}
     </div>
   );

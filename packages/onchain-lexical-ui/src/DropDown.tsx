@@ -20,6 +20,8 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
+import Styles from './DropDown.module.less';
+
 type DropDownContextType = {
   registerItem: (ref: React.RefObject<HTMLButtonElement>) => void;
 };
@@ -137,7 +139,10 @@ function DropDownItems({
 
   return (
     <DropDownContext.Provider value={contextValue}>
-      <div className="dropdown" ref={dropDownRef} onKeyDown={handleKeyDown}>
+      <div
+        className={`${Styles.dropdown}`}
+        ref={dropDownRef}
+        onKeyDown={handleKeyDown}>
         {children}
       </div>
     </DropDownContext.Provider>

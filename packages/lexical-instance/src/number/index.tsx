@@ -72,6 +72,10 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
     return false;
   }
 
+  isKeyboardSelectable(): boolean {
+    return false;
+  }
+
   collapseAtStart(): true {
     return true;
   }

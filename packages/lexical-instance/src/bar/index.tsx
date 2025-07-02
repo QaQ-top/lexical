@@ -68,6 +68,10 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
     return false;
   }
 
+  isKeyboardSelectable(): boolean {
+    return false;
+  }
+
   onInsertBlock(e: React.MouseEvent, editor: LexicalEditor) {
     if (!editor) {
       return;

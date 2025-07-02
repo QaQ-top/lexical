@@ -1,0 +1,209 @@
+{
+  "name": "onchain-lexical-ui",
+  "license": "MIT",
+  "version": "0.0.1",
+  "main": "LexicalFile.js",
+  "types": "index.d.ts",
+  "module": "LexicalFile.mjs",
+  "sideEffects": false,
+  "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@excalidraw/excalidraw": "^0.18.0",
+    "@lexical/react": "^0.30.0",
+    "@lexical/utils": "^0.30.0",
+    "katex": "^0.16.22",
+    "lexical": "0.30.0"
+  },
+  "exports": {
+    "./EditorShellStyles": {
+      "import": {
+        "types": "./src/EditorShellStyles.tsx",
+        "default": "./dist/EditorShellStyles.mjs"
+      },
+      "require": {
+        "types": "./src/EditorShellStyles.tsx",
+        "default": "./dist/EditorShellStyles.js"
+      }
+    },
+    "./Icon": {
+      "import": {
+        "types": "./src/Icon.tsx",
+        "default": "./dist/Icon.mjs"
+      },
+      "require": {
+        "types": "./src/Icon.tsx",
+        "default": "./dist/Icon.js"
+      }
+    },
+    "./Button": {
+      "import": {
+        "types": "./src/Button.tsx",
+        "default": "./dist/Button.mjs"
+      },
+      "require": {
+        "types": "./src/Button.tsx",
+        "default": "./dist/Button.js"
+      }
+    },
+    "./ColorPicker": {
+      "import": {
+        "types": "./src/ColorPicker.tsx",
+        "default": "./dist/ColorPicker.mjs"
+      },
+      "require": {
+        "types": "./src/ColorPicker.tsx",
+        "default": "./dist/ColorPicker.js"
+      }
+    },
+    "./ContentEditable": {
+      "import": {
+        "types": "./src/ContentEditable.tsx",
+        "default": "./dist/ContentEditable.mjs"
+      },
+      "require": {
+        "types": "./src/ContentEditable.tsx",
+        "default": "./dist/ContentEditable.js"
+      }
+    },
+    "./Dialog": {
+      "import": {
+        "types": "./src/Dialog.tsx",
+        "default": "./dist/Dialog.mjs"
+      },
+      "require": {
+        "types": "./src/Dialog.tsx",
+        "default": "./dist/Dialog.js"
+      }
+    },
+    "./DropDown": {
+      "import": {
+        "types": "./src/DropDown.tsx",
+        "default": "./dist/DropDown.mjs"
+      },
+      "require": {
+        "types": "./src/DropDown.tsx",
+        "default": "./dist/DropDown.js"
+      }
+    },
+    "./DropdownColorPicker": {
+      "import": {
+        "types": "./src/DropdownColorPicker.tsx",
+        "default": "./dist/DropdownColorPicker.mjs"
+      },
+      "require": {
+        "types": "./src/DropdownColorPicker.tsx",
+        "default": "./dist/DropdownColorPicker.js"
+      }
+    },
+    "./EquationEditor": {
+      "import": {
+        "types": "./src/EquationEditor.tsx",
+        "default": "./dist/EquationEditor.mjs"
+      },
+      "require": {
+        "types": "./src/EquationEditor.tsx",
+        "default": "./dist/EquationEditor.js"
+      }
+    },
+    "./ExcalidrawModal": {
+      "import": {
+        "types": "./src/ExcalidrawModal.tsx",
+        "default": "./dist/ExcalidrawModal.mjs"
+      },
+      "require": {
+        "types": "./src/ExcalidrawModal.tsx",
+        "default": "./dist/ExcalidrawModal.js"
+      }
+    },
+    "./FileInput": {
+      "import": {
+        "types": "./src/FileInput.tsx",
+        "default": "./dist/FileInput.mjs"
+      },
+      "require": {
+        "types": "./src/FileInput.tsx",
+        "default": "./dist/FileInput.js"
+      }
+    },
+    "./FlashMessage": {
+      "import": {
+        "types": "./src/FlashMessage.tsx",
+        "default": "./dist/FlashMessage.mjs"
+      },
+      "require": {
+        "types": "./src/FlashMessage.tsx",
+        "default": "./dist/FlashMessage.js"
+      }
+    },
+    "./ImageResizer": {
+      "import": {
+        "types": "./src/ImageResizer.tsx",
+        "default": "./dist/ImageResizer.mjs"
+      },
+      "require": {
+        "types": "./src/ImageResizer.tsx",
+        "default": "./dist/ImageResizer.js"
+      }
+    },
+    "./KatexEquationAlterer": {
+      "import": {
+        "types": "./src/KatexEquationAlterer.tsx",
+        "default": "./dist/KatexEquationAlterer.mjs"
+      },
+      "require": {
+        "types": "./src/KatexEquationAlterer.tsx",
+        "default": "./dist/KatexEquationAlterer.js"
+      }
+    },
+    "./KatexRenderer": {
+      "import": {
+        "types": "./src/KatexRenderer.tsx",
+        "default": "./dist/KatexRenderer.mjs"
+      },
+      "require": {
+        "types": "./src/KatexRenderer.tsx",
+        "default": "./dist/KatexRenderer.js"
+      }
+    },
+    "./Modal": {
+      "import": {
+        "types": "./src/Modal.tsx",
+        "default": "./dist/Modal.mjs"
+      },
+      "require": {
+        "types": "./src/Modal.tsx",
+        "default": "./dist/Modal.js"
+      }
+    },
+    "./Select": {
+      "import": {
+        "types": "./src/Select.tsx",
+        "default": "./dist/Select.mjs"
+      },
+      "require": {
+        "types": "./src/Select.tsx",
+        "default": "./dist/Select.js"
+      }
+    },
+    "./Switch": {
+      "import": {
+        "types": "./src/Switch.tsx",
+        "default": "./dist/Switch.mjs"
+      },
+      "require": {
+        "types": "./src/Switch.tsx",
+        "default": "./dist/Switch.js"
+      }
+    },
+    "./TextInput": {
+      "import": {
+        "types": "./src/TextInput.tsx",
+        "default": "./dist/TextInput.mjs"
+      },
+      "require": {
+        "types": "./src/TextInput.tsx",
+        "default": "./dist/TextInput.js"
+      }
+    }
+  }
+}

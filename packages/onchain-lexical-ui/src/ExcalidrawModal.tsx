@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable lexical/no-optional-chaining */
 
 import type {
   AppState,
@@ -14,8 +15,6 @@ import type {
 } from '@excalidraw/excalidraw/types';
 import type {JSX} from 'react';
 
-import './ExcalidrawModal.css';
-
 import {Excalidraw} from '@excalidraw/excalidraw';
 import {isDOMNode} from 'lexical';
 import * as React from 'react';
@@ -23,6 +22,7 @@ import {ReactPortal, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
 import Button from './Button';
+import Styles from './ExcalidrawModal.module.less';
 import Modal from './Modal';
 
 export type ExcalidrawInitialElements = ExcalidrawInitialDataState['elements'];
@@ -187,7 +187,7 @@ export default function ExcalidrawModal({
         }}
         closeOnClickOutside={false}>
         Are you sure you want to discard the changes?
-        <div className="ExcalidrawModal__discardModal">
+        <div className={Styles.ExcalidrawModal__discardModal}>
           <Button
             onClick={() => {
               setDiscardModalOpen(false);
@@ -220,12 +220,12 @@ export default function ExcalidrawModal({
   };
 
   return createPortal(
-    <div className="ExcalidrawModal__overlay" role="dialog">
+    <div className={Styles.ExcalidrawModal__overlay} role="dialog">
       <div
-        className="ExcalidrawModal__modal"
+        className={Styles.ExcalidrawModal__modal}
         ref={excaliDrawModelRef}
         tabIndex={-1}>
-        <div className="ExcalidrawModal__row">
+        <div className={Styles.ExcalidrawModal__row}>
           {discardModalOpen && <ShowDiscardDialog />}
           <Excalidraw
             onChange={onChange}
@@ -236,7 +236,7 @@ export default function ExcalidrawModal({
               files: initialFiles,
             }}
           />
-          <div className="ExcalidrawModal__actions">
+          <div className={Styles.ExcalidrawModal__actions}>
             <button className="action-button" onClick={discard}>
               Discard
             </button>

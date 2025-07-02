@@ -22,6 +22,11 @@ export {
   InstanceCodeNode,
 } from './code';
 export {InstanceParagraphType} from './const';
+export {
+  $createInstanceEquationNode,
+  $isInstanceEquationNode,
+  InstanceEquationNode,
+} from './equation';
 export {$createFragmentNode, Fragment} from './fragment';
 export {
   $createInstanceHeadingNode,

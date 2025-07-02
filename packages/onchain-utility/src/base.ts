@@ -7,6 +7,21 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+export function _isMoment(obj: any) {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    // 检查内部标志
+    obj._isAMomentObject === true &&
+    // 检查特有方法
+    typeof obj.format === 'function' &&
+    typeof obj.add === 'function' &&
+    // 检查内部属性
+    '_d' in obj &&
+    '_i' in obj
+  );
+}
+
 export function makeDestructurable<
   T extends Record<string, unknown>,
   A extends readonly [any, ...any],

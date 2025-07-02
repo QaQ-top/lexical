@@ -99,6 +99,10 @@ export class PlaceholderDecoratorNode extends DecoratorNode<string> {
     return false;
   }
 
+  isKeyboardSelectable(): boolean {
+    return false;
+  }
+
   decorate(editor: LexicalEditor, config: EditorConfig): string {
     if (this.__show) {
       return this.__text;

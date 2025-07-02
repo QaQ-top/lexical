@@ -8,12 +8,11 @@
 
 import type {JSX} from 'react';
 
-import './Button.css';
-
 import * as React from 'react';
 import {ReactNode} from 'react';
 
-import joinClasses from '../utils/joinClasses';
+import Styles from './Button.module.less';
+import joinClasses from './utils/joinClasses';
 
 export default function Button({
   'data-test-id': dataTestId,
@@ -36,9 +35,9 @@ export default function Button({
     <button
       disabled={disabled}
       className={joinClasses(
-        'Button__root',
-        disabled && 'Button__disabled',
-        small && 'Button__small',
+        Styles.Button__root,
+        disabled && Styles.Button__disabled,
+        small && Styles.Button__small,
         className,
       )}
       onClick={onClick}

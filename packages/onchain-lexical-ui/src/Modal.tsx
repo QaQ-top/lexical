@@ -5,15 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable lexical/no-optional-chaining */
 
 import type {JSX} from 'react';
-
-import './Modal.css';
 
 import {isDOMNode} from 'lexical';
 import * as React from 'react';
 import {ReactNode, useEffect, useRef} from 'react';
 import {createPortal} from 'react-dom';
+
+import Styles from './Modal.module.less';
 
 function PortalImpl({
   onClose,
@@ -71,17 +72,17 @@ function PortalImpl({
   }, [closeOnClickOutside, onClose]);
 
   return (
-    <div className="Modal__overlay" role="dialog">
-      <div className="Modal__modal" tabIndex={-1} ref={modalRef}>
-        <h2 className="Modal__title">{title}</h2>
+    <div className={Styles.Modal__overlay} role="dialog">
+      <div className={Styles.Modal__modal} tabIndex={-1} ref={modalRef}>
+        <h2 className={Styles.Modal__title}>{title}</h2>
         <button
-          className="Modal__closeButton"
+          className={Styles.Modal__closeButton}
           aria-label="Close modal"
           type="button"
           onClick={onClose}>
           X
         </button>
-        <div className="Modal__content">{children}</div>
+        <div className={Styles.Modal__content}>{children}</div>
       </div>
     </div>
   );

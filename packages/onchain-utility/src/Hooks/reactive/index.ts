@@ -9,10 +9,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import {useCreation, useUpdate} from 'ahooks';
-import {isMoment} from 'moment';
 import {useRef} from 'react';
 
 import {
+  _isMoment,
   createEnumObject,
   hasOwnProperty,
   isIntegerKey,
@@ -126,7 +126,7 @@ export function protection<S>(value: S): S {
  * @returns {*}  {boolean}
  */
 function presetProtection<S>(value: S): boolean {
-  if (isMoment(value)) {
+  if (_isMoment(value)) {
     return true;
   }
 
