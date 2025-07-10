@@ -73,3 +73,18 @@ export function isIntegerKey(key: unknown) {
 export function isEmptyObject(obj: object | undefined | null) {
   return obj ? !Object.keys(obj).length : true;
 }
+
+export function getHTMLTagString(params: {
+  type: string;
+  attributes?: Record<string, any>;
+  context?: string;
+}) {
+  const attrsString = Object.entries(params.attributes || {})
+    .map(([key, value]) => {
+      return ` ${key}="${value}"`;
+    })
+    .join();
+  return `<${params.type}${attrsString}>${params.context ?? ''}</${
+    params.type
+  }>`;
+}
