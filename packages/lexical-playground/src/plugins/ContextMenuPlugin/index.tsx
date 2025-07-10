@@ -29,6 +29,8 @@ import {useCallback, useMemo} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import PublicStyles from '../index.module.less';
+
 function ContextMenuItem({
   index,
   isSelected,
@@ -74,7 +76,7 @@ function ContextMenu({
   options: Array<ContextMenuOption>;
 }) {
   return (
-    <div className="typeahead-popover">
+    <div className={PublicStyles['typeahead-popover']}>
       <ul>
         {options.map((option: ContextMenuOption, i: number) => (
           <ContextMenuItem
@@ -253,7 +255,7 @@ export default function ContextMenuPlugin(): JSX.Element {
         anchorElementRef.current
           ? ReactDOM.createPortal(
               <div
-                className="typeahead-popover auto-embed-menu"
+                className={`${PublicStyles['typeahead-popover']} ${PublicStyles['auto-embed-menu']}`}
                 style={{
                   marginLeft: anchorElementRef.current.style.width,
                   userSelect: 'none',

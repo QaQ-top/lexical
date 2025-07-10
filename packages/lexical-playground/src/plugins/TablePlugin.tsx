@@ -16,11 +16,10 @@ import {
   TableRowNode,
 } from '@lexical/table';
 import {EditorThemeClasses, Klass, LexicalEditor, LexicalNode} from 'lexical';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import TextInput from 'onchain-lexical-ui/TextInput';
 import {createContext, useContext, useEffect, useMemo, useState} from 'react';
-
-import Button from '../ui/Button';
-import {DialogActions} from '../ui/Dialog';
-import TextInput from '../ui/TextInput';
 
 export type InsertTableCommandPayload = Readonly<{
   columns: string;

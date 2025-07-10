@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
-import './Collapsible.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {
   $findMatchingParent,
@@ -26,23 +23,20 @@ import {
   KEY_ARROW_RIGHT_COMMAND,
   KEY_ARROW_UP_COMMAND,
 } from 'lexical';
-import {useEffect} from 'react';
-
 import {
   $createCollapsibleContainerNode,
-  $isCollapsibleContainerNode,
-  CollapsibleContainerNode,
-} from './CollapsibleContainerNode';
-import {
   $createCollapsibleContentNode,
-  $isCollapsibleContentNode,
-  CollapsibleContentNode,
-} from './CollapsibleContentNode';
-import {
   $createCollapsibleTitleNode,
+  $createInstanceParagraphNode,
+  $isCollapsibleContainerNode,
+  $isCollapsibleContentNode,
   $isCollapsibleTitleNode,
+  $isSelectedTitleNode,
+  CollapsibleContainerNode,
+  CollapsibleContentNode,
   CollapsibleTitleNode,
-} from './CollapsibleTitleNode';
+} from 'onchain-lexical-instance';
+import {useEffect} from 'react';
 
 export const INSERT_COLLAPSIBLE_COMMAND = createCommand<void>(
   'INSERT_COLLAPSIBLE_COMMAND',
@@ -223,12 +217,21 @@ export default function CollapsiblePlugin(): null {
         INSERT_COLLAPSIBLE_COMMAND,
         () => {
           editor.update(() => {
+            const selection = $getSelection();
+            if (!$isRangeSelection(selection)) {
+              return false;
+            }
+            if ($isSelectedTitleNode()) {
+              return false;
+            }
             const title = $createCollapsibleTitleNode();
-            const paragraph = $createParagraphNode();
+            const paragraph = $createInstanceParagraphNode();
             $insertNodeToNearestRoot(
               $createCollapsibleContainerNode(true).append(
                 title.append(paragraph),
-                $createCollapsibleContentNode().append($createParagraphNode()),
+                $createCollapsibleContentNode().append(
+                  $createInstanceParagraphNode(),
+                ),
               ),
             );
             paragraph.select();

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import type {JSX} from 'react';
 
@@ -27,12 +28,17 @@ import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
 import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {CAN_USE_DOM} from '@lexical/utils';
+import DraggableBlockPlugin from 'onchain-lexical-components/DraggableBlockPlugin';
+import MarkdownShortcutPlugin from 'onchain-lexical-components/MarkdownShortcutPlugin';
+import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useSettings} from 'onchain-lexical-context/settings';
+import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
+import {InstancePlugin} from 'onchain-lexical-instance';
+import ContentEditable from 'onchain-lexical-ui/ContentEditable';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 
-import {createWebsocketProvider} from './collaboration';
-import {useSettings} from './context/SettingsContext';
-import {useSharedHistoryContext} from './context/SharedHistoryContext';
+import Styles from './Editor.module.less';
 import ActionsPlugin from './plugins/ActionsPlugin';
 import AutocompletePlugin from './plugins/AutocompletePlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
@@ -44,7 +50,6 @@ import CommentPlugin from './plugins/CommentPlugin';
 import ComponentPickerPlugin from './plugins/ComponentPickerPlugin';
 import ContextMenuPlugin from './plugins/ContextMenuPlugin';
 import DragDropPaste from './plugins/DragDropPastePlugin';
-import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
 import EmojisPlugin from './plugins/EmojisPlugin';
 import EquationsPlugin from './plugins/EquationsPlugin';
@@ -53,11 +58,9 @@ import FigmaPlugin from './plugins/FigmaPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingTextFormatToolbarPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
-import InlineImagePlugin from './plugins/InlineImagePlugin';
 import KeywordsPlugin from './plugins/KeywordsPlugin';
 import {LayoutPlugin} from './plugins/LayoutPlugin/LayoutPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
-import MarkdownShortcutPlugin from './plugins/MarkdownShortcutPlugin';
 import {MaxLengthPlugin} from './plugins/MaxLengthPlugin';
 import MentionsPlugin from './plugins/MentionsPlugin';
 import PageBreakPlugin from './plugins/PageBreakPlugin';
@@ -74,7 +77,6 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import TwitterPlugin from './plugins/TwitterPlugin';
 import YouTubePlugin from './plugins/YouTubePlugin';
-import ContentEditable from './ui/ContentEditable';
 
 const skipCollaborationInit =
   // @ts-expect-error
@@ -91,7 +93,6 @@ export default function Editor(): JSX.Element {
       hasLinkAttributes,
       isCharLimitUtf8,
       isRichText,
-      showTreeView,
       showTableOfContents,
       shouldUseLexicalContextMenu,
       shouldPreserveNewLinesInMarkdown,
@@ -102,6 +103,7 @@ export default function Editor(): JSX.Element {
       selectionAlwaysOnDisplay,
       listStrictIndent,
     },
+    extra: {showTreeView},
   } = useSettings();
   const isEditable = useLexicalEditable();
   const placeholder = isCollab
@@ -169,7 +171,7 @@ export default function Editor(): JSX.Element {
         <EmojiPickerPlugin />
         <AutoEmbedPlugin />
         <MentionsPlugin />
-        <EmojisPlugin />
+        {/* <EmojisPlugin /> */}
         <HashtagPlugin />
         <KeywordsPlugin />
         <SpeechToTextPlugin />
@@ -190,8 +192,8 @@ export default function Editor(): JSX.Element {
             )}
             <RichTextPlugin
               contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
+                <div className={Styles['editor-scroller']}>
+                  <div className={Styles.editor} ref={onRef}>
                     <ContentEditable placeholder={placeholder} />
                   </div>
                 </div>
@@ -199,6 +201,7 @@ export default function Editor(): JSX.Element {
               ErrorBoundary={LexicalErrorBoundary}
             />
             <MarkdownShortcutPlugin />
+            <InstancePlugin placeholder={{title: '请输入标题...'}} />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
             <CheckListPlugin />
@@ -209,16 +212,16 @@ export default function Editor(): JSX.Element {
             />
             <TableCellResizer />
             <ImagesPlugin />
-            <InlineImagePlugin />
+            {/* <InlineImagePlugin /> */}
             <LinkPlugin hasLinkAttributes={hasLinkAttributes} />
-            <PollPlugin />
-            <TwitterPlugin />
-            <YouTubePlugin />
+            {/* <PollPlugin /> */}
+            {/* <TwitterPlugin /> */}
+            {/* <YouTubePlugin /> */}
             <FigmaPlugin />
             <ClickableLinkPlugin disabled={isEditable} />
             <HorizontalRulePlugin />
             <EquationsPlugin />
-            <ExcalidrawPlugin />
+            {/* <ExcalidrawPlugin /> */}
             <TabFocusPlugin />
             <TabIndentationPlugin maxIndent={7} />
             <CollapsiblePlugin />
@@ -237,15 +240,19 @@ export default function Editor(): JSX.Element {
                 />
               </>
             )}
-            {floatingAnchorElem && !isSmallWidthViewport && (
+            {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-                <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
-                <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
+                <DraggableBlockPlugin
+                  anchorElem={floatingAnchorElem}
+                  targetLineIndent={46}
+                  dragIcon={'='}
+                />
                 <FloatingTextFormatToolbarPlugin
                   anchorElem={floatingAnchorElem}
                   setIsLinkEditMode={setIsLinkEditMode}
                 />
+                <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
+                <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
               </>
             )}
           </>
@@ -268,12 +275,14 @@ export default function Editor(): JSX.Element {
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
-        <ActionsPlugin
-          isRichText={isRichText}
-          shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
-        />
+        {VITE_IS_DEVELOPMENT && (
+          <ActionsPlugin
+            isRichText={isRichText}
+            shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
+          />
+        )}
       </div>
-      {showTreeView && <TreeViewPlugin />}
+      {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />}
     </>
   );
 }

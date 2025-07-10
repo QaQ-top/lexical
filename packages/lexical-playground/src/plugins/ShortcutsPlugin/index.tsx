@@ -18,9 +18,9 @@ import {
   LexicalEditor,
   OUTDENT_CONTENT_COMMAND,
 } from 'lexical';
+import {useToolbarState} from 'onchain-lexical-context/toolBar';
 import {Dispatch, useEffect} from 'react';
 
-import {useToolbarState} from '../../context/ToolbarContext';
 import {sanitizeUrl} from '../../utils/url';
 import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
 import {

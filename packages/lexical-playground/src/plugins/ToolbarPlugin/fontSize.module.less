@@ -5,18 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+ @import './const.less';
 
 .font-size-input {
-  font-weight: bold;
   font-size: 14px;
-  color: #777;
-  border-radius: 5px;
-  border-color: grey;
-  height: 15px;
+  color: #2c3652;
+  border-radius: 2px;
+  width: 36px;
+  height: @inputHeight;
   padding: 2px 4px;
+  border: 1px solid #d9d9d9;
   text-align: center;
-  width: 20px;
   align-self: center;
+  &:focus-visible {
+    outline: none;
+    border-color: @themeColor;
+  };
 }
 
 .font-size-input:disabled {

@@ -22,6 +22,8 @@ import * as React from 'react';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import * as ReactDOM from 'react-dom';
 
+import PublicStyles from '../index.module.less';
+
 class EmojiOption extends MenuOption {
   title: string;
   emoji: string;
@@ -170,7 +172,8 @@ export default function EmojiPickerPlugin() {
 
         return anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
-              <div className="typeahead-popover emoji-menu">
+              <div
+                className={`${PublicStyles['typeahead-popover']} ${PublicStyles['emoji-menu']}`}>
                 <ul>
                   {options.map((option: EmojiOption, index) => (
                     <EmojiMenuItem

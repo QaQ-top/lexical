@@ -24,6 +24,7 @@ import {
   DecoratorBlockNode,
   SerializedDecoratorBlockNode,
 } from '@lexical/react/LexicalDecoratorBlockNode';
+import {$createInstanceParagraphNode} from 'onchain-lexical-instance';
 import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -189,6 +190,12 @@ export class TweetNode extends DecoratorBlockNode {
     _includeDirectionless?: false | undefined,
   ): string {
     return `https://x.com/i/web/status/${this.__id}`;
+  }
+
+  remove(preserveEmptyParent?: boolean): void {
+    const node = $createInstanceParagraphNode();
+    this.replace(node);
+    node.select();
   }
 
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {

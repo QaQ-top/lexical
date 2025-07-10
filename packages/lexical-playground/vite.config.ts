@@ -9,34 +9,41 @@
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import react from '@vitejs/plugin-react';
-import {createRequire} from 'node:module';
+import {codeInspectorPlugin} from 'code-inspector-plugin';
+import path from 'node:path';
 import {defineConfig} from 'vite';
+import VitePluginStyleInject from 'vite-plugin-style-inject';
 
 import viteMonorepoResolutionPlugin from '../shared/lexicalMonorepoPlugin';
 import viteCopyEsm from './viteCopyEsm';
 import viteCopyExcalidrawAssets from './viteCopyExcalidrawAssets';
 
-const require = createRequire(import.meta.url);
-
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
   build: {
-    outDir: 'build',
+    lib: {
+      entry: path.resolve(__dirname, './index.js'),
+      fileName: (format) => `index.${format}.mjs`,
+      formats: ['es', 'umd', 'cjs'],
+      name: 'index',
+    },
     rollupOptions: {
+      assetFileNames: '[name].[ext]',
+      external: ['react', 'react-dom'],
       input: {
-        main: new URL('./index.html', import.meta.url).pathname,
-        split: new URL('./split/index.html', import.meta.url).pathname,
+        main: './src/index.ts', // 这里的 './src/main.js' 是你想要打包的入口文件路径
+      },
+      output: {
+        dir: 'lib',
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
       },
     },
-    ...(mode === 'production' && {
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          toplevel: true,
-        },
-        keep_classnames: true,
-      },
-    }),
+  },
+  define: {
+    VITE_IS_DEVELOPMENT: JSON.stringify(mode === 'development'),
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -45,7 +52,12 @@ export default defineConfig(({mode}) => ({
     },
   },
   plugins: [
-    viteMonorepoResolutionPlugin(),
+    mode === 'development' ? viteMonorepoResolutionPlugin() : null,
+    mode === 'development'
+      ? codeInspectorPlugin({
+          bundler: 'vite',
+        })
+      : null,
     babel({
       babelHelpers: 'bundled',
       babelrc: false,
@@ -53,17 +65,17 @@ export default defineConfig(({mode}) => ({
       exclude: '/**/node_modules/**',
       extensions: ['jsx', 'js', 'ts', 'tsx', 'mjs'],
       plugins: [
-        '@babel/plugin-transform-flow-strip-types',
-        ...(mode !== 'production'
-          ? [
-              [
-                require('../../scripts/error-codes/transform-error-messages'),
-                {
-                  noMinify: true,
-                },
-              ],
-            ]
-          : []),
+        // '@babel/plugin-transform-flow-strip-types',
+        // ...(mode !== 'production'
+        //   ? [
+        //       [
+        //         require('../../scripts/error-codes/transform-error-messages'),
+        //         {
+        //           noMinify: true,
+        //         },
+        //       ],
+        //     ]
+        //   : []),
       ],
       presets: [['@babel/preset-react', {runtime: 'automatic'}]],
     }),
@@ -75,5 +87,11 @@ export default defineConfig(({mode}) => ({
       // because @rollup/plugin-commonjs does not analyze it correctly
       strictRequires: [/\/node_modules\/(react-dom|react)\/[^/]\.js$/],
     }),
+    VitePluginStyleInject(),
   ],
+  resolve: {
+    alias: {
+      './const.less': `${path.resolve(__dirname, '../../')}/const.less`,
+    },
+  },
 }));

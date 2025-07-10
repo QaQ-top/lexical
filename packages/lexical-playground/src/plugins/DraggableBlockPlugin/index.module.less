@@ -9,29 +9,29 @@
   will-change: transform;
   display: flex;
   gap: 2px;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
-.draggable-block-menu .icon {
+.icon {
   width: 16px;
   height: 16px;
   opacity: 0.3;
   background-image: url(../../images/icons/draggable-block-menu.svg);
+
+  &:hover {
+    background-color: #efefef;
+  }
 }
 
-.draggable-block-menu .icon-plus {
+.icon-plus {
   display: inline-block;
   border: none;
   cursor: pointer;
   background-color: transparent;
   background-image: url(../../images/icons/plus.svg);
-}
-
-.draggable-block-menu:active {
-  cursor: grabbing;
-}
-
-.draggable-block-menu .icon:hover {
-  background-color: #efefef;
 }
 
 .draggable-block-target-line {

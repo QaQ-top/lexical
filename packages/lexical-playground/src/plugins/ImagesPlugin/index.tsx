@@ -30,21 +30,18 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
-import {useEffect, useRef, useState} from 'react';
-import * as React from 'react';
-
-import landscapeImage from '../../images/landscape.jpg';
-import yellowFlowerImage from '../../images/yellow-flower.jpg';
 import {
   $createImageNode,
   $isImageNode,
   ImageNode,
   ImagePayload,
-} from '../../nodes/ImageNode';
-import Button from '../../ui/Button';
-import {DialogActions, DialogButtonsList} from '../../ui/Dialog';
-import FileInput from '../../ui/FileInput';
-import TextInput from '../../ui/TextInput';
+} from 'onchain-lexical-instance';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions, DialogButtonsList} from 'onchain-lexical-ui/Dialog';
+import FileInput from 'onchain-lexical-ui/FileInput';
+import TextInput from 'onchain-lexical-ui/TextInput';
+import {useEffect, useRef, useState} from 'react';
+import * as React from 'react';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -169,24 +166,6 @@ export function InsertImageDialog({
     <>
       {!mode && (
         <DialogButtonsList>
-          <Button
-            data-test-id="image-modal-option-sample"
-            onClick={() =>
-              onClick(
-                hasModifier.current
-                  ? {
-                      altText:
-                        'Daylight fir trees forest glacier green high ice landscape',
-                      src: landscapeImage,
-                    }
-                  : {
-                      altText: 'Yellow flower in tilt shift lens',
-                      src: yellowFlowerImage,
-                    },
-              )
-            }>
-            Sample
-          </Button>
           <Button
             data-test-id="image-modal-option-url"
             onClick={() => setMode('url')}>

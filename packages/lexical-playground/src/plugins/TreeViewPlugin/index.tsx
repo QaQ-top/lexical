@@ -10,18 +10,19 @@ import type {JSX} from 'react';
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {TreeView} from '@lexical/react/LexicalTreeView';
-import * as React from 'react';
+
+import Styles from './index.module.less';
 
 export default function TreeViewPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
   return (
     <TreeView
-      viewClassName="tree-view-output"
-      treeTypeButtonClassName="debug-treetype-button"
-      timeTravelPanelClassName="debug-timetravel-panel"
-      timeTravelButtonClassName="debug-timetravel-button"
-      timeTravelPanelSliderClassName="debug-timetravel-panel-slider"
-      timeTravelPanelButtonClassName="debug-timetravel-panel-button"
+      viewClassName={Styles['tree-view-output']}
+      treeTypeButtonClassName={Styles['debug-treetype-button']}
+      timeTravelPanelClassName={Styles['debug-timetravel-panel']}
+      timeTravelButtonClassName={Styles['debug-timetravel-button']}
+      timeTravelPanelSliderClassName={Styles['debug-timetravel-panel-slider']}
+      timeTravelPanelButtonClassName={Styles['debug-timetravel-panel-button']}
       editor={editor}
     />
   );

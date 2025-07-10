@@ -8,10 +8,9 @@
 
 import type {JSX} from 'react';
 
+import Modal from 'onchain-lexical-ui/Modal';
 import {useCallback, useMemo, useState} from 'react';
 import * as React from 'react';
-
-import Modal from '../ui/Modal';
 
 export default function useModal(): [
   JSX.Element | null,

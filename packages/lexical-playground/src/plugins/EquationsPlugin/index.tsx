@@ -21,11 +21,13 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
+import {
+  $createInstanceEquationNode,
+  InstanceEquationNode,
+} from 'onchain-lexical-instance';
+import KatexEquationAlterer from 'onchain-lexical-ui/KatexEquationAlterer';
 import {useCallback, useEffect} from 'react';
 import * as React from 'react';
-
-import {$createEquationNode, EquationNode} from '../../nodes/EquationNode';
-import KatexEquationAlterer from '../../ui/KatexEquationAlterer';
 
 type CommandPayload = {
   equation: string;
@@ -57,7 +59,7 @@ export default function EquationsPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (!editor.hasNodes([EquationNode])) {
+    if (!editor.hasNodes([InstanceEquationNode])) {
       throw new Error(
         'EquationsPlugins: EquationsNode not registered on editor',
       );
@@ -67,7 +69,7 @@ export default function EquationsPlugin(): JSX.Element | null {
       INSERT_EQUATION_COMMAND,
       (payload) => {
         const {equation, inline} = payload;
-        const equationNode = $createEquationNode(equation, inline);
+        const equationNode = $createInstanceEquationNode(equation, inline);
 
         $insertNodes([equationNode]);
         if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {

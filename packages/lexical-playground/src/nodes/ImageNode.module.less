@@ -6,32 +6,38 @@
  *
  *
  */
-.StickyNode__contentEditable {
+
+.ImageNode__contentEditable {
   min-height: 20px;
-  border: 0;
+  border: 0px;
   resize: none;
   cursor: text;
-  font-size: 24px;
   caret-color: rgb(5, 5, 5);
   display: block;
   position: relative;
-  outline: 0;
-  padding: 10px;
+  outline: 0px;
+  padding: 5px;
   user-select: text;
+  font-size: 10px;
+  width: calc(100% - 20px);
   white-space: pre-wrap;
-  word-wrap: break-word;
+  word-break: break-word;
 }
-.StickyNode__placeholder {
-  font-size: 24px;
-  color: #999;
+
+.ImageNode__placeholder {
+  font-size: 12px;
+  color: #3f3f3f;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
-  top: 30px;
-  left: 20px;
-  width: 120px;
+  top: 2px;
+  left: 4px;
   user-select: none;
   white-space: nowrap;
   display: inline-block;
   pointer-events: none;
+}
+
+.image-control-wrapper--resizing {
+  touch-action: none;
 }

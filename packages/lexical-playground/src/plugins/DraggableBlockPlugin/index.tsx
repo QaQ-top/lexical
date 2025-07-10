@@ -7,14 +7,14 @@
  */
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {DraggableBlockPlugin_EXPERIMENTAL} from '@lexical/react/LexicalDraggableBlockPlugin';
 import {$createParagraphNode, $getNearestNodeFromDOMNode} from 'lexical';
 import {useRef, useState} from 'react';
 
-const DRAGGABLE_BLOCK_MENU_CLASSNAME = 'draggable-block-menu';
+import Styles from './index.module.less';
+
+const DRAGGABLE_BLOCK_MENU_CLASSNAME = Styles['draggable-block-menu'];
 
 function isOnMenu(element: HTMLElement): boolean {
   return !!element.closest(`.${DRAGGABLE_BLOCK_MENU_CLASSNAME}`);
@@ -59,17 +59,22 @@ export default function DraggableBlockPlugin({
       menuRef={menuRef}
       targetLineRef={targetLineRef}
       menuComponent={
-        <div ref={menuRef} className="icon draggable-block-menu">
+        <div
+          ref={menuRef}
+          className={`${Styles.icon} ${Styles['draggable-block-menu']}`}>
           <button
             title="Click to add below"
-            className="icon icon-plus"
+            className={`${Styles.icon} ${Styles['icon-plus']}`}
             onClick={insertBlock}
           />
-          <div className="icon" />
+          <div className={Styles.icon} />
         </div>
       }
       targetLineComponent={
-        <div ref={targetLineRef} className="draggable-block-target-line" />
+        <div
+          ref={targetLineRef}
+          className={Styles['draggable-block-target-line']}
+        />
       }
       isOnMenu={isOnMenu}
       onElementChanged={setDraggableElement}

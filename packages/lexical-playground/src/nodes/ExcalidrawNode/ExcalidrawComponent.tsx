@@ -6,9 +6,9 @@
  *
  */
 
-import type {ExcalidrawInitialElements} from '../../ui/ExcalidrawModal';
 import type {AppState, BinaryFiles} from '@excalidraw/excalidraw/types';
 import type {NodeKey} from 'lexical';
+import type {ExcalidrawInitialElements} from 'onchain-lexical-ui/ExcalidrawModal';
 import type {JSX} from 'react';
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
@@ -21,11 +21,11 @@ import {
   COMMAND_PRIORITY_LOW,
   isDOMNode,
 } from 'lexical';
+import ExcalidrawModal from 'onchain-lexical-ui/ExcalidrawModal';
+import ImageResizer from 'onchain-lexical-ui/ImageResizer';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import * as React from 'react';
 
-import ExcalidrawModal from '../../ui/ExcalidrawModal';
-import ImageResizer from '../../ui/ImageResizer';
 import {$isExcalidrawNode} from '.';
 import ExcalidrawImage from './ExcalidrawImage';
 

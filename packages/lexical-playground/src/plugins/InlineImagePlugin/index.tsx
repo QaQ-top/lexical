@@ -8,8 +8,6 @@
 import type {Position} from '../../nodes/InlineImageNode/InlineImageNode';
 import type {JSX} from 'react';
 
-import '../../nodes/InlineImageNode/InlineImageNode.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {$wrapNodeInElement, mergeRegister} from '@lexical/utils';
 import {
@@ -32,20 +30,22 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
-import * as React from 'react';
-import {useEffect, useRef, useState} from 'react';
-
 import {
   $createInlineImageNode,
   $isInlineImageNode,
   InlineImageNode,
   InlineImagePayload,
-} from '../../nodes/InlineImageNode/InlineImageNode';
-import Button from '../../ui/Button';
-import {DialogActions} from '../../ui/Dialog';
-import FileInput from '../../ui/FileInput';
-import Select from '../../ui/Select';
-import TextInput from '../../ui/TextInput';
+} from 'onchain-lexical-instance';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import FileInput from 'onchain-lexical-ui/FileInput';
+import Select from 'onchain-lexical-ui/Select';
+import TextInput from 'onchain-lexical-ui/TextInput';
+import * as React from 'react';
+import {useEffect, useRef, useState} from 'react';
+
+import PublicStyles from '../index.module.less';
+import Styles from './index.module.less';
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -137,10 +137,10 @@ export function InsertInlineImageDialog({
         <option value="full">Full Width</option>
       </Select>
 
-      <div className="Input__wrapper">
+      <div className={PublicStyles.Input__wrapper}>
         <input
           id="caption"
-          className="InlineImageNode_Checkbox"
+          className={Styles.checkbox}
           type="checkbox"
           checked={showCaption}
           onChange={handleShowCaptionChange}

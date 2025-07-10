@@ -9,24 +9,25 @@
 import type {LexicalEditor} from 'lexical';
 import type {JSX} from 'react';
 
-import {
-  AutoEmbedOption,
-  EmbedConfig,
-  EmbedMatchResult,
-  LexicalAutoEmbedPlugin,
-  URL_MATCHER,
-} from '@lexical/react/LexicalAutoEmbedPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
 import {useMemo, useState} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import useModal from '../../hooks/useModal';
-import Button from '../../ui/Button';
-import {DialogActions} from '../../ui/Dialog';
 import {INSERT_FIGMA_COMMAND} from '../FigmaPlugin';
+import PublicStyles from '../index.module.less';
 import {INSERT_TWEET_COMMAND} from '../TwitterPlugin';
 import {INSERT_YOUTUBE_COMMAND} from '../YouTubePlugin';
+import {
+  AutoEmbedOption,
+  BaseAutoEmbedPlugin,
+  EmbedConfig,
+  EmbedMatchResult,
+  URL_MATCHER,
+} from './BaseAutoEmbedPlugin';
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
   // Human readable name of the embedded content e.g. Tweet or Google Map.
@@ -150,8 +151,8 @@ export const FigmaEmbedConfig: PlaygroundEmbedConfig = {
 };
 
 export const EmbedConfigs = [
-  TwitterEmbedConfig,
-  YoutubeEmbedConfig,
+  // TwitterEmbedConfig,
+  // YoutubeEmbedConfig,
   FigmaEmbedConfig,
 ];
 
@@ -200,7 +201,7 @@ function AutoEmbedMenu({
   options: Array<AutoEmbedOption>;
 }) {
   return (
-    <div className="typeahead-popover">
+    <div className={PublicStyles['typeahead-popover']}>
       <ul>
         {options.map((option: AutoEmbedOption, i: number) => (
           <AutoEmbedMenuItem
@@ -264,10 +265,10 @@ export function AutoEmbedDialog({
 
   return (
     <div style={{width: '600px'}}>
-      <div className="Input__wrapper">
+      <div className={PublicStyles.Input__wrapper}>
         <input
           type="text"
-          className="Input__input"
+          className={PublicStyles.Input__input}
           placeholder={embedConfig.exampleUrl}
           value={text}
           data-test-id={`${embedConfig.type}-embed-modal-url`}
@@ -317,7 +318,7 @@ export default function AutoEmbedPlugin(): JSX.Element {
   return (
     <>
       {modal}
-      <LexicalAutoEmbedPlugin<PlaygroundEmbedConfig>
+      <BaseAutoEmbedPlugin<PlaygroundEmbedConfig>
         embedConfigs={EmbedConfigs}
         onOpenEmbedModalForConfig={openEmbedModal}
         getMenuOptions={getMenuOptions}
@@ -328,7 +329,7 @@ export default function AutoEmbedPlugin(): JSX.Element {
           anchorElementRef.current
             ? ReactDOM.createPortal(
                 <div
-                  className="typeahead-popover auto-embed-menu"
+                  // className={`${PublicStyles['typeahead-popover']} ${PublicStyles['auto-embed-menu']}`}
                   style={{
                     marginLeft: `${Math.max(
                       parseFloat(anchorElementRef.current.style.width) - 200,

@@ -8,8 +8,8 @@
 
 import type {JSX} from 'react';
 
-import {registerCodeHighlighting} from '@lexical/code';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {registerCodeHighlighting} from 'onchain-lexical-instance';
 import {useEffect} from 'react';
 
 export default function CodeHighlightPlugin(): JSX.Element | null {

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {$isCodeNode} from '@lexical/code';
 import {
   $getNearestNodeFromDOMNode,
   $getSelection,
   $setSelection,
   LexicalEditor,
 } from 'lexical';
+import {$isInstanceCodeNode} from 'onchain-lexical-instance';
 import * as React from 'react';
 import {useState} from 'react';
 
@@ -41,7 +41,7 @@ export function CopyButton({editor, getCodeDOMNode}: Props) {
     editor.update(() => {
       const codeNode = $getNearestNodeFromDOMNode(codeDOMNode);
 
-      if ($isCodeNode(codeNode)) {
+      if ($isInstanceCodeNode(codeNode)) {
         content = codeNode.getTextContent();
       }
 

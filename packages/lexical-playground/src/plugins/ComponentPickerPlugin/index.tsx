@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import type {JSX} from 'react';
 
-import {$createCodeNode} from '@lexical/code';
-import {
-  INSERT_CHECK_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-} from '@lexical/list';
 import {INSERT_EMBED_COMMAND} from '@lexical/react/LexicalAutoEmbedPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {INSERT_HORIZONTAL_RULE_COMMAND} from '@lexical/react/LexicalHorizontalRuleNode';
@@ -22,17 +17,23 @@ import {
   MenuOption,
   useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
-import {$createHeadingNode, $createQuoteNode} from '@lexical/rich-text';
-import {$setBlocksType} from '@lexical/selection';
 import {INSERT_TABLE_COMMAND} from '@lexical/table';
 import {
-  $createParagraphNode,
+  $getNodeByKey,
   $getSelection,
   $isRangeSelection,
   FORMAT_ELEMENT_COMMAND,
   LexicalEditor,
   TextNode,
 } from 'lexical';
+import {
+  $createInstanceCodeNode,
+  $createInstanceHeadingNode,
+  $createInstanceParagraphNode,
+  $createInstanceQuoteNode,
+  $insertInstanceList,
+  $isInInstanceTitleNode,
+} from 'onchain-lexical-instance';
 import {useCallback, useMemo, useState} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -40,14 +41,17 @@ import * as ReactDOM from 'react-dom';
 import useModal from '../../hooks/useModal';
 import catTypingGif from '../../images/cat-typing.gif';
 import {EmbedConfigs} from '../AutoEmbedPlugin';
+import {INSERT_BASE_EMBED_COMMAND} from '../AutoEmbedPlugin/BaseAutoEmbedPlugin';
 import {INSERT_COLLAPSIBLE_COMMAND} from '../CollapsiblePlugin';
 import {InsertEquationDialog} from '../EquationsPlugin';
 import {INSERT_EXCALIDRAW_COMMAND} from '../ExcalidrawPlugin';
 import {INSERT_IMAGE_COMMAND, InsertImageDialog} from '../ImagesPlugin';
+import PublicStyles from '../index.module.less';
 import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
 import {INSERT_PAGE_BREAK} from '../PageBreakPlugin';
 import {InsertPollDialog} from '../PollPlugin';
 import {InsertTableDialog} from '../TablePlugin';
+import {$setBlocksType} from '../ToolbarPlugin/range-selection';
 
 class ComponentPickerOption extends MenuOption {
   // What shows up in the editor
@@ -155,7 +159,7 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createParagraphNode());
+            $setBlocksType(selection, () => $createInstanceParagraphNode());
           }
         }),
     }),
@@ -168,7 +172,9 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
             editor.update(() => {
               const selection = $getSelection();
               if ($isRangeSelection(selection)) {
-                $setBlocksType(selection, () => $createHeadingNode(`h${n}`));
+                $setBlocksType(selection, () =>
+                  $createInstanceHeadingNode(`h${n}`),
+                );
               }
             }),
         }),
@@ -184,20 +190,29 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
     new ComponentPickerOption('Numbered List', {
       icon: <i className="icon number" />,
       keywords: ['numbered list', 'ordered list', 'ol'],
-      onSelect: () =>
-        editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),
+      onSelect: () => {
+        editor.update(() => {
+          $insertInstanceList('number');
+        });
+      },
     }),
     new ComponentPickerOption('Bulleted List', {
       icon: <i className="icon bullet" />,
       keywords: ['bulleted list', 'unordered list', 'ul'],
-      onSelect: () =>
-        editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
+      onSelect: () => {
+        editor.update(() => {
+          $insertInstanceList('bullet');
+        });
+      },
     }),
     new ComponentPickerOption('Check List', {
       icon: <i className="icon check" />,
       keywords: ['check list', 'todo list'],
-      onSelect: () =>
-        editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
+      onSelect: () => {
+        editor.update(() => {
+          $insertInstanceList('check');
+        });
+      },
     }),
     new ComponentPickerOption('Quote', {
       icon: <i className="icon quote" />,
@@ -206,7 +221,7 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createQuoteNode());
+            $setBlocksType(selection, () => $createInstanceQuoteNode());
           }
         }),
     }),
@@ -219,17 +234,18 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
 
           if ($isRangeSelection(selection)) {
             if (selection.isCollapsed()) {
-              $setBlocksType(selection, () => $createCodeNode());
+              $setBlocksType(selection, () => $createInstanceCodeNode());
             } else {
               // Will this ever happen?
               const textContent = selection.getTextContent();
-              const codeNode = $createCodeNode();
+              const codeNode = $createInstanceCodeNode();
               selection.insertNodes([codeNode]);
               selection.insertRawText(textContent);
             }
           }
         }),
     }),
+    // TODO
     new ComponentPickerOption('Divider', {
       icon: <i className="icon horizontal-rule" />,
       keywords: ['horizontal rule', 'divider', 'hr'],
@@ -241,27 +257,27 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
       keywords: ['page break', 'divider'],
       onSelect: () => editor.dispatchCommand(INSERT_PAGE_BREAK, undefined),
     }),
-    new ComponentPickerOption('Excalidraw', {
-      icon: <i className="icon diagram-2" />,
-      keywords: ['excalidraw', 'diagram', 'drawing'],
-      onSelect: () =>
-        editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, undefined),
-    }),
-    new ComponentPickerOption('Poll', {
-      icon: <i className="icon poll" />,
-      keywords: ['poll', 'vote'],
-      onSelect: () =>
-        showModal('Insert Poll', (onClose) => (
-          <InsertPollDialog activeEditor={editor} onClose={onClose} />
-        )),
-    }),
+    // new ComponentPickerOption('Excalidraw', {
+    //   icon: <i className="icon diagram-2" />,
+    //   keywords: ['excalidraw', 'diagram', 'drawing'],
+    //   onSelect: () =>
+    //     editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, undefined),
+    // }),
+    // new ComponentPickerOption('Poll', {
+    //   icon: <i className="icon poll" />,
+    //   keywords: ['poll', 'vote'],
+    //   onSelect: () =>
+    //     showModal('Insert Poll', (onClose) => (
+    //       <InsertPollDialog activeEditor={editor} onClose={onClose} />
+    //     )),
+    // }),
     ...EmbedConfigs.map(
       (embedConfig) =>
         new ComponentPickerOption(`Embed ${embedConfig.contentName}`, {
           icon: embedConfig.icon,
           keywords: [...embedConfig.keywords, 'embed'],
           onSelect: () =>
-            editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type),
+            editor.dispatchCommand(INSERT_BASE_EMBED_COMMAND, embedConfig.type),
         }),
     ),
     new ComponentPickerOption('Equation', {
@@ -272,15 +288,15 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
           <InsertEquationDialog activeEditor={editor} onClose={onClose} />
         )),
     }),
-    new ComponentPickerOption('GIF', {
-      icon: <i className="icon gif" />,
-      keywords: ['gif', 'animate', 'image', 'file'],
-      onSelect: () =>
-        editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-          altText: 'Cat typing on a laptop',
-          src: catTypingGif,
-        }),
-    }),
+    // new ComponentPickerOption('GIF', {
+    //   icon: <i className="icon gif" />,
+    //   keywords: ['gif', 'animate', 'image', 'file'],
+    //   onSelect: () =>
+    //     editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+    //       altText: 'Cat typing on a laptop',
+    //       src: catTypingGif,
+    //     }),
+    // }),
     new ComponentPickerOption('Image', {
       icon: <i className="icon image" />,
       keywords: ['image', 'photo', 'picture', 'file'],
@@ -295,14 +311,14 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
       onSelect: () =>
         editor.dispatchCommand(INSERT_COLLAPSIBLE_COMMAND, undefined),
     }),
-    new ComponentPickerOption('Columns Layout', {
-      icon: <i className="icon columns" />,
-      keywords: ['columns', 'layout', 'grid'],
-      onSelect: () =>
-        showModal('Insert Columns Layout', (onClose) => (
-          <InsertLayoutDialog activeEditor={editor} onClose={onClose} />
-        )),
-    }),
+    // new ComponentPickerOption('Columns Layout', {
+    //   icon: <i className="icon columns" />,
+    //   keywords: ['columns', 'layout', 'grid'],
+    //   onSelect: () =>
+    //     showModal('Insert Columns Layout', (onClose) => (
+    //       <InsertLayoutDialog activeEditor={editor} onClose={onClose} />
+    //     )),
+    // }),
     ...(['left', 'center', 'right', 'justify'] as const).map(
       (alignment) =>
         new ComponentPickerOption(`Align ${alignment}`, {
@@ -365,15 +381,29 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
       <LexicalTypeaheadMenuPlugin<ComponentPickerOption>
         onQueryChange={setQueryString}
         onSelectOption={onSelectOption}
-        triggerFn={checkForTriggerMatch}
+        triggerFn={(text, editor) => {
+          const selection = $getSelection();
+          if (selection) {
+            const [, endPoints] = selection.getStartEndPoints() || [];
+            if (endPoints) {
+              const node = $getNodeByKey(endPoints.key);
+              if (node && $isInInstanceTitleNode(node)) {
+                // instance title节点不能插入
+                return null;
+              }
+            }
+          }
+          return checkForTriggerMatch(text, editor);
+        }}
         options={options}
         menuRenderFn={(
           anchorElementRef,
           {selectedIndex, selectOptionAndCleanUp, setHighlightedIndex},
-        ) =>
-          anchorElementRef.current && options.length
+        ) => {
+          return anchorElementRef.current && options.length
             ? ReactDOM.createPortal(
-                <div className="typeahead-popover component-picker-menu">
+                <div
+                  className={`${PublicStyles['typeahead-popover']} ${PublicStyles['component-picker-menu']}`}>
                   <ul>
                     {options.map((option, i: number) => (
                       <ComponentPickerMenuItem
@@ -394,8 +424,8 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
                 </div>,
                 anchorElementRef.current,
               )
-            : null
-        }
+            : null;
+        }}
       />
     </>
   );

@@ -9,8 +9,6 @@
 import type {Option, Options, PollNode} from './PollNode';
 import type {JSX} from 'react';
 
-import './PollNode.css';
-
 import {useCollaborationContext} from '@lexical/react/LexicalCollaborationContext';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useLexicalNodeSelection} from '@lexical/react/useLexicalNodeSelection';
@@ -24,12 +22,13 @@ import {
   COMMAND_PRIORITY_LOW,
   NodeKey,
 } from 'lexical';
+import Button from 'onchain-lexical-ui/Button';
 import * as React from 'react';
 import {useEffect, useMemo, useRef, useState} from 'react';
 
-import Button from '../ui/Button';
 import joinClasses from '../utils/joinClasses';
 import {$isPollNode, createPollOption} from './PollNode';
+import Styles from './PollNode.module.less';
 
 function getTotalVotes(options: Options): number {
   return options.reduce((totalVotes, next) => {
@@ -193,7 +192,7 @@ export default function PollComponent({
 
   return (
     <div
-      className={`PollNode__container ${isFocused ? 'focused' : ''}`}
+      className={`${Styles.PollNode__container} ${isFocused ? 'focused' : ''}`}
       ref={ref}>
       <div className="PollNode__inner">
         <h2 className="PollNode__heading">{question}</h2>

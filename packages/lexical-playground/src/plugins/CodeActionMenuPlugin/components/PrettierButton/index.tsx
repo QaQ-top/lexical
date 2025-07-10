@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import './index.css';
-
-import {$isCodeNode} from '@lexical/code';
 import {$getNearestNodeFromDOMNode, LexicalEditor} from 'lexical';
+import {$isInstanceCodeNode} from 'onchain-lexical-instance';
 import {Options} from 'prettier';
 import {useState} from 'react';
+
+import Styles from './index.module.less';
 
 interface Props {
   lang: string;
@@ -85,7 +85,7 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
     let content = '';
     editor.update(() => {
       const codeNode = $getNearestNodeFromDOMNode(codeDOMNode);
-      if ($isCodeNode(codeNode)) {
+      if ($isInstanceCodeNode(codeNode)) {
         content = codeNode.getTextContent();
       }
     });
@@ -104,7 +104,7 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
 
       editor.update(() => {
         const codeNode = $getNearestNodeFromDOMNode(codeDOMNode);
-        if ($isCodeNode(codeNode)) {
+        if ($isInstanceCodeNode(codeNode)) {
           const selection = codeNode.select(0);
           selection.insertText(formattedCode);
           setSyntaxError('');
@@ -138,7 +138,7 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
   }
 
   return (
-    <div className="prettier-wrapper">
+    <div className={Styles['prettier-wrapper']}>
       <button
         className="menu-item"
         onClick={handleClick}

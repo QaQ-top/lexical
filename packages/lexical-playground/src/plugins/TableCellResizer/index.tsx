@@ -9,8 +9,6 @@ import type {TableCellNode, TableDOMCell, TableMapType} from '@lexical/table';
 import type {LexicalEditor, NodeKey} from 'lexical';
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {
@@ -41,6 +39,8 @@ import {
   useState,
 } from 'react';
 import {createPortal} from 'react-dom';
+
+import Styles from './index.module.less';
 
 type PointerPosition = {
   x: number;
@@ -440,12 +440,12 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
       {activeCell != null && (
         <>
           <div
-            className="TableCellResizer__resizer TableCellResizer__ui"
+            className={Styles.resizer}
             style={resizerStyles.right || undefined}
             onPointerDown={toggleResize('right')}
           />
           <div
-            className="TableCellResizer__resizer TableCellResizer__ui"
+            className={Styles.resizer}
             style={resizerStyles.bottom || undefined}
             onPointerDown={toggleResize('bottom')}
           />

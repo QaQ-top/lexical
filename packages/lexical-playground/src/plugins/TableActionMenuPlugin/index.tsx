@@ -45,13 +45,14 @@ import {
   isDOMNode,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import ColorPicker from 'onchain-lexical-ui/ColorPicker';
+import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import * as React from 'react';
 import {ReactPortal, useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
 import useModal from '../../hooks/useModal';
-import ColorPicker from '../../ui/ColorPicker';
-import DropDown, {DropDownItem} from '../../ui/DropDown';
+import Styles from './index.module.less';
 
 function computeSelectionCount(selection: TableSelection): {
   columns: number;
@@ -498,7 +499,7 @@ function TableActionMenu({
   return createPortal(
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="dropdown"
+      className={Styles.dropdown}
       ref={dropDownRef}
       onClick={(e) => {
         e.stopPropagation();
@@ -733,8 +734,8 @@ function TableCellActionMenuContainer({
     const activeElement = document.activeElement;
     function disable() {
       if (menu) {
-        menu.classList.remove('table-cell-action-button-container--active');
-        menu.classList.add('table-cell-action-button-container--inactive');
+        menu.classList.remove(Styles.active);
+        menu.classList.add(Styles.inactive);
       }
       setTableMenuCellNode(null);
     }
@@ -826,14 +827,8 @@ function TableCellActionMenuContainer({
       return disable();
     }
     const enabled = !tableObserver || !tableObserver.isSelecting;
-    menu.classList.toggle(
-      'table-cell-action-button-container--active',
-      enabled,
-    );
-    menu.classList.toggle(
-      'table-cell-action-button-container--inactive',
-      !enabled,
-    );
+    menu.classList.toggle(Styles.active, enabled);
+    menu.classList.toggle(Styles.inactive, !enabled);
     if (enabled) {
       const tableCellRect = tableCellParentNodeDOM.getBoundingClientRect();
       const anchorRect = anchorElem.getBoundingClientRect();
@@ -888,12 +883,12 @@ function TableCellActionMenuContainer({
   }, [prevTableCellDOM, tableCellNode]);
 
   return (
-    <div className="table-cell-action-button-container" ref={menuButtonRef}>
+    <div className={Styles.container} ref={menuButtonRef}>
       {tableCellNode != null && (
         <>
           <button
             type="button"
-            className="table-cell-action-button chevron-down"
+            className={`${Styles.button} chevron-down`}
             onClick={(e) => {
               e.stopPropagation();
               setIsMenuOpen(!isMenuOpen);

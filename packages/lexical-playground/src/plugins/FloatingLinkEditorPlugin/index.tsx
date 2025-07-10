@@ -7,8 +7,6 @@
  */
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {
   $createLinkNode,
   $isAutoLinkNode,
@@ -39,6 +37,7 @@ import {createPortal} from 'react-dom';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPositionForLinkEditor} from '../../utils/setFloatingElemPositionForLinkEditor';
 import {sanitizeUrl} from '../../utils/url';
+import Styles from './index.module.less';
 
 function preventDefault(
   event: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLElement>,
@@ -259,7 +258,7 @@ function FloatingLinkEditor({
   };
 
   return (
-    <div ref={editorRef} className="link-editor">
+    <div ref={editorRef} className={Styles['link-editor']}>
       {!isLink ? null : isLinkEditMode ? (
         <>
           <input

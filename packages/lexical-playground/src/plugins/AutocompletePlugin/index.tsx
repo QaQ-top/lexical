@@ -25,9 +25,9 @@ import {
   KEY_ARROW_RIGHT_COMMAND,
   KEY_TAB_COMMAND,
 } from 'lexical';
+import {useToolbarState} from 'onchain-lexical-context/toolBar';
 import {useCallback, useEffect} from 'react';
 
-import {useToolbarState} from '../../context/ToolbarContext';
 import {
   $createAutocompleteNode,
   AutocompleteNode,

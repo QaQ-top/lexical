@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import type {ExcalidrawInitialElements} from '../../ui/ExcalidrawModal';
 import type {AppState, BinaryFiles} from '@excalidraw/excalidraw/types';
+import type {ExcalidrawInitialElements} from 'onchain-lexical-ui/ExcalidrawModal';
 import type {JSX} from 'react';
 
 import '@excalidraw/excalidraw/index.css';
@@ -21,13 +21,13 @@ import {
   createCommand,
   LexicalCommand,
 } from 'lexical';
+import ExcalidrawModal from 'onchain-lexical-ui/ExcalidrawModal';
 import {useEffect, useState} from 'react';
 
 import {
   $createExcalidrawNode,
   ExcalidrawNode,
 } from '../../nodes/ExcalidrawNode';
-import ExcalidrawModal from '../../ui/ExcalidrawModal';
 
 export const INSERT_EXCALIDRAW_COMMAND: LexicalCommand<void> = createCommand(
   'INSERT_EXCALIDRAW_COMMAND',

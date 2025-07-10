@@ -10,7 +10,7 @@
 // at import time (disableBeforeInput is used to test legacy events)
 // eslint-disable-next-line simple-import-sort/imports
 import setupEnv from './setupEnv';
-import './index.css';
+// import './index.css';
 
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -42,6 +42,6 @@ window.addEventListener('unhandledrejection', ({reason}) =>
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <App namespace="Playground" config={{}} />
   </React.StrictMode>,
 );
