@@ -11,6 +11,7 @@ import type {
   DOMConversionOutput,
   DOMExportOutput,
   LexicalNode,
+  LexicalUpdateJSON,
   NodeKey,
 } from 'lexical';
 
@@ -36,14 +37,15 @@ import {
   $isEmptyParagraphNode,
   $isInstanceParagraphNode,
 } from './paragraph';
-import {Instance} from './types';
-import {getCachedClassNameArray} from './utils';
+import {Instance, InstanceBaseInfo} from './types';
+import {getCachedClassNameArray, getInstanceBaseInfo} from './utils';
 
 /** TODO 数据类型 */
 export type SerializedInstanceNode = Spread<
   {
     textFormat: number;
     textStyle: string;
+    instance?: InstanceBaseInfo;
   },
   SerializedElementNode
 >;
@@ -54,15 +56,19 @@ export class InstanceNode extends ElementNode {
   // 标记初始段落数量
   static DEFAULT_PARAGRAPHS = 3;
   __instance: Instance | undefined;
-  constructor(instance?: Instance, isBase?: boolean, key?: NodeKey) {
+  constructor(
+    instance?: Instance,
+    config: {isTitleOnly?: boolean; isEmpty?: boolean} = {},
+    key?: NodeKey,
+  ) {
     super(key);
     this.__instance = instance;
     // 初始化时自动添加 3 个空段落
-    if (!key && this.isEmpty()) {
+    if (!key && this.isEmpty() && config.isEmpty !== true) {
       this.append(
         $createBarDecoratorNode(),
         $createNumberDecoratorNode(this.__instance),
-        ...Array(isBase ? 1 : InstanceNode.DEFAULT_PARAGRAPHS)
+        ...Array(config.isTitleOnly ? 1 : InstanceNode.DEFAULT_PARAGRAPHS)
           .fill(null)
           .map((_i) => $createInstanceParagraphNode()),
       );
@@ -74,7 +80,7 @@ export class InstanceNode extends ElementNode {
   }
 
   static clone(node: InstanceNode): InstanceNode {
-    return new InstanceNode(node.__instance, false, node.__key);
+    return new InstanceNode(node.__instance, {}, node.__key);
   }
 
   static canBeEmpty() {
@@ -91,7 +97,7 @@ export class InstanceNode extends ElementNode {
   }
 
   static importJSON(serializedNode: SerializedInstanceNode): InstanceNode {
-    return $createInstanceNode().updateFromJSON(serializedNode);
+    return $createEmptyInstanceNode().updateFromJSON(serializedNode);
   }
 
   exportDOM(editor: LexicalEditor): DOMExportOutput {
@@ -114,10 +120,19 @@ export class InstanceNode extends ElementNode {
   exportJSON(): SerializedInstanceNode {
     return {
       ...super.exportJSON(),
+      instance: getInstanceBaseInfo(this.__instance),
       // These are included explicitly for backwards compatibility
       textFormat: this.getTextFormat(),
       textStyle: this.getTextStyle(),
     };
+  }
+
+  updateFromJSON(
+    serializedNode: LexicalUpdateJSON<SerializedInstanceNode>,
+  ): this {
+    super.updateFromJSON(serializedNode);
+    this.__instance = serializedNode.instance as unknown as Instance;
+    return this;
   }
 
   // View
@@ -234,6 +249,21 @@ export class InstanceNode extends ElementNode {
     }
     return super.select(_anchorOffset, _focusOffset);
   }
+
+  optimizationParagraph() {
+    const children = this.getPracticalChildren();
+    const index = children.findIndex((node) => $isInstanceNode(node));
+    const defaultParagraphs =
+      index !== -1 ? children.slice(0, index) : children;
+    const anchorPoint = defaultParagraphs[defaultParagraphs.length - 1];
+    if (defaultParagraphs.length < InstanceNode.DEFAULT_PARAGRAPHS) {
+      const count = InstanceNode.DEFAULT_PARAGRAPHS - defaultParagraphs.length;
+      for (let i = 0; i < count; i++) {
+        anchorPoint.insertAfter($createInstanceParagraphNode());
+      }
+    }
+  }
+
   isShadowRoot() {
     return true;
   }
@@ -252,10 +282,15 @@ export function $createInstanceNode(instance?: Instance): InstanceNode {
   return $applyNodeReplacement(new InstanceNode(instance));
 }
 
-export function $createBaseInstanceNode(instance?: Instance): InstanceNode {
-  return $applyNodeReplacement(new InstanceNode(instance, true));
+export function $createTitleOnlyInstanceNode(
+  instance?: Instance,
+): InstanceNode {
+  return $applyNodeReplacement(new InstanceNode(instance, {isTitleOnly: true}));
 }
 
+export function $createEmptyInstanceNode(instance?: Instance): InstanceNode {
+  return $applyNodeReplacement(new InstanceNode(instance, {isEmpty: true}));
+}
 export function $isInstanceNode(
   node: LexicalNode | null | undefined,
 ): node is InstanceNode {

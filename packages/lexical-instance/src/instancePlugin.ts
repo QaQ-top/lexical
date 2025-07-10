@@ -7,9 +7,10 @@
  */
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {PluginProps} from './const';
+import {HorizontalRulePlugin} from './horizontal/horizontalPlugin';
 import {$registerInstanceListItemInsertParagraph} from './list/item';
 import {
   $registerNumberDecoratorDomUpdate,
@@ -17,6 +18,7 @@ import {
 } from './number';
 import {$registerInstanceParagraphNodeTransform} from './paragraph';
 import {$registerInstanceHeadingNodeTransform} from './paragraph/title';
+import {$registerTableCommand} from './table';
 
 export const InstancePlugin: React.FC<PluginProps> = (props) => {
   const {placeholder} = props;
@@ -28,7 +30,12 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
       $registerInstanceListItemInsertParagraph(editor),
       $registerNumberDecoratorNodeUpdate(editor),
       $registerNumberDecoratorDomUpdate(editor),
+      $registerTableCommand(editor),
     );
   }, [editor, placeholder]);
-  return null;
+  return React.createElement(
+    React.Fragment,
+    {},
+    React.createElement(HorizontalRulePlugin),
+  );
 };

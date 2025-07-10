@@ -14,6 +14,7 @@ import {
   ElementNode,
   LexicalEditor,
   LexicalNode,
+  LexicalUpdateJSON,
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
@@ -21,12 +22,14 @@ import {dfs} from 'onchain-utility/traversal';
 
 import {$isInstanceNode, InstanceNode} from '../base';
 import {$isInstanceParagraphNode} from '../paragraph';
-import {Instance} from '../types';
+import {Instance, InstanceBaseInfo} from '../types';
+import {getInstanceBaseInfo} from '../utils';
 import Styles from './styles.module.less';
 
 export type SerializedNumberDecoratorNode = Spread<
   {
-    __instance: Instance;
+    instance?: InstanceBaseInfo;
+    serialNumber: string;
   },
   SerializedLexicalNode
 >;
@@ -46,6 +49,23 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
     serializedNode: SerializedNumberDecoratorNode,
   ): NumberDecoratorNode {
     return $createNumberDecoratorNode().updateFromJSON(serializedNode);
+  }
+
+  exportJSON(): SerializedNumberDecoratorNode {
+    return {
+      ...super.exportJSON(),
+      instance: getInstanceBaseInfo(this.__instance),
+      serialNumber: this.__serialNumber,
+    };
+  }
+
+  updateFromJSON(
+    serializedNode: LexicalUpdateJSON<SerializedNumberDecoratorNode>,
+  ): this {
+    super.updateFromJSON(serializedNode);
+    this.__instance = serializedNode.instance as unknown as Instance;
+    this.__serialNumber = serializedNode.serialNumber;
+    return this;
   }
 
   constructor(__instance?: Instance, key?: string) {

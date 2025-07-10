@@ -45,13 +45,22 @@ export class InstanceParagraphNode extends ParagraphNode {
   __paddingLeft = '';
 
   get isTitle() {
-    return this.__symbol.get(this) === InstanceParagraphType.Title;
+    return (
+      $isInstanceNode(this.getParent()) &&
+      this.__symbol.get(this) === InstanceParagraphType.Title
+    );
   }
   get isDescription() {
-    return this.__symbol.get(this) === InstanceParagraphType.Description;
+    return (
+      $isInstanceNode(this.getParent()) &&
+      this.__symbol.get(this) === InstanceParagraphType.Description
+    );
   }
   get isText() {
-    return this.__symbol.get(this) === InstanceParagraphType.Text;
+    return (
+      $isInstanceNode(this.getParent()) &&
+      this.__symbol.get(this) === InstanceParagraphType.Text
+    );
   }
 
   constructor(__paddingLeft?: string, key?: string) {

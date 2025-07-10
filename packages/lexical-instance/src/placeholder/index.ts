@@ -12,6 +12,7 @@ import {
   EditorConfig,
   LexicalEditor,
   LexicalNode,
+  LexicalUpdateJSON,
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
@@ -21,8 +22,8 @@ import {getCachedClassNameArray} from '../utils';
 
 export type SerializedPlaceholderDecoratorNode = Spread<
   {
-    __text: string;
-    __show: boolean;
+    text: string;
+    show: boolean;
   },
   SerializedLexicalNode
 >;
@@ -42,15 +43,30 @@ export class PlaceholderDecoratorNode extends DecoratorNode<string> {
   static importJSON(
     serializedNode: SerializedPlaceholderDecoratorNode,
   ): PlaceholderDecoratorNode {
-    const {__text} = serializedNode;
-    return $createPlaceholderDecoratorNode(__text).updateFromJSON(
-      serializedNode,
-    );
+    const {text} = serializedNode;
+    return $createPlaceholderDecoratorNode(text).updateFromJSON(serializedNode);
   }
 
   constructor(text?: string, key?: string) {
     super(key);
     this.__text = text || '';
+  }
+
+  exportJSON(): SerializedPlaceholderDecoratorNode {
+    return {
+      ...super.exportJSON(),
+      show: this.__show,
+      text: this.__text,
+    };
+  }
+
+  updateFromJSON(
+    serializedNode: LexicalUpdateJSON<SerializedPlaceholderDecoratorNode>,
+  ): this {
+    super.updateFromJSON(serializedNode);
+    this.__text = serializedNode.text;
+    this.__show = serializedNode.show;
+    return this;
   }
 
   createDOM(config: EditorConfig) {

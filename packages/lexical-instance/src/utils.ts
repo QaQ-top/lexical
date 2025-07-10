@@ -10,6 +10,7 @@ import {$isListNode} from '@lexical/list';
 import {$isQuoteNode} from '@lexical/rich-text';
 import {$findMatchingParent} from '@lexical/utils';
 import {
+  $getSelection,
   $isRootNode,
   type EditorThemeClasses,
   type LexicalNode,
@@ -21,7 +22,7 @@ import normalizeClassNames from 'shared/normalizeClassNames';
 import {InstanceHeadingNode} from './heading';
 import {InstanceParagraphNode} from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
-import {Instance} from './types';
+import {Instance, InstanceBaseInfo} from './types';
 
 /** 获取用户自定义类名 */
 export function getCachedClassNameArray(
@@ -91,6 +92,17 @@ export function $isInInstanceTitleNode(node: LexicalNode) {
   });
 }
 
+/** 是否是选中实例标题节点 */
+export function $isSelectedTitleNode() {
+  const selection = $getSelection();
+  const [start, end] = selection?.getStartEndPoints() || [];
+
+  return (
+    (start && $isInInstanceTitleNode(start.getNode())) ||
+    (end && $isInInstanceTitleNode(end.getNode()))
+  );
+}
+
 export function $isRemoved<T extends LexicalNode>(node: T) {
   return !node.getParent() && !$isRootNode(node);
 }
@@ -119,5 +131,19 @@ export function getInstanceAttrValue<T extends keyof Instance>(
     return __instance.newVal[key as string];
   } else {
     return __instance[key];
+  }
+}
+
+export function getInstanceBaseInfo(
+  instance?: Instance,
+): InstanceBaseInfo | undefined {
+  if (instance) {
+    return {
+      insDesc: instance.insDesc,
+      insId: instance.insId,
+      itemCode: instance.itemCode,
+      number: instance.number,
+      objectApicode: instance.objectApicode,
+    };
   }
 }

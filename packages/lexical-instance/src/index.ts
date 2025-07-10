@@ -11,8 +11,8 @@ export {
   BarDecoratorNode,
 } from './bar';
 export {
-  $createBaseInstanceNode,
   $createInstanceNode,
+  $createTitleOnlyInstanceNode,
   $isInstanceNode,
   InstanceNode,
 } from './base';
@@ -31,6 +31,7 @@ export {
   InstanceCodeHighlightNode,
   normalizeCodeLang,
 } from './code/codeHighlightNode';
+export * from './collapsible';
 export {InstanceParagraphType} from './const';
 export {
   $createInstanceEquationNode,
@@ -43,7 +44,26 @@ export {
   $isInstanceHeadingNode,
   InstanceHeadingNode,
 } from './heading';
+export {
+  $createInstanceHorizontalRuleNode,
+  $isInstanceHorizontalRuleNode,
+  InstanceHorizontalRuleNode,
+} from './horizontal';
+export {INSERT_INS_HORIZONTAL_RULE_COMMAND} from './horizontal/horizontalPlugin';
+export {
+  $createImageNode,
+  $isImageNode,
+  ImageNode,
+  type ImagePayload,
+} from './image';
+export {
+  $createInlineImageNode,
+  $isInlineImageNode,
+  InlineImageNode,
+  type InlineImagePayload,
+} from './image/InlineImageNode';
 export {InstancePlugin} from './instancePlugin';
+export {$createKeywordNode, $isKeywordNode, KeywordNode} from './keyword';
 export {
   $createInstanceListNode,
   $isInstanceListNode,
@@ -61,6 +81,11 @@ export {
   $isNumberDecoratorNode,
   NumberDecoratorNode,
 } from './number';
+export {
+  $createPageBreakNode,
+  $isPageBreakNode,
+  PageBreakNode,
+} from './pageBreak';
 export {
   $createInstanceParagraphNode,
   $isEmptyInstanceParagraphNode,
@@ -83,5 +108,10 @@ export {
   $isInstanceQuoteNode,
   InstanceQuoteNode,
 } from './quote';
+export {
+  $createInstanceTableNode,
+  $isInstanceTableNode,
+  InstanceTableNode,
+} from './table';
 export type {Instance} from './types.d.ts';
 export * from './utils';
