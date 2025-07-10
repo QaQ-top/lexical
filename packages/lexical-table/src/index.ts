@@ -6,6 +6,7 @@
  *
  */
 
+export * from './constants';
 export type {SerializedTableCellNode} from './LexicalTableCellNode';
 export {
   $createTableCellNode,
@@ -27,7 +28,7 @@ export {
   setScrollableTablesActive,
   TableNode,
 } from './LexicalTableNode';
-export type {TableDOMCell} from './LexicalTableObserver';
+export type {TableDOMCell, TableDOMTable} from './LexicalTableObserver';
 export {$getTableAndElementByKey, TableObserver} from './LexicalTableObserver';
 export {
   registerTableCellUnmergeTransform,
@@ -55,8 +56,10 @@ export type {HTMLTableElementWithWithTableSelectionState} from './LexicalTableSe
 export {
   $findCellNode,
   $findTableNode,
+  $getNearestTableCellInTableFromDOMNode,
   applyTableHandlers,
   getDOMCellFromTarget,
+  getTable,
   getTableElement,
   getTableObserverFromTableElement,
 } from './LexicalTableSelectionHelpers';
