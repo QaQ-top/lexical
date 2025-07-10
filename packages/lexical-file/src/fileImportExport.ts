@@ -6,9 +6,19 @@
  *
  */
 
-import type {EditorState, LexicalEditor, SerializedEditorState} from 'lexical';
+import type {
+  EditorState,
+  LexicalEditor,
+  SerializedEditorState,
+  SerializedLexicalNode,
+} from 'lexical';
 
-import {CLEAR_HISTORY_COMMAND} from 'lexical';
+import {
+  $getRoot,
+  $isElementNode,
+  $parseSerializedNode as $baseParseSerializedNode,
+  CLEAR_HISTORY_COMMAND,
+} from 'lexical';
 
 import {version} from '../package.json';
 
@@ -73,10 +83,51 @@ export function importFile(editor: LexicalEditor) {
   });
 }
 
+/**
+ * 通过系列化的JSON数据转成 Node，因为全局只有一个Root节点、避免Root节点数据污染、在转换时会把Root节点转换成Fragment节点
+ * @param editor
+ * @param serializedNode
+ * @returns
+ */
+export function $advanceParseSerializedNode(
+  serializedNode: SerializedLexicalNode,
+) {
+  serializedNode = {...serializedNode};
+  if (serializedNode.type === 'root') {
+    serializedNode.type = 'Fragment';
+  }
+  return $baseParseSerializedNode(serializedNode);
+}
+
+export function importSerializedNode(
+  editor: LexicalEditor,
+  serializedRoot: SerializedLexicalNode,
+) {
+  editor.update(() => {
+    const importRoot = $advanceParseSerializedNode(serializedRoot);
+    if ($isElementNode(importRoot)) {
+      const importChildren = importRoot.getChildren();
+      if (importChildren.length) {
+        const root = $getRoot();
+        root.clear();
+        root.append(...importChildren);
+      }
+    }
+  });
+  editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined);
+}
+
+export function advanceImportFile(editor: LexicalEditor) {
+  readTextFileFromSystem((text: string) => {
+    const {root: serializedRoot} = JSON.parse(text).editorState;
+    importSerializedNode(editor, serializedRoot);
+  });
+}
+
 function readTextFileFromSystem(callback: (text: string) => void) {
   const input = document.createElement('input');
   input.type = 'file';
-  input.accept = '.lexical';
+  input.accept = '.json';
   input.addEventListener('change', (event: Event) => {
     const target = event.target as HTMLInputElement;
 
@@ -118,7 +169,7 @@ export function exportFile(
     },
   );
   const fileName = config.fileName || now.toISOString();
-  exportBlob(serializedDocument, `${fileName}.lexical`);
+  exportBlob(serializedDocument, `${fileName}.json`);
 }
 
 // Adapted from https://stackoverflow.com/a/19328891/2013580

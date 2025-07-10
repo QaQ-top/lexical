@@ -7,9 +7,12 @@
  */
 
 export {
+  $advanceParseSerializedNode,
+  advanceImportFile,
   editorStateFromSerializedDocument,
   exportFile,
   importFile,
+  importSerializedNode,
   type SerializedDocument,
   serializedDocumentFromEditorState,
 } from './fileImportExport';
