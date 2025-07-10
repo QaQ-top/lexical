@@ -1,0 +1,84 @@
+{
+  "name": "onchain-lexical-context",
+  "license": "MIT",
+  "version": "0.0.1",
+  "dependencies": {
+    "@lexical/react": "^0.30.0",
+    "@lexical/yjs": "^0.30.0",
+    "lexical": "0.30.0",
+    "onchain-lexical-ui": "^0.0.1",
+    "y-websocket": "^1.5.4"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainLexicalContext.mjs"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainLexicalContext.js"
+      }
+    },
+    "./collaboration": {
+      "import": {
+        "types": "./src/Collaboration.ts",
+        "default": "./dist/Collaboration.mjs"
+      },
+      "require": {
+        "types": "./src/Collaboration.ts",
+        "default": "./dist/Toolbar.js"
+      }
+    },
+    "./flashMessage": {
+      "import": {
+        "types": "./src/FlashMessage.tsx",
+        "default": "./dist/FlashMessage.mjs"
+      },
+      "require": {
+        "types": "./src/FlashMessage.tsx",
+        "default": "./dist/FlashMessage.js"
+      }
+    },
+    "./instanceConfig": {
+      "import": {
+        "types": "./src/InstanceConfig.tsx",
+        "default": "./dist/InstanceConfig.mjs"
+      },
+      "require": {
+        "types": "./src/InstanceConfig.tsx",
+        "default": "./dist/InstanceConfig.js"
+      }
+    },
+    "./settings": {
+      "import": {
+        "types": "./src/Settings.tsx",
+        "default": "./dist/Settings.mjs"
+      },
+      "require": {
+        "types": "./src/Settings.tsx",
+        "default": "./dist/Settings.js"
+      }
+    },
+    "./sharedHistory": {
+      "import": {
+        "types": "./src/SharedHistory.tsx",
+        "default": "./dist/SharedHistory.mjs"
+      },
+      "require": {
+        "types": "./src/SharedHistory.tsx",
+        "default": "./dist/SharedHistory.js"
+      }
+    },
+    "./toolBar": {
+      "import": {
+        "types": "./src/Toolbar.tsx",
+        "default": "./dist/Toolbar.mjs"
+      },
+      "require": {
+        "types": "./src/Toolbar.tsx",
+        "default": "./dist/Toolbar.js"
+      }
+    }
+  }
+}
