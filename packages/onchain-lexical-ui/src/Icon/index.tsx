@@ -8,6 +8,7 @@
 import type {IconFontProps} from '@ant-design/icons/lib/components/IconFont';
 
 import {createFromIconfontCN} from '@ant-design/icons';
+import {useSettings} from 'onchain-lexical-context/settings';
 import React from 'react';
 
 export const AliIconFontFn = (scriptUrl = '/font/iconfont.js') => {
@@ -16,10 +17,8 @@ export const AliIconFontFn = (scriptUrl = '/font/iconfont.js') => {
   });
 };
 
-export const Icon: React.FC<IconFontProps & {iconScriptUrl?: string}> = ({
-  type,
-  iconScriptUrl,
-}) => {
-  const AliIconFont = AliIconFontFn(iconScriptUrl);
+export const Icon: React.FC<IconFontProps> = ({type}) => {
+  const {extra} = useSettings();
+  const AliIconFont = AliIconFontFn(extra.iconScriptUrl);
   return <AliIconFont type={type} />;
 };

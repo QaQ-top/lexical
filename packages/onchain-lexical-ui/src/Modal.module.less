@@ -6,6 +6,7 @@
  *
  *
  */
+@import './const.less';
 
 .Modal__overlay {
   display: flex;
@@ -17,13 +18,12 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background-color: rgba(40, 40, 40, 0.6);
+  background-color: transparent;
   flex-grow: 0px;
   flex-shrink: 1px;
-  z-index: 100;
+  z-index: 999;
 }
 .Modal__modal {
-  padding: 20px;
   min-height: 100px;
   min-width: 300px;
   display: flex;
@@ -31,32 +31,35 @@
   background-color: #fff;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 0 20px 0 #444;
-  border-radius: 10px;
+  box-shadow: 0 0 10px 0px #00000024;
+  border: 1px solid @themeColor;;
+}
+.Modal__titleBox {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  justify-content: space-between;
+  padding: 0 20px;
+  cursor: all-scroll;
+  border-bottom: 1px solid #ccc;
+  background-color: @themeColor;
+}
+.Modal__contentBox {
+  padding: 24px 20px;
 }
 .Modal__title {
-  color: #444;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
   margin: 0px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ccc;
 }
 .Modal__closeButton {
+  color: #fff;
   border: 0px;
-  position: absolute;
-  right: 20px;
-  border-radius: 20px;
   justify-content: center;
   align-items: center;
   display: flex;
-  width: 30px;
-  height: 30px;
   text-align: center;
   cursor: pointer;
-  background-color: #eee;
-}
-.Modal__closeButton:hover {
-  background-color: #ddd;
-}
-.Modal__content {
-  padding-top: 20px;
+  background-color: transparent;
 }
