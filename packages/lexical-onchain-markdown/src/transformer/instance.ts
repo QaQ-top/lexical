@@ -7,8 +7,8 @@
  */
 import {HeadingTagType} from '@lexical/rich-text';
 import {
-  $createBaseInstanceNode,
   $createInstanceHeadingNode,
+  $createTitleOnlyInstanceNode,
   $isInstanceHeadingNode,
   $isInstanceNode,
   $isInstanceParagraphNode,
@@ -33,14 +33,15 @@ export const InstanceTransformer: ElementTransformer = {
     const serialNumber = node.getSerialNumber();
     const level = serialNumber.split('-');
     const markdown =
-      `<!--${INS_SYMBOL.repeat(level.length)}-->` +
+      `<!--${INS_SYMBOL.repeat(level.length)}-->\n` +
       $convertToMarkdownString(TransFormerGather.value, node) +
       `\n<!---->`;
     return markdown;
   },
   regExp: INSTANCE_START_REGEX,
   replace: createBlockNode((match) => {
-    return $createBaseInstanceNode();
+    const node = $createTitleOnlyInstanceNode();
+    return node;
   }),
   type: 'element',
 };

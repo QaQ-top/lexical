@@ -26,6 +26,7 @@ import {
 import {
   $createLineBreakNode,
   $createTextNode,
+  $isTextNode,
   ElementNode,
   Klass,
   LexicalNode,
@@ -40,6 +41,8 @@ import {
   $createInstanceQuoteNode,
 } from 'onchain-lexical-instance';
 
+import LevelBasedControl from './transformer/levelBasedControl';
+
 export type Transformer =
   | ElementTransformer
   | MultilineElementTransformer
@@ -47,6 +50,7 @@ export type Transformer =
   | TextMatchTransformer;
 
 export type ElementTransformer = {
+  sort?: number;
   dependencies: Array<Klass<LexicalNode>>;
   /**
    * `export` is called when the `$convertToMarkdownString` is called to convert the editor state into markdown.
@@ -72,11 +76,13 @@ export type ElementTransformer = {
      * Whether the match is from an import operation (e.g. through `$convertFromMarkdownString`) or not (e.g. through typing in the editor).
      */
     isImport: boolean,
+    levelBasedControl?: LevelBasedControl,
   ) => boolean | void;
   type: 'element';
 };
 
 export type MultilineElementTransformer = {
+  sort?: number;
   /**
    * Use this function to manually handle the import process, once the `regExpStart` has matched successfully.
    * Without providing this function, the default behavior is to match until `regExpEnd` is found, or until the end of the document if `regExpEnd.optional` is true.
@@ -146,6 +152,7 @@ export type MultilineElementTransformer = {
 };
 
 export type TextFormatTransformer = Readonly<{
+  sort?: number;
   format: ReadonlyArray<TextFormatType>;
   tag: string;
   intraword?: boolean;
@@ -153,6 +160,7 @@ export type TextFormatTransformer = Readonly<{
 }>;
 
 export type TextMatchTransformer = Readonly<{
+  sort?: number;
   dependencies: Array<Klass<LexicalNode>>;
   /**
    * Determines how a node should be exported to markdown
@@ -212,6 +220,9 @@ export const createBlockNode = (
   createNode: (match: Array<string>) => ElementNode,
 ): ElementTransformer['replace'] => {
   return (parentNode, children, match) => {
+    children = children.filter(
+      (node) => $isTextNode(node) && node.getTextContent(),
+    );
     const node = createNode(match);
     node.append(...children);
     parentNode.replace(node);

@@ -6,26 +6,26 @@
  *
  */
 
-import {
-  $isHorizontalRuleNode,
-  HorizontalRuleNode,
-} from '@lexical/react/LexicalHorizontalRuleNode';
 import {LexicalNode} from 'lexical';
-import {$createInstanceHorizontalRuleNode} from 'onchain-lexical-instance';
+import {
+  $createPageBreakNode,
+  $isPageBreakNode,
+  PageBreakNode,
+} from 'onchain-lexical-instance';
 
 import {ElementTransformer} from '../MarkdownTransformers';
 
-export const HR: ElementTransformer = {
-  dependencies: [HorizontalRuleNode],
+export const PAGE_BREAK: ElementTransformer = {
+  dependencies: [PageBreakNode],
   export: (node: LexicalNode) => {
-    if ($isHorizontalRuleNode(node)) {
-      return '***';
+    if ($isPageBreakNode(node)) {
+      return `<!--***-->`;
     }
     return null;
   },
-  regExp: /^(---|\*\*\*|___)\s?$/,
+  regExp: /^<!--(---|\*\*\*|___)-->$/,
   replace: (parentNode, _1, _2, isImport) => {
-    const line = $createInstanceHorizontalRuleNode();
+    const line = $createPageBreakNode();
 
     // TODO: Get rid of isImport flag
     if (isImport || parentNode.getNextSibling() != null) {

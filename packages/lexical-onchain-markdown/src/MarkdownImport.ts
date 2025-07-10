@@ -95,6 +95,7 @@ export function createMarkdownImport(
         textFormatTransformersIndex,
         byType.textMatch,
         shouldPreserveNewLines,
+        levelBasedControl,
       );
       levelBasedControl.reductionNodeHierarchy({
         isInstanceEnd,
@@ -246,6 +247,7 @@ function $importBlocks(
   textFormatTransformersIndex: TextFormatTransformersIndex,
   textMatchTransformers: Array<TextMatchTransformer>,
   shouldPreserveNewLines: boolean,
+  levelBasedControl: LevelBasedControl,
 ) {
   const textNode = $createTextNode(lineText);
   const elementNode = $createInstanceParagraphNode();
@@ -257,7 +259,10 @@ function $importBlocks(
 
     if (match) {
       textNode.setTextContent(lineText.slice(match[0].length));
-      if (replace(elementNode, [textNode], match, true) !== false) {
+      if (
+        replace(elementNode, [textNode], match, true, levelBasedControl) !==
+        false
+      ) {
         break;
       }
     }

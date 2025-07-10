@@ -53,9 +53,9 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
   },
   regExpEnd: {
     optional: true,
-    regExp: /[ \t]*\$\$$/,
+    regExp: /[\u0020\t]*\$\$$/,
   },
-  regExpStart: /^[ \t]*\$\$(\u0020*)?/,
+  regExpStart: /^[\u0020\t]*\$\$(\u0020*)?/,
   replace: (
     rootNode,
     children,

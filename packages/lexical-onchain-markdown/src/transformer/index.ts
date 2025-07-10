@@ -34,7 +34,10 @@ import {
 } from '../MarkdownTransformers';
 import {BLOCK_EQUATION, EQUATION} from './equation';
 import {HR} from './hr';
+import {HTML} from './html';
+import {IMAGE} from './image';
 import {InstanceHeadingTransformer, InstanceTransformer} from './instance';
+import {PAGE_BREAK} from './pageBreak';
 import {TABLE} from './table';
 
 export const ELEMENT_TRANSFORMERS: Array<ElementTransformer> = [
@@ -77,7 +80,9 @@ class TFR {
   private _value = new Set([...TRANSFORMERS]);
 
   get value() {
-    return Array.from(this._value);
+    return Array.from(this._value).sort(
+      (a, b) => (a.sort || 1) - (b.sort || 1),
+    );
   }
 
   register(tfr: Transformer) {
@@ -90,8 +95,11 @@ TransFormerGather.register(InstanceTransformer);
 TransFormerGather.register(InstanceHeadingTransformer);
 TransFormerGather.register(HR);
 TransFormerGather.register(TABLE);
+TransFormerGather.register(HTML);
 TransFormerGather.register(EQUATION);
 TransFormerGather.register(BLOCK_EQUATION);
+TransFormerGather.register(IMAGE);
+TransFormerGather.register(PAGE_BREAK);
 
 function getInstanceTransformers() {
   return TransFormerGather.value;

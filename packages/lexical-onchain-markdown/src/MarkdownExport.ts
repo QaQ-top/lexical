@@ -27,7 +27,7 @@ import {
   TextMatchTransformer,
   Transformer,
 } from './MarkdownTransformers';
-import {isEmptyParagraph, transformersByType} from './utils';
+import {transformersByType} from './utils';
 
 /**
  * Renders string from markdown. The selection is moved to the start after the operation.
@@ -38,7 +38,7 @@ export function createMarkdownExport(
 ): (node?: ElementNode) => string {
   const byType = transformersByType(transformers);
   const elementTransformers = [...byType.multilineElement, ...byType.element];
-  const isNewlineDelimited = !shouldPreserveNewLines;
+  // const isNewlineDelimited = !shouldPreserveNewLines;
 
   // Export only uses text formats that are responsible for single format
   // e.g. it will filter out *** (bold, italic) and instead use separate ** and *
@@ -73,12 +73,13 @@ export function createMarkdownExport(
         ) {
           output.push(
             // separate consecutive group of texts with a line break: eg. ["hello", "world"] -> ["hello", "/nworld"]
-            isNewlineDelimited &&
-              i > 0 &&
-              !isEmptyParagraph(child) &&
-              !isEmptyParagraph(children[i - 1])
-              ? '\n'.concat(result)
-              : result,
+            // isNewlineDelimited &&
+            //   i > 0 &&
+            //   !isEmptyParagraph(child) &&
+            //   !isEmptyParagraph(children[i - 1])
+            //   ? '\n'.concat(result)
+            //   : result,
+            result,
           );
         }
       }

@@ -30,6 +30,10 @@ export default class LevelBasedControl {
     return node;
   }
 
+  get current(): ElementNode | undefined {
+    return this.stack[this.stack.length - 1];
+  }
+
   reductionNodeHierarchy({
     level,
     isInstanceEnd,
@@ -40,7 +44,10 @@ export default class LevelBasedControl {
     nodes: ElementNode[];
   }) {
     if (isInstanceEnd) {
-      this.unstack();
+      const node = this.unstack();
+      if ($isInstanceNode(node)) {
+        node.optimizationParagraph();
+      }
     } else {
       this.insert(level, nodes);
     }
@@ -56,16 +63,18 @@ export default class LevelBasedControl {
         parent.append(node);
       }
     } else {
-      const current = this.stack[this.stack.length - 1];
+      const current = this.current;
       if (current) {
         this.initTitle(current, nodes);
         current.append(...nodes);
+      } else {
+        nodes.forEach((node) => this.level1.add(node));
       }
     }
   }
 
   private unstack() {
-    this.stack.pop();
+    return this.stack.pop();
   }
 
   private initTitle(node: ElementNode, nodes: ElementNode[]) {
@@ -90,6 +99,14 @@ export default class LevelBasedControl {
         numberNode.__instance = instance;
       }
       node.__instance = instance;
+    }
+  }
+
+  getLastNode() {
+    const current = this.current;
+    if (current) {
+      const children = current.getChildren<ElementNode>();
+      return children[children.length - 1];
     }
   }
 }

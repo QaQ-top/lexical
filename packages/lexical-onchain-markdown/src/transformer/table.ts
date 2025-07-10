@@ -5,11 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
-import {ElementTransformer} from '@lexical/markdown';
 import {
   $createTableCellNode,
-  $createTableNode,
   $createTableRowNode,
   $isTableCellNode,
   $isTableNode,
@@ -20,12 +17,14 @@ import {
   TableRowNode,
 } from '@lexical/table';
 import {$isParagraphNode, $isTextNode, LexicalNode} from 'lexical';
+import {$createInstanceTableNode} from 'onchain-lexical-instance';
 
 import {$convertFromMarkdownString, TransFormerGather} from '..';
+import {ElementTransformer} from '../MarkdownTransformers';
 import {$convertToMarkdownString} from '../toMarkdownString';
 
 const TABLE_ROW_REG_EXP = /^(?:\|)(.+)(?:\|)\s?$/;
-const TABLE_ROW_DIVIDER_REG_EXP = /^(\| ?:?-*:? ?)+\|\s?$/;
+const TABLE_ROW_DIVIDER_REG_EXP = /^(\| ?:?-+:? ?)+\|\s?$/;
 
 export const TABLE: ElementTransformer = {
   dependencies: [TableNode, TableRowNode, TableCellNode],
@@ -66,10 +65,12 @@ export const TABLE: ElementTransformer = {
     return output.join('\n');
   },
   regExp: TABLE_ROW_REG_EXP,
-  replace: (parentNode, _1, match) => {
+  replace: (parentNode, _1, match, isImport, levelBasedControl) => {
+    const getLastNode = () =>
+      levelBasedControl ? levelBasedControl.getLastNode() : null;
     // Header row
     if (TABLE_ROW_DIVIDER_REG_EXP.test(match[0])) {
-      const table = parentNode.getPreviousSibling();
+      const table = parentNode.getPreviousSibling() || getLastNode();
       if (!table || !$isTableNode(table)) {
         return;
       }
@@ -97,13 +98,12 @@ export const TABLE: ElementTransformer = {
     }
 
     const matchCells = mapToTableCells(match[0]);
-
     if (matchCells == null) {
       return;
     }
 
     const rows = [matchCells];
-    let sibling = parentNode.getPreviousSibling();
+    let sibling = parentNode.getPreviousSibling() || getLastNode();
     let maxCells = matchCells.length;
 
     while (sibling) {
@@ -134,7 +134,7 @@ export const TABLE: ElementTransformer = {
       sibling = previousSibling;
     }
 
-    const table = $createTableNode();
+    const table = $createInstanceTableNode();
 
     for (const cells of rows) {
       const tableRow = $createTableRowNode();
@@ -145,7 +145,7 @@ export const TABLE: ElementTransformer = {
       }
     }
 
-    const previousSibling = parentNode.getPreviousSibling();
+    const previousSibling = parentNode.getPreviousSibling() || getLastNode();
     if (
       $isTableNode(previousSibling) &&
       getTableColumnsSize(previousSibling) === maxCells
