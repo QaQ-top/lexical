@@ -191,9 +191,11 @@ async function build(
       alias({
         entries: [
           {find: 'shared', replacement: path.resolve('packages/shared/src')},
+          // {find: 'crypto', replacement: 'crypto-browserify'},
         ],
       }),
       nodeResolve({
+        browser: true,
         extensions,
       }),
       babel({
