@@ -4,4 +4,8 @@ export interface ExtraSettings {
   showTreeView?: boolean;
 }
 
-export interface InstanceConfig {}
+export interface InstanceConfig {
+  uploadFiles(
+    params: {type: string; text: string; suffix: string}[],
+  ): Promise<string[]>;
+}

@@ -31,7 +31,11 @@ import {
   COMMAND_PRIORITY_EDITOR,
   HISTORIC_TAG,
 } from 'lexical';
-import {INITIAL_SETTINGS} from 'onchain-lexical-context';
+import {
+  INITIAL_SETTINGS,
+  jsonBase64StringToUpLoadUrl,
+  markdownBase64StringToUpLoadUrl,
+} from 'onchain-lexical-context';
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
@@ -171,7 +175,7 @@ export default function ActionsPlugin({
   }, [editor, isEditable]);
 
   const handleMarkdownToggle = useCallback(() => {
-    editor.update(() => {
+    editor.update(async () => {
       const root = $getRoot();
       const firstChild = root.getFirstChild();
       if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
@@ -182,17 +186,21 @@ export default function ActionsPlugin({
           shouldPreserveNewLinesInMarkdown,
         );
       } else {
-        const markdown = $convertToMarkdownString(
-          getInstanceTransformers(),
-          undefined, //node
-          shouldPreserveNewLinesInMarkdown,
+        const markdown = await markdownBase64StringToUpLoadUrl(
+          $convertToMarkdownString(
+            getInstanceTransformers(),
+            undefined, //node
+            shouldPreserveNewLinesInMarkdown,
+          ),
         );
-        const codeNode = $createCodeNode('markdown');
-        codeNode.append($createTextNode(markdown));
-        root.clear().append(codeNode);
-        if (markdown.length === 0) {
-          codeNode.select();
-        }
+        editor.update(() => {
+          const codeNode = $createCodeNode('markdown');
+          codeNode.append($createTextNode(markdown));
+          root.clear().append(codeNode);
+          if (markdown.length === 0) {
+            codeNode.select();
+          }
+        });
       }
     });
   }, [editor, shouldPreserveNewLinesInMarkdown]);
@@ -229,6 +237,9 @@ export default function ActionsPlugin({
         onClick={() =>
           exportFile(editor, {
             fileName: `Playground ${new Date().toISOString()}`,
+            formatJSON(root) {
+              return jsonBase64StringToUpLoadUrl(root);
+            },
             source: 'Playground',
           })
         }

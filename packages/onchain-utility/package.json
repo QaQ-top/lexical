@@ -43,6 +43,16 @@
         "types": "./src/Hooks/index.ts",
         "default": "./dist/Hooks.js"
       }
+    },
+    "./base64": {
+      "import": {
+        "types": "./src/Base64/index.ts",
+        "default": "./dist/Base64.mjs"
+      },
+      "require": {
+        "types": "./src/Base64/index.ts",
+        "default": "./dist/Base64.js"
+      }
     }
   },
   "dependencies": {

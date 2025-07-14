@@ -40,7 +40,9 @@ import {
   KEY_ESCAPE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {deleteUpload, upload} from 'onchain-lexical-context';
 import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
 import ContentEditable from 'onchain-lexical-ui/ContentEditable';
 import ImageResizer from 'onchain-lexical-ui/ImageResizer';
@@ -75,6 +77,28 @@ function useSuspenseImage(src: string) {
   throw cached;
 }
 
+function useUploadImage(nodeKey: string, src: string) {
+  const {uploadFiles} = useInstanceConfig();
+  useEffect(() => {
+    new Promise<boolean>((resolve) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(false);
+      img.onerror = () => resolve(true);
+    }).then((hasError) => {
+      upload({
+        hasError,
+        nodeKey,
+        src,
+        uploadFiles,
+      });
+    });
+    return () => {
+      deleteUpload(nodeKey);
+    };
+  }, []);
+}
+
 function isSVG(src: string): boolean {
   return src.toLowerCase().endsWith('.svg');
 }
@@ -83,6 +107,7 @@ function LazyImage({
   altText,
   className,
   imageRef,
+  nodeKey,
   src,
   width,
   height,
@@ -94,6 +119,7 @@ function LazyImage({
   height: 'inherit' | number;
   imageRef: {current: null | HTMLImageElement};
   maxWidth: number;
+  nodeKey: string;
   src: string;
   width: 'inherit' | number;
   onError: () => void;
@@ -116,7 +142,7 @@ function LazyImage({
   }, [imageRef, isSVGImage]);
 
   const hasError = useSuspenseImage(src);
-
+  useUploadImage(nodeKey, src);
   useEffect(() => {
     if (hasError) {
       onError();
@@ -450,6 +476,7 @@ export default function ImageComponent({
                   ? `focused ${$isNodeSelection(selection) ? 'draggable' : ''}`
                   : null
               }
+              nodeKey={nodeKey}
               src={src}
               altText={altText}
               imageRef={imageRef}

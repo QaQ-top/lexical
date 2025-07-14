@@ -42,6 +42,13 @@ window.addEventListener('unhandledrejection', ({reason}) =>
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App namespace="Playground" config={{}} />
+    <App
+      namespace="Playground"
+      config={{
+        uploadFiles(params) {
+          return Promise.resolve(params.map((i) => i.text));
+        },
+      }}
+    />
   </React.StrictMode>,
 );

@@ -7,6 +7,7 @@
  */
 
 export * from './base';
+export * from './Base64';
 export * from './Hooks';
 export * from './Language';
 export * from './Traversal';

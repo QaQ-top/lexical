@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type {InstanceConfig} from './types';
 import type {JSX} from 'react';
@@ -14,7 +15,7 @@ import {createContext, ReactNode, useContext, useMemo} from 'react';
 
 type InstanceConfigContext = InstanceConfig;
 
-const Context: React.Context<InstanceConfigContext> = createContext({});
+const Context: React.Context<InstanceConfigContext> = createContext({} as any);
 
 export const InstanceConfigContext = ({
   children,

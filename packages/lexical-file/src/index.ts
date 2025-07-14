@@ -11,6 +11,7 @@ export {
   advanceImportFile,
   editorStateFromSerializedDocument,
   exportFile,
+  exportJSON,
   importFile,
   importSerializedNode,
   type SerializedDocument,

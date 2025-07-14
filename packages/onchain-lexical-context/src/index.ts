@@ -8,3 +8,4 @@
 
 export * from './appSettings';
 export type * from './types';
+export * from './Upload';

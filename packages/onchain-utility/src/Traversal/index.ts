@@ -21,3 +21,22 @@ export function dfs<T = unknown>(data: T[], getNewStack: (node: T) => T[]) {
   }
   return result;
 }
+
+/** 按顺序深度优先 */
+export async function asyncDfs<T = unknown>(
+  data: T[],
+  getNewStack: (node: T) => Promise<T[]> | T[],
+) {
+  const stack = [...data];
+  const result = [];
+  while (stack.length > 0) {
+    const node = stack.shift()!;
+    result.push(node);
+    const children = await getNewStack(node);
+    for (let i = children.length - 1; i >= 0; i--) {
+      const child = children[i];
+      stack.unshift(child);
+    }
+  }
+  return result;
+}

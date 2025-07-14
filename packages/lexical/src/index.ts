@@ -218,7 +218,11 @@ export {
   $isNodeSelection,
   $isRangeSelection,
 } from './LexicalSelection';
-export {$parseSerializedNode, isCurrentlyReadOnlyMode} from './LexicalUpdates';
+export {
+  $parseSerializedNode,
+  type InternalSerializedNode,
+  isCurrentlyReadOnlyMode,
+} from './LexicalUpdates';
 export {
   $addUpdateTag,
   $applyNodeReplacement,

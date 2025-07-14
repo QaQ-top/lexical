@@ -8,6 +8,7 @@
 
 import type {
   EditorState,
+  InternalSerializedNode,
   LexicalEditor,
   SerializedEditorState,
   SerializedLexicalNode,
@@ -147,18 +148,33 @@ function readTextFileFromSystem(callback: (text: string) => void) {
   input.click();
 }
 
+interface ExportConfig {
+  fileName?: string;
+  source?: string;
+  formatJSON?: (
+    root: InternalSerializedNode,
+  ) => Promise<InternalSerializedNode>;
+}
+
 /**
  * Generates a .lexical file to be downloaded by the browser containing the current editor state.
  * @param editor - The lexical editor.
  * @param config - An object that optionally contains fileName and source. fileName defaults to
  * the current date (as a string) and source defaults to Lexical.
  */
-export function exportFile(
+export async function exportFile(
   editor: LexicalEditor,
-  config: Readonly<{
-    fileName?: string;
-    source?: string;
-  }> = Object.freeze({}),
+  config: Readonly<ExportConfig> = Object.freeze({}),
+) {
+  const serializedDocument = await exportJSON(editor, config);
+  const fileName =
+    config.fileName || new Date(serializedDocument.lastSaved).toISOString();
+  exportBlob(serializedDocument, `${fileName}.json`);
+}
+
+export async function exportJSON(
+  editor: LexicalEditor,
+  config: Readonly<Omit<ExportConfig, 'fileName'>> = Object.freeze({}),
 ) {
   const now = new Date();
   const serializedDocument = serializedDocumentFromEditorState(
@@ -168,8 +184,10 @@ export function exportFile(
       lastSaved: now.getTime(),
     },
   );
-  const fileName = config.fileName || now.toISOString();
-  exportBlob(serializedDocument, `${fileName}.json`);
+  if (config.formatJSON) {
+    await config.formatJSON(serializedDocument.editorState.root);
+  }
+  return serializedDocument;
 }
 
 // Adapted from https://stackoverflow.com/a/19328891/2013580

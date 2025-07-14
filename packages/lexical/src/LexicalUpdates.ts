@@ -346,10 +346,11 @@ function $applyAllTransforms(
   editor._dirtyElements = dirtyElements;
 }
 
-type InternalSerializedNode = {
+export type InternalSerializedNode = {
   children?: Array<InternalSerializedNode>;
   type: string;
   version: number;
+  src?: string;
 };
 
 export function $parseSerializedNode(
