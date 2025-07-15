@@ -45,6 +45,9 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     <App
       namespace="Playground"
       config={{
+        generateNumber(nodeKey) {
+          return Promise.resolve('Number');
+        },
         uploadFiles(params) {
           return Promise.resolve(params.map((i) => i.text));
         },

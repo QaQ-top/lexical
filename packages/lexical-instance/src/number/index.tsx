@@ -24,6 +24,7 @@ import {$isInstanceNode, InstanceNode} from '../base';
 import {$isInstanceParagraphNode} from '../paragraph';
 import {Instance, InstanceBaseInfo} from '../types';
 import {getInstanceBaseInfo} from '../utils';
+import Number from './NumberComponent';
 import Styles from './styles.module.less';
 
 export type SerializedNumberDecoratorNode = Spread<
@@ -127,12 +128,12 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
 
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
     const serial = this.__serialNumber;
-    const number = this.__instance?.number || 'Number';
     return (
-      <div title={`${serial} ${number}`}>
-        <span>{serial}</span>
-        <span>{number}</span>
-      </div>
+      <Number
+        instance={this.__instance}
+        serial={serial}
+        instanceNodeKey={this.getParent()?.getKey()}
+      />
     );
   }
 }

@@ -190,6 +190,16 @@
         "default": "./dist/Select.js"
       }
     },
+    "./Skeleton": {
+      "import": {
+        "types": "./src/Skeleton.tsx",
+        "default": "./dist/Skeleton.mjs"
+      },
+      "require": {
+        "types": "./src/Skeleton.tsx",
+        "default": "./dist/Skeleton.js"
+      }
+    },
     "./Switch": {
       "import": {
         "types": "./src/Switch.tsx",

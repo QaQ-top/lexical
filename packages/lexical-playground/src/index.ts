@@ -13,6 +13,7 @@ export {default as ToolbarPlugin} from './plugins/ToolbarPlugin';
 export {default as TypingPerfPlugin} from './plugins/TypingPerfPlugin';
 export {default as Settings} from './Settings';
 export {LexicalComposer} from '@lexical/react/LexicalComposer';
+export * from 'lexical';
 export * from 'onchain-lexical-context/collaboration';
 export * from 'onchain-lexical-context/instanceConfig';
 export * from 'onchain-lexical-context/settings';

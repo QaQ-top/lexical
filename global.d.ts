@@ -21,3 +21,11 @@ declare type TranslateI18nParams = [
 interface Window {
   translateI18n: (...params: TranslateI18nParams) => string;
 }
+
+interface BaseComponentProps<T = unknown> {
+  className?: string;
+  children?: React.ReactNode;
+  id?: string;
+  ref?: React.Ref<T>;
+  style?: React.CSSProperties;
+}
