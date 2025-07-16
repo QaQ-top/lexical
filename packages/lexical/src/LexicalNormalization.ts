@@ -6,8 +6,9 @@
  *
  */
 
-import type {RangeSelection, TextNode} from '.';
+import type {LexicalNode, RangeSelection, TextNode} from '.';
 import type {PointType} from './LexicalSelection';
+import type {InstanceNode, InstanceTitleNode} from 'onchain-lexical-instance';
 
 import {$isElementNode, $isTextNode} from '.';
 import {$nodeStatesAreEquivalent} from './LexicalNodeState';
@@ -129,4 +130,27 @@ function $normalizePoint(point: PointType): void {
       true,
     );
   }
+}
+
+/** 优化选择器开始锚点 */
+export function $normalizeAnchor(selection: RangeSelection): RangeSelection {
+  const anchorNode = selection.anchor.getNode();
+  if (isInstanceNode(anchorNode)) {
+    const [titleNode] = anchorNode.getPracticalChildren();
+    if (isInstanceTitleParagraph(titleNode)) {
+      const textNode = titleNode.getFirstTextNode();
+      selection.anchor.set(textNode.getKey(), 0, 'text');
+    }
+  }
+  return selection;
+}
+
+function isInstanceNode(node?: LexicalNode | null): node is InstanceNode {
+  return (node as unknown as Record<string, boolean>).__INS;
+}
+
+function isInstanceTitleParagraph(
+  node?: LexicalNode | null,
+): node is InstanceTitleNode {
+  return (node as unknown as Record<string, boolean>).isTitle;
 }

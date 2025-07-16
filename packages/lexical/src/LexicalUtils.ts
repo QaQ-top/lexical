@@ -67,7 +67,7 @@ import {
 } from './LexicalConstants';
 import {LexicalEditor} from './LexicalEditor';
 import {flushRootMutations} from './LexicalMutations';
-import {$normalizeSelection} from './LexicalNormalization';
+import {$normalizeAnchor, $normalizeSelection} from './LexicalNormalization';
 import {
   errorOnInfiniteTransforms,
   errorOnReadOnly,
@@ -1086,7 +1086,7 @@ export function $selectAll(selection?: RangeSelection | null): RangeSelection {
   } else {
     // Create a new RangeSelection
     const newSelection = root.select(0, root.getChildrenSize());
-    $setSelection($normalizeSelection(newSelection));
+    $setSelection($normalizeAnchor($normalizeSelection(newSelection)));
     return newSelection;
   }
 }
