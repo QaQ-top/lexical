@@ -146,11 +146,11 @@ export function $normalizeAnchor(selection: RangeSelection): RangeSelection {
 }
 
 function isInstanceNode(node?: LexicalNode | null): node is InstanceNode {
-  return (node as unknown as Record<string, boolean>).__INS;
+  return !!node && (node as unknown as Record<string, boolean>).__INS;
 }
 
 function isInstanceTitleParagraph(
   node?: LexicalNode | null,
 ): node is InstanceTitleNode {
-  return (node as unknown as Record<string, boolean>).isTitle;
+  return !!node && (node as unknown as Record<string, boolean>).isTitle;
 }
