@@ -1131,8 +1131,9 @@ export class RangeSelection implements BaseSelection {
         firstNode.replace(textNode);
       }
 
+      // 修改为从上到下删除，(i > 0 用来保证输入文字不被删除，i > -1会导致输入的文字也会被删除)
       // Remove all selected nodes that haven't already been removed.
-      for (let i = 1; i < selectedNodesLength; i++) {
+      for (let i = selectedNodesLength - 1; i > 0; i--) {
         const selectedNode = selectedNodes[i];
         const key = selectedNode.__key;
         if (!markedNodeKeysForKeep.has(key)) {
