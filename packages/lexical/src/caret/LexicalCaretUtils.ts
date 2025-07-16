@@ -265,7 +265,9 @@ export function $removeTextFromCaretRange<D extends CaretDirection>(
       }
     }
   }
-  for (const node of removedNodes) {
+
+  // 修改删除顺序为从下自上删除
+  for (const node of removedNodes.reverse()) {
     node.remove();
   }
 
