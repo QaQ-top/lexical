@@ -58,7 +58,7 @@ export function toRawType<T>(value: T): string {
   // 从字符串中提取“RawType”，如“[object RawType]”
   return toTypeString(value).slice(8, -1);
 }
-export function hasOwnProperty<T>(data: T, key: string | symbol) {
+export function hasOwnProperty<T>(data: T, key: string | symbol | number) {
   return data && Object.prototype.hasOwnProperty.call(data, key);
 }
 

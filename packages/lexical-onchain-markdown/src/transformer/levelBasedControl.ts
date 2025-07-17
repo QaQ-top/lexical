@@ -10,7 +10,6 @@ import {ElementNode} from 'lexical';
 import {
   $isInstanceHeadingNode,
   $isInstanceNode,
-  $isNumberDecoratorNode,
   Instance,
 } from 'onchain-lexical-instance';
 
@@ -78,8 +77,7 @@ export default class LevelBasedControl {
   }
 
   private initTitle(node: ElementNode, nodes: ElementNode[]) {
-    if ($isInstanceNode(node) && !node.__instance) {
-      const numberNode = node.getChildAtIndex(1);
+    if ($isInstanceNode(node)) {
       const titleNode = nodes[0];
       const title = titleNode.getTextContent().trim();
       const [number, insDesc] = title.split(' / ');
@@ -95,10 +93,9 @@ export default class LevelBasedControl {
       if ($isInstanceHeadingNode(titleNode)) {
         nodes.shift();
       }
-      if ($isNumberDecoratorNode(numberNode)) {
-        numberNode.__instance = instance;
+      if (instance) {
+        node.updateInstance(instance);
       }
-      node.__instance = instance;
     }
   }
 

@@ -5,24 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {$isCodeNode} from '@lexical/code';
 import {$isListNode} from '@lexical/list';
 import {$isQuoteNode} from '@lexical/rich-text';
 import {$findMatchingParent} from '@lexical/utils';
 import {
+  $getEditor,
+  $getNodeByKey,
   $getSelection,
   $isRootNode,
   type EditorThemeClasses,
   type LexicalNode,
+  scrollIntoViewIfNeeded,
   TextNode,
 } from 'lexical';
 import {$isRootOrShadowRoot} from 'lexical';
+import {hasOwnProperty} from 'onchain-utility';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
+import {$isInstanceNode} from './base';
+import {numberNodeKey, paragraphSymbol} from './const';
 import {InstanceHeadingNode} from './heading';
 import {InstanceParagraphNode} from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
-import {Instance, InstanceBaseInfo} from './types';
+import {CompleteInstance, Instance, InstanceBaseInfo} from './types';
 
 /** 获取用户自定义类名 */
 export function getCachedClassNameArray(
@@ -92,6 +100,12 @@ export function $isInInstanceTitleNode(node: LexicalNode) {
   });
 }
 
+export function $getInstanceNodeByChild(node: LexicalNode) {
+  return $findMatchingParent(node, (e) => {
+    return $isInstanceNode(e);
+  });
+}
+
 /** 是否是选中实例标题节点 */
 export function $isSelectedTitleNode() {
   const selection = $getSelection();
@@ -146,4 +160,49 @@ export function getInstanceBaseInfo(
       objectApicode: instance.objectApicode,
     };
   }
+}
+
+export function isCompleteInstance(
+  instance: Instance,
+): instance is CompleteInstance {
+  return !!instance.insId;
+}
+
+export function getLatestValue<
+  T extends {
+    newVal?: any;
+    inProcess?: any;
+    [k: string]: any;
+  },
+  K extends keyof T,
+>(data: T, key: K): T[K] {
+  if (hasOwnProperty(data.newVal, key)) {
+    return data.newVal[key];
+  }
+  if (hasOwnProperty(data.inProcess, key)) {
+    return data.inProcess[key];
+  }
+  return data[key];
+}
+
+export function $scrollTo(number: string) {
+  const editor = $getEditor();
+  const nodeKey = numberNodeKey.get(number);
+  const rootElement = editor.getRootElement();
+  if (nodeKey && rootElement) {
+    const target = editor.getElementByKey(nodeKey);
+    if (target) {
+      scrollIntoViewIfNeeded(
+        editor,
+        target.getBoundingClientRect(),
+        rootElement,
+      );
+      $getNodeByKey(nodeKey)?.selectStart();
+    }
+  }
+}
+
+export function clearCache() {
+  paragraphSymbol.clear();
+  numberNodeKey.clear();
 }

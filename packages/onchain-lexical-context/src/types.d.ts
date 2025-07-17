@@ -4,6 +4,13 @@ export interface ExtraSettings {
   showTreeView?: boolean;
 }
 
+export interface BuiltInInstanceConfig {
+  selectedInstance: {
+    number: string;
+    nodeKey: string;
+  }[];
+  setSelectedInstance(params: InstanceConfig['selectedInstance']): void;
+}
 export interface InstanceConfig {
   uploadFiles(
     params: {type: string; text: string; suffix: string}[],

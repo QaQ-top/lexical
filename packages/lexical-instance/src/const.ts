@@ -39,3 +39,13 @@ class ParagraphSymbolMap<Value extends number> extends Map<string, Value> {
 export const paragraphSymbol = new ParagraphSymbolMap();
 
 export const instanceNodeMap = new WeakMap();
+
+class NumberNodeKey extends Map<string, string> {
+  set(number: string, nodeKey: string) {
+    super.set(number, nodeKey);
+    super.set(nodeKey, number);
+    return this;
+  }
+}
+
+export const numberNodeKey = new NumberNodeKey();

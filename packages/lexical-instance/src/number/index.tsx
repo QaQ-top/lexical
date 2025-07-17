@@ -22,8 +22,7 @@ import {dfs} from 'onchain-utility/traversal';
 
 import {$isInstanceNode, InstanceNode} from '../base';
 import {$isInstanceParagraphNode} from '../paragraph';
-import {Instance, InstanceBaseInfo} from '../types';
-import {getInstanceBaseInfo} from '../utils';
+import {InstanceBaseInfo} from '../types';
 import Number from './NumberComponent';
 import Styles from './styles.module.less';
 
@@ -36,14 +35,13 @@ export type SerializedNumberDecoratorNode = Spread<
 >;
 
 export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
-  __instance: Instance | undefined;
   __serialNumber = '';
   static getType() {
     return 'Number';
   }
 
   static clone(node: NumberDecoratorNode) {
-    return new NumberDecoratorNode(node.__instance, node.__key);
+    return new NumberDecoratorNode(node.__key);
   }
 
   static importJSON(
@@ -52,10 +50,13 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
     return $createNumberDecoratorNode().updateFromJSON(serializedNode);
   }
 
+  get __instance() {
+    return (this.getParent() as InstanceNode)?.__instance;
+  }
+
   exportJSON(): SerializedNumberDecoratorNode {
     return {
       ...super.exportJSON(),
-      instance: getInstanceBaseInfo(this.__instance),
       serialNumber: this.__serialNumber,
     };
   }
@@ -64,14 +65,12 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
     serializedNode: LexicalUpdateJSON<SerializedNumberDecoratorNode>,
   ): this {
     super.updateFromJSON(serializedNode);
-    this.__instance = serializedNode.instance as unknown as Instance;
     this.__serialNumber = serializedNode.serialNumber;
     return this;
   }
 
-  constructor(__instance?: Instance, key?: string) {
+  constructor(key?: string) {
     super(key);
-    this.__instance = __instance;
     this.__serialNumber = this.getSerialNumber();
   }
 
@@ -103,6 +102,7 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
 
   getNumberRootElement(config: EditorConfig) {
     const div = document.createElement('div');
+    div.setAttribute('number', 'true');
     div.classList.add(Styles['instance-number']);
     const theme = config.theme;
     const classNames = theme.heading;
@@ -139,10 +139,8 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
 }
 
 /** 创建 Number 装饰节点 */
-export function $createNumberDecoratorNode(
-  instance?: Instance,
-): NumberDecoratorNode {
-  return $applyNodeReplacement(new NumberDecoratorNode(instance));
+export function $createNumberDecoratorNode(): NumberDecoratorNode {
+  return $applyNodeReplacement(new NumberDecoratorNode());
 }
 
 /** 是否是 Number 装饰节点 */

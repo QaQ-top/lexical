@@ -14,6 +14,40 @@
   outline: 0;
   padding: 8px 46px 40px;
   min-height: 150px;
+  & > [instance='true'] {
+    position: relative;
+    background-color: #f9f9f9;
+    border-left: 26px solid #e6e6e6;
+    padding: 0 10px;
+    margin-bottom: 6px;
+    > [number='true'] {
+      left: 10px;
+    }
+    > [bar='true'] {
+      & [data-bar='right'] {
+        right: 10px;
+      }
+    }
+    & [instance='true'] {
+      border-top: 6px solid transparent;
+      &::before {
+        content: '';
+        display: block;
+        background-color: #fff;
+        height: 6px;
+        position: absolute;
+        top: -6px;
+        left: -36px;
+        right: -10px;
+
+      }
+      > [bar='true'] {
+        & [data-bar='left'] {
+          left: -10px;
+        }
+      }
+    }
+  }
 }
 /* @media (max-width: 1025px) {
   .ContentEditable__root {

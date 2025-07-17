@@ -6,10 +6,15 @@
  *
  */
 
+import type {InstanceNode} from '../base';
+
+import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {$getNodeByKey} from 'lexical';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import Skeleton from 'onchain-lexical-ui/Skeleton';
 import {useEffect, useState} from 'react';
 
+import {numberNodeKey} from '../const';
 import {Instance} from '../types';
 
 const Number = (props: {
@@ -17,17 +22,25 @@ const Number = (props: {
   instance?: Instance;
   instanceNodeKey?: string;
 }): JSX.Element => {
+  const [editor] = useLexicalComposerContext();
   const {serial, instance, instanceNodeKey} = props;
   const [number, setNumber] = useState(instance?.number);
   const [loading, setLoading] = useState(false);
   const {generateNumber} = useInstanceConfig();
 
   useEffect(() => {
-    if (!instance) {
+    if (instance && !number) {
       setLoading(true);
       generateNumber(instanceNodeKey)
         .then((number) => {
           setNumber(number);
+          if (instanceNodeKey) {
+            numberNodeKey.set(number, instanceNodeKey);
+            editor.update(() => {
+              const instanceNode = $getNodeByKey<InstanceNode>(instanceNodeKey);
+              instanceNode?.updateInstance({number});
+            });
+          }
         })
         .finally(() => {
           setLoading(false);
@@ -36,7 +49,7 @@ const Number = (props: {
   }, []);
 
   return (
-    <div title={`${serial} ${number}`}>
+    <div>
       <span>{serial}</span>
       <span>
         {loading ? (

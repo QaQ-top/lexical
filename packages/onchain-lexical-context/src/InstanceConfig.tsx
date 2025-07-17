@@ -7,13 +7,13 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type {InstanceConfig} from './types';
+import type {BuiltInInstanceConfig, InstanceConfig} from './types';
 import type {JSX} from 'react';
 
 import * as React from 'react';
 import {createContext, ReactNode, useContext, useMemo} from 'react';
 
-type InstanceConfigContext = InstanceConfig;
+type InstanceConfigContext = InstanceConfig & BuiltInInstanceConfig;
 
 const Context: React.Context<InstanceConfigContext> = createContext({} as any);
 
@@ -24,9 +24,12 @@ export const InstanceConfigContext = ({
   children: ReactNode;
   value: InstanceConfig;
 }): JSX.Element => {
+  const [selectedInstance, setSelectedInstance] = React.useState<
+    BuiltInInstanceConfig['selectedInstance']
+  >([]);
   const contextValue = useMemo(() => {
-    return {...value};
-  }, [value]);
+    return {...value, selectedInstance, setSelectedInstance};
+  }, [value, selectedInstance]);
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;
 };

@@ -9,17 +9,21 @@ import type React from 'react';
 
 import {
   $applyNodeReplacement,
+  $getSelection,
   BaseSelection,
+  COMMAND_PRIORITY_NORMAL,
   DecoratorNode,
   EditorConfig,
   LexicalEditor,
   LexicalNode,
+  SELECTION_CHANGE_COMMAND,
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
 
-import {$createInstanceNode} from '../base';
-import Styles from './styles.module.less';
+import {$createInstanceNode, InstanceNode} from '../base';
+import {$getInstanceNodeByChild} from '../utils';
+import Bar from './BarComponent';
 
 export type SerializedPlaceholderDecoratorNode = Spread<
   {
@@ -50,7 +54,7 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
 
   createDOM(config: EditorConfig) {
     const div = document.createElement('div');
-    div.classList.add(Styles['instance-bar']);
+    div.setAttribute('bar', 'true');
     return div;
   }
 
@@ -96,11 +100,7 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
 
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
     return (
-      <div>
-        <span>⭕</span>
-        <span>link</span>
-        <button onClick={(e) => this.onInsertBlock(e, editor)}>+</button>
-      </div>
+      <Bar nodeKey={this.getKey()} insNodeKey={this.getParent()?.getKey()} />
     );
   }
 }
@@ -115,4 +115,34 @@ export function $isBarDecoratorNode(
   node: LexicalNode | null | undefined,
 ): node is BarDecoratorNode {
   return node instanceof BarDecoratorNode;
+}
+
+export function $selectionChange(
+  editor: LexicalEditor,
+  setSelectedInstance: (params: {number: string; nodeKey: string}[]) => void,
+) {
+  return editor.registerCommand(
+    SELECTION_CHANGE_COMMAND,
+    (_, activeEditor) => {
+      const selection = $getSelection();
+      if (selection) {
+        const selectInstance = Array.from(
+          new Set(
+            selection.getNodes().map((node) => $getInstanceNodeByChild(node)),
+          ),
+        ).filter<InstanceNode>((node) => !!node);
+        setSelectedInstance(
+          selectInstance.map((insNode) => {
+            return {
+              nodeKey: insNode.getKey(),
+              // [TODO] number 可能为空 建议换成其他ID
+              number: insNode.__instance.number!,
+            };
+          }),
+        );
+      }
+      return true;
+    },
+    COMMAND_PRIORITY_NORMAL,
+  );
 }

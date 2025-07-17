@@ -7,6 +7,7 @@
  */
 import type {InstanceParagraphNode} from './paragraph';
 import type {
+  BaseSelection,
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
@@ -17,6 +18,7 @@ import type {
 
 import {
   $applyNodeReplacement,
+  $isTextNode,
   EditorConfig,
   ElementFormatType,
   ElementNode,
@@ -30,7 +32,7 @@ import {
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import Styles from './base.module.less';
-import {InstanceParagraphType} from './const';
+import {InstanceParagraphType, numberNodeKey} from './const';
 import {$createNumberDecoratorNode, $isNumberDecoratorNode} from './number';
 import {
   $createInstanceParagraphNode,
@@ -55,19 +57,24 @@ export type SerializedInstanceNode = Spread<
 export class InstanceNode extends ElementNode {
   // 标记初始段落数量
   static DEFAULT_PARAGRAPHS = 3;
-  __instance: Instance | undefined;
+  __INS = true;
+  __instance: Instance;
   constructor(
     instance?: Instance,
     config: {isTitleOnly?: boolean; isEmpty?: boolean} = {},
     key?: NodeKey,
   ) {
     super(key);
-    this.__instance = instance;
+    // [TODO] 实例默认类型
+    this.__instance = instance || {objectApicode: ''};
+    if (instance && instance.number) {
+      numberNodeKey.set(instance.number, this.getKey());
+    }
     // 初始化时自动添加 3 个空段落
     if (!key && this.isEmpty() && config.isEmpty !== true) {
       this.append(
         $createBarDecoratorNode(),
-        $createNumberDecoratorNode(this.__instance),
+        $createNumberDecoratorNode(),
         ...Array(config.isTitleOnly ? 1 : InstanceNode.DEFAULT_PARAGRAPHS)
           .fill(null)
           .map((_i) => $createInstanceParagraphNode()),
@@ -190,7 +197,12 @@ export class InstanceNode extends ElementNode {
     return super
       .getChildren<T>()
       .filter(
-        (node) => !$isBarDecoratorNode(node) && !$isNumberDecoratorNode(node),
+        (node) =>
+          !$isBarDecoratorNode(node) &&
+          !$isNumberDecoratorNode(node) &&
+          /** 全选后再输入文字时，会直接插入文本节点到Instance节点 */ !$isTextNode(
+            node,
+          ),
       );
   }
 
@@ -264,8 +276,21 @@ export class InstanceNode extends ElementNode {
     }
   }
 
+  updateInstance(instance: Partial<Instance>) {
+    const writable = this.getWritable();
+    Object.assign(writable.__instance, instance);
+  }
+
   isShadowRoot() {
     return true;
+  }
+
+  isSelected(selection?: null | BaseSelection): boolean {
+    return false;
+  }
+
+  isKeyboardSelectable(): boolean {
+    return false;
   }
 }
 

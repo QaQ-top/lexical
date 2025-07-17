@@ -12,7 +12,9 @@ import {
 } from '@lexical/rich-text';
 import {
   $applyNodeReplacement,
+  $createTextNode,
   $getSelection,
+  $isTextNode,
   BaseSelection,
   DOMConversionMap,
   DOMConversionOutput,
@@ -33,7 +35,7 @@ import {
   $createPlaceholderDecoratorNode,
   $isPlaceholderDecoratorNode,
 } from '../placeholder';
-import {setInstanceAttrValue} from '../utils';
+import {getLatestValue, setInstanceAttrValue} from '../utils';
 import {$isInstanceParagraphNode, InstanceParagraphNode} from '.';
 
 export class InstanceTitleNode extends InstanceHeadingNode {
@@ -175,6 +177,16 @@ export class InstanceTitleNode extends InstanceHeadingNode {
       }
     }
   }
+
+  getFirstTextNode() {
+    const textNode = this.getChildren().find((node) => $isTextNode(node));
+    if (!textNode) {
+      const textNode = $createTextNode();
+      this.append(textNode);
+      return textNode;
+    }
+    return textNode;
+  }
 }
 
 export function $convertInstanceTitleElement(
@@ -227,7 +239,7 @@ export function $convertToTitle(
     if ($isInstanceNode(parent)) {
       const instance = parent.__instance;
       if (instance) {
-        h1.append(new TextNode(instance.insDesc));
+        h1.append(new TextNode(getLatestValue(instance, 'insDesc')));
       }
     }
     if (!firstChild) {
@@ -251,7 +263,7 @@ export function $registerInstanceHeadingNodeTransform(editor: LexicalEditor) {
     const firstChild = paragraph.getFirstChild();
     if ($isPlaceholderDecoratorNode(firstChild)) {
       const placeholder = firstChild.getWritable();
-      if (paragraph.getTextContent().trim() === '') {
+      if (paragraph.getTextContent() === '') {
         placeholder.setShow(true);
       } else {
         placeholder.setShow(false);

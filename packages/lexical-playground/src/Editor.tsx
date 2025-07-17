@@ -159,9 +159,9 @@ export default function Editor(): JSX.Element {
         />
       )}
       <div
-        className={`editor-container ${showTreeView ? 'tree-view' : ''} ${
-          !isRichText ? 'plain-text' : ''
-        }`}>
+        className={`top-container editor-container ${
+          showTreeView ? 'tree-view' : ''
+        } ${!isRichText ? 'plain-text' : ''}`}>
         {isMaxLength && <MaxLengthPlugin maxLength={30} />}
         <DragDropPaste />
         <AutoFocusPlugin />

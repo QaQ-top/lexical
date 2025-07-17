@@ -270,6 +270,7 @@ export {
   isSelectionWithinEditor,
   removeFromParent,
   resetRandomKey,
+  scrollIntoViewIfNeeded,
   setDOMUnmanaged,
   setNodeIndentFromDOM,
 } from './LexicalUtils';

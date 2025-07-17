@@ -18,6 +18,8 @@ import type {
 
 import {
   $applyNodeReplacement,
+  $createTextNode,
+  $isTextNode,
   ElementFormatType,
   ParagraphNode,
   setNodeIndentFromDOM,
@@ -26,7 +28,7 @@ import {
 import {$isInstanceNode, $remove} from '../base';
 import {InstanceParagraphType, paragraphSymbol, Placeholder} from '../const';
 import {$isTextTypeNode} from '../utils';
-import {$convertToTitle} from './title';
+import {$convertToTitle, $isInstanceTitleNode} from './title';
 
 export type SerializedInstanceParagraphNode = Spread<
   {
@@ -136,6 +138,21 @@ export class InstanceParagraphNode extends ParagraphNode {
     if ($remove(this)) {
       this.__symbol.delete(this);
       super.remove(preserveEmptyParent);
+    }
+  }
+  getFirstTextNode() {
+    const children = this.getChildren();
+    const [titleNode] = this.getChildren();
+    if ($isInstanceTitleNode(titleNode)) {
+      return titleNode.getFirstTextNode();
+    } else {
+      const textNode = children.find((node) => $isTextNode(node));
+      if (!textNode) {
+        const textNode = $createTextNode();
+        this.append(textNode);
+        return textNode;
+      }
+      return textNode;
     }
   }
 }

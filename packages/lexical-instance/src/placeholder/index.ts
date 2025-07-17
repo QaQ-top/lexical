@@ -82,7 +82,7 @@ export class PlaceholderDecoratorNode extends DecoratorNode<string> {
     span.style.cssText = `
       position: absolute;
       color: #999;
-      z-index: -1;
+      z-index: 1;
       pointer-events: none;
       user-select: none;
     `;
