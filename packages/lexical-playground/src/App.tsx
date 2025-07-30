@@ -146,11 +146,9 @@ function getExtraStyles(element: HTMLElement): string {
   return extraStyles;
 }
 
-function buildImportMap(): DOMConversionMap {
+export function buildImportMap(): DOMConversionMap {
   const importMap: DOMConversionMap = {};
 
-  // Wrap all TextNode importers with a function that also imports
-  // the custom styles implemented by the playground
   for (const [tag, fn] of Object.entries(TextNode.importDOM() || {})) {
     importMap[tag] = (importNode) => {
       const importer = fn(importNode);

@@ -276,9 +276,9 @@ export class InstanceNode extends ElementNode {
     }
   }
 
-  updateInstance(instance: Partial<Instance>) {
-    const writable = this.getWritable();
-    Object.assign(writable.__instance, instance);
+  setInstance(instance: Partial<Instance>) {
+    // const writable = this.getWritable();
+    Object.assign(this.__instance, instance);
   }
 
   isShadowRoot() {

@@ -2,7 +2,7 @@
   "name": "onchain-utility",
   "description": "This package contains misc utilities for onchain.",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "exports": {
     ".": {
       "import": {
@@ -52,6 +52,16 @@
       "require": {
         "types": "./src/Base64/index.ts",
         "default": "./dist/Base64.js"
+      }
+    },
+    "./tree": {
+      "import": {
+        "types": "./src/Tree/index.ts",
+        "default": "./dist/Tree.mjs"
+      },
+      "require": {
+        "types": "./src/Tree/index.ts",
+        "default": "./dist/Tree.js"
       }
     }
   },

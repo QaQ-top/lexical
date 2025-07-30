@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import type {InstanceNode} from '../base';
 
@@ -38,7 +39,7 @@ const Number = (props: {
             numberNodeKey.set(number, instanceNodeKey);
             editor.update(() => {
               const instanceNode = $getNodeByKey<InstanceNode>(instanceNodeKey);
-              instanceNode?.updateInstance({number});
+              instanceNode?.setInstance({number});
             });
           }
         })

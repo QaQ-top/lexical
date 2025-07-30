@@ -44,17 +44,17 @@ import {
 } from 'onchain-lexical-instance';
 
 import {AutocompleteNode} from './AutocompleteNode';
-import {EmojiNode} from './EmojiNode';
-import {ExcalidrawNode} from './ExcalidrawNode';
+// import {EmojiNode} from './EmojiNode';
+// import {ExcalidrawNode} from './ExcalidrawNode';
 import {FigmaNode} from './FigmaNode';
 import {LayoutContainerNode} from './LayoutContainerNode';
 import {LayoutItemNode} from './LayoutItemNode';
 import {MentionNode} from './MentionNode';
 import {PollNode} from './PollNode';
 import {SpecialTextNode} from './SpecialTextNode';
-import {StickyNode} from './StickyNode';
-import {TweetNode} from './TweetNode';
-import {YouTubeNode} from './YouTubeNode';
+// import {StickyNode} from './StickyNode';
+// import {TweetNode} from './TweetNode';
+// import {YouTubeNode} from './YouTubeNode';
 
 const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
@@ -71,17 +71,17 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   LinkNode,
   OverflowNode,
   PollNode,
-  StickyNode,
+  // StickyNode,
   ImageNode,
   InlineImageNode,
   MentionNode,
-  EmojiNode,
-  ExcalidrawNode,
+  // EmojiNode,
+  // ExcalidrawNode,
   AutocompleteNode,
   KeywordNode,
   HorizontalRuleNode,
-  TweetNode,
-  YouTubeNode,
+  // TweetNode,
+  // YouTubeNode,
   FigmaNode,
   MarkNode,
   CollapsibleContainerNode,

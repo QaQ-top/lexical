@@ -8,10 +8,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type {BuiltInInstanceConfig, InstanceConfig} from './types';
+import type {Instance} from 'onchain-lexical-instance';
 import type {JSX} from 'react';
 
 import * as React from 'react';
-import {createContext, ReactNode, useContext, useMemo} from 'react';
+import {createContext, ReactNode, useContext} from 'react';
 
 type InstanceConfigContext = InstanceConfig & BuiltInInstanceConfig;
 
@@ -27,11 +28,22 @@ export const InstanceConfigContext = ({
   const [selectedInstance, setSelectedInstance] = React.useState<
     BuiltInInstanceConfig['selectedInstance']
   >([]);
-  const contextValue = useMemo(() => {
-    return {...value, selectedInstance, setSelectedInstance};
-  }, [value, selectedInstance]);
+  const [instanceMap, setInstanceMap] = React.useState(
+    new Map<string, Instance>(),
+  );
 
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
+  return (
+    <Context.Provider
+      value={{
+        ...value,
+        instanceMap,
+        selectedInstance,
+        setInstanceMap,
+        setSelectedInstance,
+      }}>
+      {children}
+    </Context.Provider>
+  );
 };
 
 export const useInstanceConfig = (): InstanceConfigContext => {

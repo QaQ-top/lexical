@@ -86,7 +86,6 @@ export function importFile(editor: LexicalEditor) {
 
 /**
  * 通过系列化的JSON数据转成 Node，因为全局只有一个Root节点、避免Root节点数据污染、在转换时会把Root节点转换成Fragment节点
- * @param editor
  * @param serializedNode
  * @returns
  */

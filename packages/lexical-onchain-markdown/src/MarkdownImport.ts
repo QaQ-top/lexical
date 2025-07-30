@@ -61,7 +61,7 @@ export function createMarkdownImport(
     const root = node || $getRoot();
     root.clear();
     const fragment = $createFragmentNode();
-    const levelBasedControl = new LevelBasedControl();
+    const levelBasedControl = new LevelBasedControl(instanceMap);
     for (let i = 0; i < linesLength; i++) {
       const lineText = lines[i];
       const {level} = getInstanceLevel(

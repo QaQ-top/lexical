@@ -22,6 +22,10 @@ export default class LevelBasedControl {
     return this.level1;
   }
 
+  constructor(instanceMap?: Map<string, Instance>) {
+    this.instanceMap = instanceMap;
+  }
+
   private collectLevel1(level: number, node: ElementNode) {
     if (level === 1) {
       this.level1.add(node);
@@ -94,7 +98,7 @@ export default class LevelBasedControl {
         nodes.shift();
       }
       if (instance) {
-        node.updateInstance(instance);
+        node.setInstance(instance);
       }
     }
   }

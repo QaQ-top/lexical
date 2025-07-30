@@ -35,6 +35,7 @@ import {useSettings} from 'onchain-lexical-context/settings';
 import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
 import {InstancePlugin} from 'onchain-lexical-instance';
 import ContentEditable from 'onchain-lexical-ui/ContentEditable';
+import {translateI18n} from 'onchain-utility';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 
@@ -201,7 +202,13 @@ export default function Editor(): JSX.Element {
               ErrorBoundary={LexicalErrorBoundary}
             />
             <MarkdownShortcutPlugin />
-            <InstancePlugin placeholder={{title: '请输入标题...'}} />
+            <InstancePlugin
+              placeholder={{
+                title: translateI18n('[TODO] 国际化', {
+                  placeholder: '请输入标题...',
+                }),
+              }}
+            />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
             <CheckListPlugin />
@@ -242,11 +249,11 @@ export default function Editor(): JSX.Element {
             )}
             {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin
+                {/* <DraggableBlockPlugin
                   anchorElem={floatingAnchorElem}
                   targetLineIndent={46}
                   dragIcon={'='}
-                />
+                /> */}
                 <FloatingTextFormatToolbarPlugin
                   anchorElem={floatingAnchorElem}
                   setIsLinkEditMode={setIsLinkEditMode}

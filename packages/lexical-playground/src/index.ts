@@ -6,17 +6,49 @@
  *
  */
 
-export {default as RichTextEditor} from './App';
+import {SerializedDocument} from '@lexical/file';
+import {
+  InternalSerializedNode,
+  LexicalEditor,
+  LexicalNode,
+  SerializedLexicalNode,
+} from 'lexical';
+
+export {buildImportMap, default as RichTextEditor} from './App';
 export {default as Editor} from './Editor';
+export {default as RichTextNodes} from './nodes/PlaygroundNodes';
 export {TableContext} from './plugins/TablePlugin';
 export {default as ToolbarPlugin} from './plugins/ToolbarPlugin';
 export {default as TypingPerfPlugin} from './plugins/TypingPerfPlugin';
 export {default as Settings} from './Settings';
+export {default as RichTextEditorTheme} from './themes/PlaygroundEditorTheme';
+export * from '@lexical/file';
 export {LexicalComposer} from '@lexical/react/LexicalComposer';
+export {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 export * from 'lexical';
+export * from 'onchain-lexical-context';
 export * from 'onchain-lexical-context/collaboration';
+export * from 'onchain-lexical-context/flashMessage';
 export * from 'onchain-lexical-context/instanceConfig';
 export * from 'onchain-lexical-context/settings';
 export * from 'onchain-lexical-context/sharedHistory';
 export * from 'onchain-lexical-context/toolBar';
+export * from 'onchain-lexical-instance';
 export {default as EditorShellStyles} from 'onchain-lexical-ui/EditorShellStyles';
+export declare const importSerializedNode: (
+  editor: LexicalEditor,
+  serializedRoot: SerializedLexicalNode,
+) => void;
+export declare const $advanceParseSerializedNode: (
+  serializedNode: SerializedLexicalNode,
+) => LexicalNode;
+
+export declare const exportJSON: (
+  editor: LexicalEditor,
+  config?: Readonly<{
+    source?: string;
+    formatJSON?: (
+      root: InternalSerializedNode,
+    ) => Promise<InternalSerializedNode>;
+  }>,
+) => Promise<SerializedDocument>;

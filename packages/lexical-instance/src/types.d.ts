@@ -1,8 +1,17 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 export interface InstanceBaseInfo {
   insId?: string;
   number?: string;
   insDesc?: string;
   itemCode?: number | string;
+  insBom?: boolean;
   objectApicode: string;
 }
 
@@ -12,7 +21,11 @@ interface InstanceExtraAttributes {
   [key: string]: any;
 }
 
-export type Instance = InstanceBaseInfo & Partial<InstanceExtraAttributes>;
+export interface Instance
+  extends InstanceBaseInfo,
+    Partial<InstanceExtraAttributes> {
+  children?: Instance[];
+}
 
 export type CompleteInstance = Required<InstanceBaseInfo> &
   InstanceExtraAttributes;

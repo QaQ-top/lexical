@@ -48,9 +48,15 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         generateNumber(nodeKey) {
           return Promise.resolve('Number');
         },
+        getInstanceIcon(apicode) {
+          return 'demand1';
+        },
         uploadFiles(params) {
           return Promise.resolve(params.map((i) => i.text));
         },
+      }}
+      settings={{
+        iconScriptUrl: 'http://localhost:8017/font/iconfont.js',
       }}
     />
   </React.StrictMode>,

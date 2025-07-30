@@ -8,15 +8,15 @@
     "rich-text"
   ],
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@lexical/react": "^0.30.0",
     "@lexical/rich-text": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-instance": "^0.0.1",
+    "onchain-lexical-instance": "^0.0.2",
     "onchain-lexical-markdown": "^0.0.1",
-    "onchain-utility": "^0.0.1"
+    "onchain-utility": "^0.0.2"
   },
   "peerDependencies": {
     "react": ">=17.x",

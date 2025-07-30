@@ -206,3 +206,93 @@ export function clearCache() {
   paragraphSymbol.clear();
   numberNodeKey.clear();
 }
+
+export function getInstanceSerializeNode({
+  title,
+  instance,
+  children,
+}: {
+  instance: Instance;
+  title: string;
+  children?: any[];
+}) {
+  children = children || [];
+  if (children.length < 2) {
+    for (let index = 0; index < 2; index++) {
+      const element = children[index];
+      if (!element) {
+        children[index] = {
+          children: [
+            {
+              detail: 0,
+              format: 0,
+              mode: 'normal',
+              style: '',
+              text: '',
+              type: 'text',
+              version: 1,
+            },
+          ],
+          direction: null,
+          format: '',
+          indent: 0,
+          textFormat: 0,
+          textStyle: '',
+          type: 'Paragraph',
+          version: 1,
+        };
+      }
+    }
+  }
+  return {
+    children: [
+      {type: 'Bar', version: 1},
+      {serialNumber: '3', type: 'Number', version: 1},
+      {
+        children: [
+          {
+            children: [
+              {
+                show: false,
+                text: '请输入标题...',
+                type: 'Placeholder',
+                version: 1,
+              },
+              {
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: title,
+                type: 'text',
+                version: 1,
+              },
+            ],
+            direction: null,
+            format: '',
+            indent: 3,
+            tag: 'h1',
+            type: 'Title',
+            version: 1,
+          },
+        ],
+        direction: null,
+        format: '',
+        indent: 0,
+        textFormat: 0,
+        textStyle: '',
+        type: 'Paragraph',
+        version: 1,
+      },
+      ...children,
+    ],
+    direction: null,
+    format: '',
+    indent: 0,
+    instance,
+    textFormat: 0,
+    textStyle: '',
+    type: 'Instance',
+    version: 1,
+  };
+}

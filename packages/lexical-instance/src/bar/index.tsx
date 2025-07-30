@@ -38,6 +38,10 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
     return 'Bar';
   }
 
+  get __instance() {
+    return (this.getParent() as InstanceNode)?.__instance;
+  }
+
   static clone(node: BarDecoratorNode) {
     return new BarDecoratorNode(node.__key);
   }

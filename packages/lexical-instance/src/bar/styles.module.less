@@ -1,11 +1,17 @@
+@import './const.less';
+
 @PaddingLeft: 23px;
 .left {
+  width: 26px;
   user-select: none;
   position: absolute;
   left: 0;
   transform: translate(-26px, 0);
   display: flex;
   flex-direction: column;
+  .link {
+    margin-bottom: 10px;
+  }
   > * {
     display: inline-flex;
     justify-content: center;
@@ -21,4 +27,21 @@
   position: absolute;
   right: 0;
   top: 0;
+  height: 40px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.selected {
+  color: @themeColor;
+}
+
+.hasChildren {
+  color: @themeColor;
+}
+
+.hover {
+  &:hover {
+    color: @themeColor;
+  }
 }

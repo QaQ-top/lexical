@@ -5,20 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {$getNodeByKey} from 'lexical';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
+import {Icon} from 'onchain-lexical-ui/Icon';
 import {useCallback, useMemo} from 'react';
 
 import {$createInstanceNode} from '../base';
+import {Instance} from '../types';
 import Styles from './styles.module.less';
 
-const Bar = (props: {nodeKey: string; insNodeKey?: string}): JSX.Element => {
-  const {nodeKey, insNodeKey} = props;
+const Bar = (props: {
+  nodeKey: string;
+  insNodeKey?: string;
+  instance?: Instance;
+}): JSX.Element => {
+  const {nodeKey, insNodeKey, instance} = props;
   const [editor] = useLexicalComposerContext();
-  const {selectedInstance} = useInstanceConfig();
-
+  const {preview, selectedInstance, getInstanceIcon} = useInstanceConfig();
+  // icon-front-link1
   const isSelected = useMemo(() => {
     return !!selectedInstance.find((item) => item.nodeKey === insNodeKey);
   }, [selectedInstance, insNodeKey]);
@@ -50,16 +57,45 @@ const Bar = (props: {nodeKey: string; insNodeKey?: string}): JSX.Element => {
     [editor],
   );
 
+  const icon = useMemo(() => {
+    if (instance) {
+      return getInstanceIcon(instance.objectApicode) || 'demand1';
+    }
+    return 'demand1';
+  }, [instance]);
+
+  const hasChildren = useMemo(() => {
+    return instance?.insBom || !!instance?.children?.length;
+  }, [instance]);
+
   return (
     <>
       <div data-bar="left" className={Styles.left}>
-        <span>⭕</span>
-        <span>link</span>
-        <button onClick={onInsertBlock}>+</button>
+        <Icon
+          className={hasChildren ? Styles.hasChildren : undefined}
+          type={`icon-front-${icon}`}
+        />
+        {!preview ? (
+          <>
+            <Icon
+              className={`${Styles.hover} ${Styles.link}`}
+              type="icon-front-link1"
+            />
+            <Icon
+              className={Styles.hover}
+              type="icon-front-xinzeng1"
+              onClick={onInsertBlock}
+            />
+          </>
+        ) : null}
       </div>
       <div data-bar="right" className={Styles.right}>
-        {/* 111 */}
-        {isSelected ? <span>🚩</span> : null}
+        <span>
+          <Icon
+            className={isSelected ? Styles.selected : undefined}
+            type="icon-front-corresponding"
+          />
+        </span>
       </div>
     </>
   );

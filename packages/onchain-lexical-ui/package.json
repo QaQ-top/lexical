@@ -1,10 +1,7 @@
 {
   "name": "onchain-lexical-ui",
   "license": "MIT",
-  "version": "0.0.1",
-  "main": "LexicalFile.js",
-  "types": "index.d.ts",
-  "module": "LexicalFile.mjs",
+  "version": "0.0.2",
   "sideEffects": false,
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
@@ -13,7 +10,7 @@
     "@lexical/utils": "^0.30.0",
     "katex": "^0.16.22",
     "lexical": "0.30.0",
-    "onchain-lexical-context": "^0.0.1",
+    "onchain-lexical-context": "^0.0.2",
     "react-draggable": "^4.5.0"
   },
   "browser": {
@@ -32,7 +29,7 @@
     },
     "./Icon": {
       "import": {
-        "types": "./src/Icon.tsx",
+        "types": "./src/Icon/index.tsx",
         "default": "./dist/Icon.mjs"
       },
       "require": {
