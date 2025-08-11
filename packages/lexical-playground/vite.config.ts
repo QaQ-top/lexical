@@ -15,11 +15,16 @@ import {defineConfig} from 'vite';
 import VitePluginStyleInject from 'vite-plugin-style-inject';
 
 import viteMonorepoResolutionPlugin from '../shared/lexicalMonorepoPlugin';
+import esbuildDevGlobalModule from './esbuild-dev-global-module';
+import viteGlobalImport from './vite-global-import';
 import viteCopyEsm from './viteCopyEsm';
 import viteCopyExcalidrawAssets from './viteCopyExcalidrawAssets';
 
+const isDebug = Boolean(process.env.NODE_DEBUG);
+
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
+  base: isDebug ? '/richTextEditor' : undefined,
   build: {
     lib: {
       entry: path.resolve(__dirname, './index.js'),
@@ -47,6 +52,12 @@ export default defineConfig(({mode}) => ({
   },
   optimizeDeps: {
     esbuildOptions: {
+      plugins: isDebug
+        ? [
+            ...(esbuildDevGlobalModule(mode, ['react', 'react-dom'])?.plugins ||
+              []),
+          ]
+        : undefined,
       target: 'es2022',
       treeShaking: true,
     },
@@ -58,6 +69,7 @@ export default defineConfig(({mode}) => ({
           bundler: 'vite',
         })
       : null,
+    isDebug ? viteGlobalImport(mode, ['react', 'react-dom']) : null,
     babel({
       babelHelpers: 'bundled',
       babelrc: false,
@@ -93,5 +105,8 @@ export default defineConfig(({mode}) => ({
     alias: {
       './const.less': `${path.resolve(__dirname, '../../')}/const.less`,
     },
+  },
+  server: {
+    cors: true,
   },
 }));

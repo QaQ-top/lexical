@@ -65,12 +65,10 @@ export const TABLE: ElementTransformer = {
     return output.join('\n');
   },
   regExp: TABLE_ROW_REG_EXP,
-  replace: (parentNode, _1, match, isImport, levelBasedControl) => {
-    const getLastNode = () =>
-      levelBasedControl ? levelBasedControl.getLastNode() : null;
+  replace: (parentNode, _1, match, isImport) => {
     // Header row
     if (TABLE_ROW_DIVIDER_REG_EXP.test(match[0])) {
-      const table = parentNode.getPreviousSibling() || getLastNode();
+      const table = parentNode.getPreviousSibling();
       if (!table || !$isTableNode(table)) {
         return;
       }
@@ -103,7 +101,7 @@ export const TABLE: ElementTransformer = {
     }
 
     const rows = [matchCells];
-    let sibling = parentNode.getPreviousSibling() || getLastNode();
+    let sibling = parentNode.getPreviousSibling();
     let maxCells = matchCells.length;
 
     while (sibling) {
@@ -145,7 +143,7 @@ export const TABLE: ElementTransformer = {
       }
     }
 
-    const previousSibling = parentNode.getPreviousSibling() || getLastNode();
+    const previousSibling = parentNode.getPreviousSibling();
     if (
       $isTableNode(previousSibling) &&
       getTableColumnsSize(previousSibling) === maxCells

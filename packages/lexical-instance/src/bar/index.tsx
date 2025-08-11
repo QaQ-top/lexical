@@ -104,7 +104,11 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
 
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
     return (
-      <Bar nodeKey={this.getKey()} insNodeKey={this.getParent()?.getKey()} />
+      <Bar
+        nodeKey={this.getKey()}
+        instance={this.__instance}
+        insNodeKey={this.getParent()?.getKey()}
+      />
     );
   }
 }

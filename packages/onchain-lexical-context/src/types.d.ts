@@ -9,6 +9,7 @@ export interface ExtraSettings {
   iconScriptUrl?: string;
   isShowActions?: boolean;
   showTreeView?: boolean;
+  showHeaderToolbar?: boolean;
 }
 
 export interface BuiltInInstanceConfig {
@@ -21,7 +22,12 @@ export interface BuiltInInstanceConfig {
   setInstanceMap(map: Map<string, Instance>): void;
 }
 
+export interface InstanceConfigLet {
+  loading: boolean;
+}
 export interface InstanceConfig {
+  icl: InstanceConfigLet;
+  setIcl(params: Partial<InstanceConfigLet>): void;
   preview?: boolean;
   getInstanceIcon: (objectApicode: string) => string;
   uploadFiles(

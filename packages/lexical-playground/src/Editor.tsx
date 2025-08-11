@@ -104,7 +104,7 @@ export default function Editor(): JSX.Element {
       selectionAlwaysOnDisplay,
       listStrictIndent,
     },
-    extra: {showTreeView},
+    extra: {showTreeView, showHeaderToolbar},
   } = useSettings();
   const isEditable = useLexicalEditable();
   const placeholder = isCollab
@@ -145,7 +145,7 @@ export default function Editor(): JSX.Element {
 
   return (
     <>
-      {isRichText && (
+      {isRichText && showHeaderToolbar !== false && (
         <ToolbarPlugin
           editor={editor}
           activeEditor={activeEditor}

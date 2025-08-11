@@ -7,24 +7,37 @@
  */
 import {HeadingTagType} from '@lexical/rich-text';
 import {
+  $createFragmentNode,
   $createInstanceHeadingNode,
+  $createInstanceParagraphNode,
   $createTitleOnlyInstanceNode,
   $isInstanceHeadingNode,
   $isInstanceNode,
   $isInstanceParagraphNode,
   $isInstanceTitleNode,
+  Instance,
   InstanceHeadingNode,
   InstanceNode,
   InstanceParagraphNode,
   InstanceTitleNode,
 } from 'onchain-lexical-instance';
 
-import {createBlockNode, ElementTransformer} from '../MarkdownTransformers';
+import {$convertFromMarkdownString} from '../fromMarkdownString';
+import {
+  createBlockNode,
+  ElementTransformer,
+  MultilineElementTransformer,
+} from '../MarkdownTransformers';
 import {$convertToMarkdownString} from '../toMarkdownString';
 import {TransFormerGather} from '.';
-import {HEADING_REGEX, INS_SYMBOL, INSTANCE_START_REGEX} from './const';
+import {
+  HEADING_REGEX,
+  INS_SYMBOL,
+  INSTANCE_END_REGEX,
+  INSTANCE_START_REGEX,
+} from './const';
 
-export const InstanceTransformer: ElementTransformer = {
+export const InstanceTransformer: MultilineElementTransformer = {
   dependencies: [InstanceNode],
   export: (node, exportChildren) => {
     if (!$isInstanceNode(node)) {
@@ -38,12 +51,54 @@ export const InstanceTransformer: ElementTransformer = {
       `\n<!---->`;
     return markdown;
   },
-  regExp: INSTANCE_START_REGEX,
-  replace: createBlockNode((match) => {
-    const node = $createTitleOnlyInstanceNode();
-    return node;
-  }),
-  type: 'element',
+  regExpEnd: {
+    optional: true,
+    regExp: INSTANCE_END_REGEX,
+  },
+  regExpStart: INSTANCE_START_REGEX,
+  replace: (
+    rootNode,
+    children,
+    startMatch,
+    endMatch,
+    linesInBetween,
+    isImport,
+    instanceMap,
+  ) => {
+    if (linesInBetween) {
+      let instance: Instance | undefined;
+      const [number, insDesc] = linesInBetween[1]
+        .replace(/^#+/g, '')
+        .trim()
+        .split(' / ');
+      if (instanceMap && instanceMap.has(number)) {
+        instance = instanceMap.get(number)!;
+      } else if (number) {
+        instance = {
+          insDesc,
+          number,
+        } as Instance;
+      }
+      const node = $createTitleOnlyInstanceNode(instance);
+      const fragment = $createFragmentNode();
+      $convertFromMarkdownString(
+        linesInBetween.slice(2, Infinity).join('\n'),
+        TransFormerGather.value,
+        fragment,
+      );
+      const children = fragment.getChildren();
+      const [paragraph1, paragraph2] = children;
+      if (!paragraph1 || !$isInstanceParagraphNode(paragraph1)) {
+        children.splice(0, 0, $createInstanceParagraphNode());
+      }
+      if (!paragraph2 || !$isInstanceParagraphNode(paragraph2)) {
+        children.splice(1, 0, $createInstanceParagraphNode());
+      }
+      node.append(...children);
+      rootNode.append(node);
+    }
+  },
+  type: 'multiline-element',
 };
 
 export const InstanceHeadingTransformer: ElementTransformer = {

@@ -166,6 +166,7 @@ export type {
   EditorStateReadOptions,
   SerializedEditorState,
 } from './LexicalEditorState';
+export {exportNodeToJSON} from './LexicalEditorState';
 export type {EventHandler} from './LexicalEvents';
 export type {
   DOMChildConversion,

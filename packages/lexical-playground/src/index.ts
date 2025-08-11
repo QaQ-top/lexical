@@ -6,13 +6,18 @@
  *
  */
 
-import {SerializedDocument} from '@lexical/file';
+import type {SerializedDocument} from '@lexical/file';
+import type {Instance} from 'onchain-lexical-instance';
+
 import {
   InternalSerializedNode,
   LexicalEditor,
   LexicalNode,
   SerializedLexicalNode,
 } from 'lexical';
+import {_instanceToSerializeNode} from 'onchain-lexical-markdown';
+
+import PlaygroundNodes from './nodes/PlaygroundNodes';
 
 export {buildImportMap, default as RichTextEditor} from './App';
 export {default as Editor} from './Editor';
@@ -52,3 +57,20 @@ export declare const exportJSON: (
     ) => Promise<InternalSerializedNode>;
   }>,
 ) => Promise<SerializedDocument>;
+export declare const exportNodeToJSON: <
+  SerializedNode extends SerializedLexicalNode,
+>(
+  node: LexicalNode,
+) => SerializedNode;
+
+export function instanceToSerializeNode(params: {
+  instance: Instance;
+  title: string;
+  children?: Record<string, unknown>[];
+  childrenText?: string;
+}) {
+  return _instanceToSerializeNode({
+    ...params,
+    nodes: [...PlaygroundNodes],
+  });
+}

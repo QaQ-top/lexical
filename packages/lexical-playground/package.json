@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "vite --host --port 3000",
+    "dev:debug": "cross-env NODE_DEBUG=1 vite --host --port 3001 --mode development",
     "build-dev": "vite build",
     "build-prod": "vite build --mode production",
     "build-vercel": "(cd ../../ && node ./scripts/build.js) && npm run build-dev",

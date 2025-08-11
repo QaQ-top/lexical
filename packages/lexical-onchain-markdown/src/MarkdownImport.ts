@@ -23,18 +23,12 @@ import {
   $getRoot,
   $getSelection,
   $isParagraphNode,
+  $isRootNode,
   ElementNode,
 } from 'lexical';
-import {
-  $createFragmentNode,
-  $createInstanceParagraphNode,
-  Instance,
-} from 'onchain-lexical-instance';
+import {$createInstanceParagraphNode, Instance} from 'onchain-lexical-instance';
 
 import {importTextTransformers} from './importTextTransformers';
-import {INSTANCE_END_REGEX, INSTANCE_START_REGEX} from './transformer/const';
-import LevelBasedControl from './transformer/levelBasedControl';
-import {getInstanceLevel} from './transformer/utils';
 import {isEmptyParagraph, transformersByType} from './utils';
 
 export type TextFormatTransformersIndex = Readonly<{
@@ -55,59 +49,49 @@ export function createMarkdownImport(
   const textFormatTransformersIndex = createTextFormatTransformersIndex(
     byType.textFormat,
   );
+
   return (markdownString, node) => {
     const lines = markdownString.split('\n');
     const linesLength = lines.length;
     const root = node || $getRoot();
-    root.clear();
-    const fragment = $createFragmentNode();
-    const levelBasedControl = new LevelBasedControl(instanceMap);
+    if ($isRootNode(root)) {
+      root.clear();
+    }
+
     for (let i = 0; i < linesLength; i++) {
       const lineText = lines[i];
-      const {level} = getInstanceLevel(
-        Array.from(lineText.match(INSTANCE_START_REGEX) || []),
-      );
-      const isInstanceEnd = INSTANCE_END_REGEX.test(lineText);
+
       const [imported, shiftedIndex] = $importMultiline(
         lines,
         i,
         byType.multilineElement,
-        fragment,
+        root,
+        instanceMap,
       );
+
       if (imported) {
         // If a multiline markdown element was imported, we don't want to process the lines that were part of it anymore.
         // There could be other sub-markdown elements (both multiline and normal ones) matching within this matched multiline element's children.
         // However, it would be the responsibility of the matched multiline transformer to decide how it wants to handle them.
         // We cannot handle those, as there is no way for us to know how to maintain the correct order of generated lexical nodes for possible children.
         i = shiftedIndex; // Next loop will start from the line after the last line of the multiline element
-        levelBasedControl.reductionNodeHierarchy({
-          isInstanceEnd,
-          level,
-          nodes: fragment.pop(),
-        });
         continue;
       }
 
       $importBlocks(
         lineText,
-        fragment,
+        root,
         byType.element,
         textFormatTransformersIndex,
         byType.textMatch,
         shouldPreserveNewLines,
-        levelBasedControl,
       );
-      levelBasedControl.reductionNodeHierarchy({
-        isInstanceEnd,
-        level,
-        nodes: fragment.pop(),
-      });
     }
 
     // By default, removing empty paragraphs as md does not really
     // allow empty lines and uses them as delimiter.
     // If you need empty lines set shouldPreserveNewLines = true.
-    const children = levelBasedControl.children;
+    const children = root.getChildren();
     for (const child of children) {
       if (
         !shouldPreserveNewLines &&
@@ -117,7 +101,7 @@ export function createMarkdownImport(
         child.remove();
       }
     }
-    root.append(...children);
+
     if ($getSelection() !== null) {
       root.selectStart();
     }
@@ -133,6 +117,7 @@ function $importMultiline(
   startLineIndex: number,
   multilineElementTransformers: Array<MultilineElementTransformer>,
   rootNode: ElementNode,
+  instanceMap?: Map<string, Instance>,
 ): [boolean, number] {
   for (const transformer of multilineElementTransformers) {
     const {handleImportAfterStartMatch, regExpEnd, regExpStart, replace} =
@@ -223,8 +208,15 @@ function $importMultiline(
       }
 
       if (
-        replace(rootNode, null, startMatch, endMatch, linesInBetween, true) !==
-        false
+        replace(
+          rootNode,
+          null,
+          startMatch,
+          endMatch,
+          linesInBetween,
+          true,
+          instanceMap,
+        ) !== false
       ) {
         // Return here. This $importMultiline function is run line by line and should only process a single multiline element at a time.
         return [true, endLineIndex];
@@ -247,7 +239,6 @@ function $importBlocks(
   textFormatTransformersIndex: TextFormatTransformersIndex,
   textMatchTransformers: Array<TextMatchTransformer>,
   shouldPreserveNewLines: boolean,
-  levelBasedControl: LevelBasedControl,
 ) {
   const textNode = $createTextNode(lineText);
   const elementNode = $createInstanceParagraphNode();
@@ -259,10 +250,7 @@ function $importBlocks(
 
     if (match) {
       textNode.setTextContent(lineText.slice(match[0].length));
-      if (
-        replace(elementNode, [textNode], match, true, levelBasedControl) !==
-        false
-      ) {
+      if (replace(elementNode, [textNode], match, true) !== false) {
         break;
       }
     }

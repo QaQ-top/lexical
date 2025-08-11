@@ -12,6 +12,8 @@
 import setupEnv from './setupEnv';
 // import './index.css';
 
+import * as Packages from './index';
+
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
@@ -34,7 +36,7 @@ const showErrorOverlay = (err: Event) => {
     body.appendChild(overlay);
   }
 };
-
+const _packages = Packages;
 window.addEventListener('error', showErrorOverlay);
 window.addEventListener('unhandledrejection', ({reason}) =>
   showErrorOverlay(reason),
@@ -51,6 +53,10 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         getInstanceIcon(apicode) {
           return 'demand1';
         },
+        icl: {
+          loading: true,
+        },
+        setIcl(params) {},
         uploadFiles(params) {
           return Promise.resolve(params.map((i) => i.text));
         },

@@ -120,7 +120,7 @@ function setTextAlign(domStyle: CSSStyleDeclaration, value: string): void {
   domStyle.setProperty('text-align', value);
 }
 
-const DEFAULT_INDENT_VALUE = '40px';
+const DEFAULT_INDENT_VALUE = '34px';
 
 function setElementIndent(dom: HTMLElement, indent: number): void {
   const indentClassName = activeEditorConfig.theme.indent;

@@ -46,6 +46,10 @@ const Number = (props: {
         .finally(() => {
           setLoading(false);
         });
+    } else {
+      if (instanceNodeKey) {
+        numberNodeKey.set(number!, instanceNodeKey);
+      }
     }
   }, []);
 

@@ -15,8 +15,10 @@ import {
   $getEditor,
   $getNodeByKey,
   $getSelection,
+  $isElementNode,
   $isRootNode,
   type EditorThemeClasses,
+  ElementNode,
   type LexicalNode,
   scrollIntoViewIfNeeded,
   TextNode,
@@ -207,92 +209,68 @@ export function clearCache() {
   numberNodeKey.clear();
 }
 
-export function getInstanceSerializeNode({
-  title,
-  instance,
-  children,
-}: {
-  instance: Instance;
-  title: string;
-  children?: any[];
-}) {
-  children = children || [];
-  if (children.length < 2) {
-    for (let index = 0; index < 2; index++) {
-      const element = children[index];
-      if (!element) {
-        children[index] = {
-          children: [
-            {
-              detail: 0,
-              format: 0,
-              mode: 'normal',
-              style: '',
-              text: '',
-              type: 'text',
-              version: 1,
-            },
-          ],
-          direction: null,
-          format: '',
-          indent: 0,
-          textFormat: 0,
-          textStyle: '',
-          type: 'Paragraph',
-          version: 1,
-        };
+export function $getInstanceNodeKeyByNumber(number: string) {
+  const key = numberNodeKey.get(number);
+  return key;
+}
+
+export function $getInstanceNodeByNumber(number: string) {
+  const key = $getInstanceNodeKeyByNumber(number);
+  if (key) {
+    return $getNodeByKey(key);
+  }
+}
+
+export function nodeMoveUp<T extends ElementNode>(nodes?: T[] | null) {
+  if (nodes) {
+    const previous = nodes[0].getPreviousSibling();
+    for (let index = nodes.length - 1; index > -1; index--) {
+      const current = nodes[index];
+      const pre = nodes[index + 1];
+      if (pre) {
+        pre.insertBefore(current);
+      } else {
+        previous?.insertBefore(current);
       }
     }
   }
-  return {
-    children: [
-      {type: 'Bar', version: 1},
-      {serialNumber: '3', type: 'Number', version: 1},
-      {
-        children: [
-          {
-            children: [
-              {
-                show: false,
-                text: '请输入标题...',
-                type: 'Placeholder',
-                version: 1,
-              },
-              {
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: title,
-                type: 'text',
-                version: 1,
-              },
-            ],
-            direction: null,
-            format: '',
-            indent: 3,
-            tag: 'h1',
-            type: 'Title',
-            version: 1,
-          },
-        ],
-        direction: null,
-        format: '',
-        indent: 0,
-        textFormat: 0,
-        textStyle: '',
-        type: 'Paragraph',
-        version: 1,
-      },
-      ...children,
-    ],
-    direction: null,
-    format: '',
-    indent: 0,
-    instance,
-    textFormat: 0,
-    textStyle: '',
-    type: 'Instance',
-    version: 1,
-  };
+}
+
+export function nodeMoveDown<T extends ElementNode>(nodes?: T[] | null) {
+  if (nodes) {
+    const next = nodes[nodes.length - 1].getNextSibling();
+    for (let index = 0; index < nodes.length; index++) {
+      const current = nodes[index];
+      const pre = nodes[index - 1];
+      if (pre) {
+        pre.insertAfter(current);
+      } else {
+        next?.insertAfter(current);
+      }
+    }
+  }
+}
+
+export async function nodeUpgrade<T extends ElementNode>(nodes?: T[] | null) {
+  if (nodes) {
+    const parent = nodes[0].getParent();
+    for (let index = 0; index < nodes.length; index++) {
+      const current = nodes[index];
+      const pre = nodes[index - 1];
+      if (pre) {
+        pre.insertAfter(current);
+      } else {
+        parent?.insertAfter(current);
+      }
+    }
+  }
+}
+
+export async function nodeDowngrade<T extends ElementNode>(nodes?: T[] | null) {
+  if (nodes) {
+    const previous = nodes[0].getPreviousSibling();
+    if ($isElementNode(previous)) {
+      previous.append(...nodes);
+    }
+  }
 }

@@ -148,6 +148,7 @@ export class InstanceNode extends ElementNode {
     const dom = document.createElement('div');
     const classNames = [
       Styles.instance,
+      'rich-text-instance',
       getCachedClassNameArray(config.theme, 'instance') ?? [],
     ];
     if (classNames !== undefined) {
@@ -215,7 +216,7 @@ export class InstanceNode extends ElementNode {
       const index = String(children.findIndex((node) => node === this)! + 1);
       const ancestor = this.getParent();
       if ($isInstanceNode(ancestor)) {
-        return `${ancestor.getSerialNumber()}-${index}`;
+        return `${ancestor.getSerialNumber()}.${index}`;
       } else {
         return index;
       }

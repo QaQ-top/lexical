@@ -39,9 +39,8 @@ import {
   $createInstanceListItemNode,
   $createInstanceListNode,
   $createInstanceQuoteNode,
+  Instance,
 } from 'onchain-lexical-instance';
-
-import LevelBasedControl from './transformer/levelBasedControl';
 
 export type Transformer =
   | ElementTransformer
@@ -76,7 +75,6 @@ export type ElementTransformer = {
      * Whether the match is from an import operation (e.g. through `$convertFromMarkdownString`) or not (e.g. through typing in the editor).
      */
     isImport: boolean,
-    levelBasedControl?: LevelBasedControl,
   ) => boolean | void;
   type: 'element';
 };
@@ -147,6 +145,7 @@ export type MultilineElementTransformer = {
      * Whether the match is from an import operation (e.g. through `$convertFromMarkdownString`) or not (e.g. through typing in the editor).
      */
     isImport: boolean,
+    instanceMap?: Map<string, Instance>,
   ) => boolean | void;
   type: 'multiline-element';
 };
