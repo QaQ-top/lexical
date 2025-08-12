@@ -207,6 +207,12 @@ export class InstanceNode extends ElementNode {
       );
   }
 
+  getSelfContentChildren<T extends LexicalNode>(): Array<T> {
+    return this.getPracticalChildren<T>().filter(
+      (node) => !$isInstanceNode(node),
+    );
+  }
+
   getSerialNumber(): string {
     const children =
       this.getParent()

@@ -27,6 +27,7 @@ import {$isRootOrShadowRoot} from 'lexical';
 import {hasOwnProperty} from 'onchain-utility';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
+import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import {$isInstanceNode} from './base';
 import {numberNodeKey, paragraphSymbol} from './const';
 import {InstanceHeadingNode} from './heading';
@@ -251,9 +252,10 @@ export function nodeMoveDown<T extends ElementNode>(nodes?: T[] | null) {
   }
 }
 
-export async function nodeUpgrade<T extends ElementNode>(nodes?: T[] | null) {
+export async function $nodeUpgrade<T extends ElementNode>(nodes?: T[] | null) {
   if (nodes) {
     const parent = nodes[0].getParent();
+    const bar = parent?.getChildren().find((node) => $isBarDecoratorNode(node));
     for (let index = 0; index < nodes.length; index++) {
       const current = nodes[index];
       const pre = nodes[index - 1];
@@ -263,14 +265,25 @@ export async function nodeUpgrade<T extends ElementNode>(nodes?: T[] | null) {
         parent?.insertAfter(current);
       }
     }
+    if (bar) {
+      bar.replace($createBarDecoratorNode());
+    }
   }
 }
 
-export async function nodeDowngrade<T extends ElementNode>(nodes?: T[] | null) {
+export async function $nodeDowngrade<T extends ElementNode>(
+  nodes?: T[] | null,
+) {
   if (nodes) {
     const previous = nodes[0].getPreviousSibling();
     if ($isElementNode(previous)) {
+      const bar = previous
+        ?.getChildren()
+        .find((node) => $isBarDecoratorNode(node));
       previous.append(...nodes);
+      if (bar) {
+        bar.replace($createBarDecoratorNode());
+      }
     }
   }
 }

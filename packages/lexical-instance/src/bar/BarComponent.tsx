@@ -64,9 +64,7 @@ const Bar = (props: {
     return 'demand1';
   }, [instance]);
 
-  const hasChildren = useMemo(() => {
-    return instance?.insBom || !!instance?.children?.length;
-  }, [instance]);
+  const hasChildren = !!instance?.children?.length || instance?.insBom;
 
   return (
     <>
