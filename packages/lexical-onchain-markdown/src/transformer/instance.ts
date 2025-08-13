@@ -82,17 +82,18 @@ export const InstanceTransformer: MultilineElementTransformer = {
       const node = $createTitleOnlyInstanceNode(instance);
       const fragment = $createFragmentNode();
       $convertFromMarkdownString(
-        linesInBetween.slice(2, Infinity).join('\n'),
+        linesInBetween.slice(1, Infinity).join('\n'),
         TransFormerGather.value,
         fragment,
       );
       const children = fragment.getChildren();
-      const [paragraph1, paragraph2] = children;
-      if (!paragraph1 || !$isInstanceParagraphNode(paragraph1)) {
-        children.splice(0, 0, $createInstanceParagraphNode());
-      }
-      if (!paragraph2 || !$isInstanceParagraphNode(paragraph2)) {
-        children.splice(1, 0, $createInstanceParagraphNode());
+      const nodes = children.slice(2, Infinity);
+      const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
+      for (let index = 0; index < count; index++) {
+        const node = nodes.slice(index, 1)[0];
+        if (!node /**  || !$isInstanceParagraphNode(node) */) {
+          children.splice(index, 0, $createInstanceParagraphNode());
+        }
       }
       node.append(...children);
       rootNode.append(node);

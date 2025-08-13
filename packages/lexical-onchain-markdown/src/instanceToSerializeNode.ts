@@ -14,7 +14,7 @@ import {
   exportNodeToJSON,
   SerializedLexicalNode,
 } from 'lexical';
-import {Instance} from 'onchain-lexical-instance';
+import {Instance, InstanceNode} from 'onchain-lexical-instance';
 
 import {$convertFromMarkdownString} from './fromMarkdownString';
 import {getInstanceTransformers} from './transformer';
@@ -83,14 +83,15 @@ export async function _instanceToSerializeNode({
     ? [...markdownChildren, ...children]
     : [...markdownChildren];
 
-  const [paragraph1, paragraph2] = children;
+  const copyChildren = [...markdownChildren];
+  const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
+  for (let index = 0; index < count; index++) {
+    const node = copyChildren.slice(index, 1)[0];
+    if (!node /**  || node.type !== 'Paragraph' */) {
+      children.splice(index, 0, getParagraph());
+    }
+  }
 
-  if (!paragraph1 || paragraph1.type !== 'Paragraph') {
-    children.splice(0, 0, getParagraph());
-  }
-  if (!paragraph2 || paragraph2.type !== 'Paragraph') {
-    children.splice(1, 0, getParagraph());
-  }
   return {
     children: [
       {type: 'Bar', version: 1},

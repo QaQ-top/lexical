@@ -56,7 +56,7 @@ export type SerializedInstanceNode = Spread<
 
 export class InstanceNode extends ElementNode {
   // 标记初始段落数量
-  static DEFAULT_PARAGRAPHS = 3;
+  static DEFAULT_PARAGRAPHS = 4;
   __INS = true;
   __instance: Instance;
   constructor(

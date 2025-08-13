@@ -34,7 +34,7 @@ import {
 } from '../MarkdownTransformers';
 import {BLOCK_EQUATION, EQUATION} from './equation';
 import {HR} from './hr';
-import {HTML} from './html';
+import {HTML_TABLE} from './html';
 import {IMAGE} from './image';
 import {InstanceHeadingTransformer, InstanceTransformer} from './instance';
 import {PAGE_BREAK} from './pageBreak';
@@ -95,7 +95,7 @@ TransFormerGather.register(InstanceTransformer);
 TransFormerGather.register(InstanceHeadingTransformer);
 TransFormerGather.register(HR);
 TransFormerGather.register(TABLE);
-TransFormerGather.register(HTML);
+TransFormerGather.register(HTML_TABLE);
 TransFormerGather.register(EQUATION);
 TransFormerGather.register(BLOCK_EQUATION);
 TransFormerGather.register(IMAGE);
