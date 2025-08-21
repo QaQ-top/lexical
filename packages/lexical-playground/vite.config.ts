@@ -54,8 +54,8 @@ export default defineConfig(({mode}) => ({
     esbuildOptions: {
       plugins: isDebug
         ? [
-            ...(esbuildDevGlobalModule(mode, ['react', 'react-dom'])?.plugins ||
-              []),
+            ...(esbuildDevGlobalModule(mode, ['react', 'react-dom', 'antd'])
+              ?.plugins || []),
           ]
         : undefined,
       target: 'es2022',
@@ -69,7 +69,7 @@ export default defineConfig(({mode}) => ({
           bundler: 'vite',
         })
       : null,
-    isDebug ? viteGlobalImport(mode, ['react', 'react-dom']) : null,
+    isDebug ? viteGlobalImport(mode, ['react', 'react-dom', 'antd']) : null,
     babel({
       babelHelpers: 'bundled',
       babelrc: false,

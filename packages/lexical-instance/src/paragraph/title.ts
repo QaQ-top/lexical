@@ -134,9 +134,9 @@ export class InstanceTitleNode extends InstanceHeadingNode {
 
   updateDOM(prevNode: this, dom: HTMLElement, config: EditorConfig): boolean {
     const instanceNode = this.getInstanceNode();
-    if (instanceNode && instanceNode.__instance) {
+    if (instanceNode && instanceNode.__instance.value) {
       const text = this.getTextContent().trim();
-      setInstanceAttrValue(instanceNode.__instance, 'insDesc', text);
+      setInstanceAttrValue(instanceNode.__instance.value, 'insDesc', text);
     }
     return super.updateDOM(prevNode, dom, config);
   }
@@ -237,7 +237,7 @@ export function $convertToTitle(
     h1.append(placeholderNode);
     const parent = paragraph.getParent();
     if ($isInstanceNode(parent)) {
-      const instance = parent.__instance;
+      const instance = parent.__instance.value;
       if (instance) {
         h1.append(new TextNode(getLatestValue(instance, 'insDesc')));
       }

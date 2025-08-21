@@ -63,12 +63,42 @@ const ScrollBarAssembly: React.FC<ScrollBarAssembly> = (props) => {
       window.removeEventListener('resize', resizeUpdate);
     };
   }, [size]);
+
+  useEffect(() => {
+    const barAssembly = rollRef.current;
+    const wheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const target = e.target as HTMLDivElement;
+      const currentTarget = e.currentTarget as HTMLDivElement | undefined;
+      if (
+        includes(target.className, 'frontend-select-dropdown') ||
+        includes(target.className, 'frontend-select-item') ||
+        includes(target.className, 'frontend-select-item-option-content')
+      ) {
+        return;
+      }
+      if (currentTarget) {
+        if (props.direction) {
+          currentTarget.scrollTop += e.deltaY;
+        } else {
+          currentTarget.scrollLeft += e.deltaY;
+        }
+      }
+    };
+    barAssembly?.addEventListener('wheel', wheel, {passive: false});
+    return () => {
+      barAssembly?.removeEventListener('wheel', wheel);
+    };
+  }, []);
+
   return (
     <div
       className={`${Styles.scrollBarAssembly} ${props.className}`}
       ref={rollRef}
       style={{...props.style}}
       onScroll={(e) => {
+        e.stopPropagation();
         const target = e.target as HTMLDivElement;
         if (props.direction) {
           data.scrollTop = target.scrollTop;
@@ -78,21 +108,6 @@ const ScrollBarAssembly: React.FC<ScrollBarAssembly> = (props) => {
           data.scrollLeft = target.scrollLeft;
           data.clientWidth = target.clientWidth;
           data.scrollWidth = target.scrollWidth;
-        }
-      }}
-      onWheel={(e) => {
-        const target = e.target as HTMLDivElement;
-        if (
-          includes(target.className, 'frontend-select-dropdown') ||
-          includes(target.className, 'frontend-select-item') ||
-          includes(target.className, 'frontend-select-item-option-content')
-        ) {
-          return;
-        }
-        if (props.direction) {
-          e.currentTarget.scrollTop += e.deltaY;
-        } else {
-          e.currentTarget.scrollLeft += e.deltaY;
         }
       }}>
       {!props.loading &&

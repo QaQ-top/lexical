@@ -90,7 +90,7 @@ export const InstanceTransformer: MultilineElementTransformer = {
       const nodes = children.slice(2, Infinity);
       const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
       for (let index = 0; index < count; index++) {
-        const node = nodes.slice(index, 1)[0];
+        const node = nodes[0];
         if (!node /**  || !$isInstanceParagraphNode(node) */) {
           children.splice(index, 0, $createInstanceParagraphNode());
         }
@@ -115,8 +115,8 @@ export const InstanceHeadingTransformer: ElementTransformer = {
       const level = Number(node.getTag().slice(1));
       let number = '';
       const instanceNode = $isInstanceTitleNode(node) && node.getInstanceNode();
-      if (instanceNode && instanceNode.__instance) {
-        number = `${instanceNode.__instance.number} / `;
+      if (instanceNode && instanceNode.__instance.value) {
+        number = `${instanceNode.__instance.value.number} / `;
       }
       return '#'.repeat(level) + ' ' + number + exportChildren(node);
     }

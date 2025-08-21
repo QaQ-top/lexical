@@ -20,6 +20,7 @@ declare type TranslateI18nParams = [
 
 interface Window {
   translateI18n: (...params: TranslateI18nParams) => string;
+  PlaygroundNodes: Array<Klass<LexicalNode>>;
 }
 
 interface BaseComponentProps<T = unknown> {

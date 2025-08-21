@@ -37,7 +37,7 @@ export function DropDownItem({
   title,
 }: {
   children: React.ReactNode;
-  className: string;
+  className?: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   title?: string;
 }) {
@@ -59,7 +59,7 @@ export function DropDownItem({
 
   return (
     <button
-      className={className}
+      className={className ?? 'item'}
       onClick={onClick}
       ref={ref}
       title={title}
@@ -151,6 +151,7 @@ function DropDownItems({
 
 export default function DropDown({
   disabled = false,
+  showIcon = true,
   buttonLabel,
   buttonAriaLabel,
   buttonClassName,
@@ -160,9 +161,10 @@ export default function DropDown({
 }: {
   disabled?: boolean;
   buttonAriaLabel?: string;
-  buttonClassName: string;
+  buttonClassName?: string;
   buttonIconClassName?: string;
-  buttonLabel?: string;
+  buttonLabel?: React.ReactNode;
+  showIcon?: boolean;
   children: ReactNode;
   stopCloseOnClickSelf?: boolean;
 }): JSX.Element {
@@ -244,15 +246,15 @@ export default function DropDown({
       <button
         type="button"
         disabled={disabled}
-        aria-label={buttonAriaLabel || buttonLabel}
-        className={buttonClassName}
+        aria-label={buttonAriaLabel}
+        className={buttonClassName ?? 'down'}
         onClick={() => setShowDropDown(!showDropDown)}
         ref={buttonRef}>
         {buttonIconClassName && <span className={buttonIconClassName} />}
         {buttonLabel && (
           <span className="text dropdown-button-text">{buttonLabel}</span>
         )}
-        <i className="chevron-down" />
+        {showIcon ? <i className="chevron-down" /> : null}
       </button>
 
       {showDropDown &&

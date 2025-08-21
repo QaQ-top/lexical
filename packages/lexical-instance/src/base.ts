@@ -56,17 +56,25 @@ export type SerializedInstanceNode = Spread<
 
 export class InstanceNode extends ElementNode {
   // 标记初始段落数量
-  static DEFAULT_PARAGRAPHS = 4;
+  static DEFAULT_PARAGRAPHS = 3;
   __INS = true;
-  __instance: Instance;
+  __instance: {
+    value: Instance;
+  };
   constructor(
-    instance?: Instance,
+    instanceAddress?: Instance | {value: Instance},
     config: {isTitleOnly?: boolean; isEmpty?: boolean} = {},
     key?: NodeKey,
   ) {
     super(key);
-    // [TODO] 实例默认类型
-    this.__instance = instance || {objectApicode: ''};
+    if (isFixedAddress(instanceAddress)) {
+      this.__instance = instanceAddress;
+    } else {
+      this.__instance = {
+        value: instanceAddress || {objectApicode: ''},
+      };
+    }
+    const instance = this.__instance.value;
     if (instance && instance.number) {
       numberNodeKey.set(instance.number, this.getKey());
     }
@@ -127,7 +135,7 @@ export class InstanceNode extends ElementNode {
   exportJSON(): SerializedInstanceNode {
     return {
       ...super.exportJSON(),
-      instance: getInstanceBaseInfo(this.__instance),
+      instance: getInstanceBaseInfo(this.__instance.value),
       // These are included explicitly for backwards compatibility
       textFormat: this.getTextFormat(),
       textStyle: this.getTextStyle(),
@@ -138,7 +146,7 @@ export class InstanceNode extends ElementNode {
     serializedNode: LexicalUpdateJSON<SerializedInstanceNode>,
   ): this {
     super.updateFromJSON(serializedNode);
-    this.__instance = serializedNode.instance as unknown as Instance;
+    this.__instance.value = serializedNode.instance as unknown as Instance;
     return this;
   }
 
@@ -208,11 +216,13 @@ export class InstanceNode extends ElementNode {
   }
 
   getSelfContentChildren<T extends LexicalNode>(): Array<T> {
-    return this.getPracticalChildren<T>().filter(
-      (node) => !$isInstanceNode(node),
+    return this.getChildren<T>().filter((node) => !$isInstanceNode(node));
+  }
+  getSelfInstanceChildren<T extends InstanceNode>(): Array<T> {
+    return this.getPracticalChildren<T>().filter((node) =>
+      $isInstanceNode(node),
     );
   }
-
   getSerialNumber(): string {
     const children =
       this.getParent()
@@ -285,7 +295,7 @@ export class InstanceNode extends ElementNode {
 
   setInstance(instance: Partial<Instance>) {
     // const writable = this.getWritable();
-    Object.assign(this.__instance, instance);
+    Object.assign(this.__instance.value, instance);
   }
 
   isShadowRoot() {
@@ -404,4 +414,14 @@ export function $checkAllParagraphsEmpty(parent: InstanceNode) {
   return parent.getPracticalChildren().every((paragraph) => {
     return paragraph.getTextContent().trim() === '';
   });
+}
+
+function isFixedAddress(
+  instance?: Instance | {value: Instance},
+): instance is {value: Instance} {
+  return (
+    !!instance &&
+    Object.keys(instance).length === 1 &&
+    typeof instance.value === 'object'
+  );
 }

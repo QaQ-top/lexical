@@ -109,4 +109,6 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   Fragment,
 ];
 
+window.PlaygroundNodes = PlaygroundNodes;
+
 export default PlaygroundNodes;

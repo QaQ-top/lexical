@@ -28,6 +28,7 @@ export {default as TypingPerfPlugin} from './plugins/TypingPerfPlugin';
 export {default as Settings} from './Settings';
 export {default as RichTextEditorTheme} from './themes/PlaygroundEditorTheme';
 export * from '@lexical/file';
+export * from '@lexical/history';
 export {LexicalComposer} from '@lexical/react/LexicalComposer';
 export {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 export * from 'lexical';
@@ -40,6 +41,7 @@ export * from 'onchain-lexical-context/sharedHistory';
 export * from 'onchain-lexical-context/toolBar';
 export * from 'onchain-lexical-instance';
 export {default as EditorShellStyles} from 'onchain-lexical-ui/EditorShellStyles';
+export * from 'onchain-utility';
 export declare const importSerializedNode: (
   editor: LexicalEditor,
   serializedRoot: SerializedLexicalNode,

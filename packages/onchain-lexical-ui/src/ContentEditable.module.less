@@ -19,7 +19,6 @@
     background-color: #f9f9f9;
     border-left: 26px solid #e6e6e6;
     padding: 0 10px;
-    margin-bottom: 6px;
     padding-bottom: 6px;
     > [number='true'] {
       left: 10px;
@@ -32,6 +31,7 @@
     & [instance='true'] {
       border-top: 12px solid transparent;
       &::before {
+        pointer-events: none;
         content: '';
         display: block;
         background-color: #fff;
@@ -47,6 +47,9 @@
           left: -10px;
         }
       }
+    }
+    &:not(:nth-of-type(1)) {
+      margin-top: 6px;
     }
   }
 }

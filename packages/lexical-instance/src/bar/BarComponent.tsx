@@ -8,12 +8,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$getNodeByKey} from 'lexical';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
+import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import {Icon} from 'onchain-lexical-ui/Icon';
+import {translateI18n} from 'onchain-utility';
 import {useCallback, useMemo} from 'react';
 
-import {$createInstanceNode} from '../base';
+import {OPEN_CREATE_WINDOW} from '../const';
 import {Instance} from '../types';
 import Styles from './styles.module.less';
 
@@ -22,7 +23,7 @@ const Bar = (props: {
   insNodeKey?: string;
   instance?: Instance;
 }): JSX.Element => {
-  const {nodeKey, insNodeKey, instance} = props;
+  const {insNodeKey, instance} = props;
   const [editor] = useLexicalComposerContext();
   const {preview, selectedInstance, getInstanceIcon} = useInstanceConfig();
   // icon-front-link1
@@ -31,27 +32,31 @@ const Bar = (props: {
   }, [selectedInstance, insNodeKey]);
 
   const onInsertBlock = useCallback(
-    (e: React.MouseEvent) => {
-      if (!editor) {
-        return;
-      }
-      editor.update(() => {
-        const node = $getNodeByKey(nodeKey)!;
-        const parent = node.getParent();
-        if (!parent) {
-          return;
-        }
-        const pNode = $createInstanceNode();
-        if (e.altKey || e.ctrlKey) {
-          parent.append(pNode);
-          // node.insertBefore(pNode);
-        } else {
-          parent.insertAfter(pNode);
-          // node.append(pNode)
-        }
-        pNode.select();
+    (isAddChildLevel: boolean) => {
+      // if (!editor) {
+      //   return;
+      // }
+      // editor.update(() => {
+      //   const node = $getNodeByKey(nodeKey)!;
+      //   const parent = node.getParent();
+      //   if (!parent) {
+      //     return;
+      //   }
+      //   const pNode = $createInstanceNode();
+      //   if (e.altKey || e.ctrlKey) {
+      //     parent.append(pNode);
+      //     // node.insertBefore(pNode);
+      //   } else {
+      //     parent.insertAfter(pNode);
+      //     // node.append(pNode)
+      //   }
+      //   pNode.select();
+      // });
+      editor.dispatchCommand(OPEN_CREATE_WINDOW, {
+        insNodeKey,
+        isAddChildLevel,
+        number: instance!.number!,
       });
-
       return;
     },
     [editor],
@@ -79,11 +84,23 @@ const Bar = (props: {
               className={`${Styles.hover} ${Styles.link}`}
               type="icon-front-link1"
             />
-            <Icon
-              className={Styles.hover}
-              type="icon-front-xinzeng1"
-              onClick={onInsertBlock}
-            />
+            <DropDown
+              showIcon={false}
+              buttonLabel={
+                <Icon className={Styles.hover} type="icon-front-xinzeng1" />
+              }
+              buttonAriaLabel="Formatting options for text style">
+              <DropDownItem onClick={() => onInsertBlock(false)}>
+                {translateI18n('[TODO] 国际化', {
+                  placeholder: '添加到同级',
+                })}
+              </DropDownItem>
+              <DropDownItem onClick={() => onInsertBlock(true)}>
+                {translateI18n('[TODO] 国际化', {
+                  placeholder: '添加到子级',
+                })}
+              </DropDownItem>
+            </DropDown>
           </>
         ) : null}
       </div>

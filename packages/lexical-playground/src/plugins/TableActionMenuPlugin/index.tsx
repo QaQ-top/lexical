@@ -47,6 +47,7 @@ import {
 } from 'lexical';
 import ColorPicker from 'onchain-lexical-ui/ColorPicker';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
+import {translateI18n} from 'onchain-utility';
 import * as React from 'react';
 import {ReactPortal, useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
@@ -480,7 +481,11 @@ function TableActionMenu({
           className="item"
           onClick={() => mergeTableCellsAtSelection()}
           data-test-id="table-merge-cells">
-          <span className="text">Merge cells</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Merge cells', {
+              placeholder: '合并单元格',
+            })}
+          </span>
         </button>
       );
     } else if (canUnmergeCell) {
@@ -490,7 +495,11 @@ function TableActionMenu({
           className="item"
           onClick={() => unmergeTableCellsAtSelection()}
           data-test-id="table-unmerge-cells">
-          <span className="text">Unmerge cells</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Unmerge cells', {
+              placeholder: '取消合并单元格',
+            })}
+          </span>
         </button>
       );
     }
@@ -517,17 +526,27 @@ function TableActionMenu({
           ))
         }
         data-test-id="table-background-color">
-        <span className="text">Background color</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Background color', {
+            placeholder: '背景颜色',
+          })}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => toggleRowStriping()}
         data-test-id="table-row-striping">
-        <span className="text">Toggle Row Striping</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Toggle Row Striping', {
+            placeholder: '切换行条带',
+          })}
+        </span>
       </button>
       <DropDown
-        buttonLabel="Vertical Align"
+        buttonLabel={translateI18n('[TODO] 国际化 Vertical Align', {
+          placeholder: '垂直对齐',
+        })}
         buttonClassName="item"
         buttonAriaLabel="Formatting options for vertical alignment">
         <DropDownItem
@@ -537,7 +556,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-top" />
-            <span className="text">Top Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Top Align', {
+                placeholder: '顶部对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
         <DropDownItem
@@ -547,7 +570,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-middle" />
-            <span className="text">Middle Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Middle Align', {
+                placeholder: '中间对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
         <DropDownItem
@@ -557,7 +584,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-bottom" />
-            <span className="text">Bottom Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Bottom Align', {
+                placeholder: '底部对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
       </DropDown>
@@ -566,14 +597,20 @@ function TableActionMenu({
         className="item"
         onClick={() => toggleFirstRowFreeze()}
         data-test-id="table-freeze-first-row">
-        <span className="text">Toggle First Row Freeze</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Row Freeze', {placeholder: '冻结行'})}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => toggleFirstColumnFreeze()}
         data-test-id="table-freeze-first-column">
-        <span className="text">Toggle First Column Freeze</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Column Freeze', {
+            placeholder: '冻结列',
+          })}
+        </span>
       </button>
       <hr />
       <button
@@ -751,8 +788,9 @@ function TableCellActionMenuContainer({
     if (
       $isRangeSelection(selection) &&
       rootElement !== null &&
-      nativeSelection !== null &&
-      rootElement.contains(nativeSelection.anchorNode)
+      nativeSelection !== null
+      // 聚焦的焦点是否在编辑器内
+      // && rootElement.contains(nativeSelection.anchorNode)
     ) {
       const tableCellNodeFromSelection = $getTableCellNodeFromLexicalNode(
         selection.anchor.getNode(),

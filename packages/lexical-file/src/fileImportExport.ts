@@ -111,6 +111,7 @@ export function importSerializedNode(
         const root = $getRoot();
         root.clear();
         root.append(...importChildren);
+        root.selectStart();
       }
     }
   });

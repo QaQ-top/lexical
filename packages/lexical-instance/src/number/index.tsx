@@ -130,7 +130,7 @@ export class NumberDecoratorNode extends DecoratorNode<JSX.Element> {
     const serial = this.__serialNumber;
     return (
       <Number
-        instance={this.__instance}
+        instance={this.__instance.value}
         serial={serial}
         instanceNodeKey={this.getParent()?.getKey()}
       />

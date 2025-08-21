@@ -15,7 +15,11 @@ import type {
 } from './MarkdownTransformers';
 
 import {$convertFromMarkdownString} from './fromMarkdownString';
-import {_instanceToSerializeNode} from './instanceToSerializeNode';
+import {
+  _instanceToSerializeNode,
+  _textToSerializedNode,
+  $textToRichNodes,
+} from './instanceToSerializeNode';
 // import {createMarkdownExport} from './MarkdownExport';
 import {registerMarkdownShortcuts} from './MarkdownShortcuts';
 import {
@@ -49,8 +53,10 @@ import {
 
 export {
   _instanceToSerializeNode,
+  _textToSerializedNode,
   $convertFromMarkdownString,
   $convertToMarkdownString,
+  $textToRichNodes,
   BOLD_ITALIC_STAR,
   BOLD_ITALIC_UNDERSCORE,
   BOLD_STAR,

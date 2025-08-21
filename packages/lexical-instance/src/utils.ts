@@ -31,9 +31,11 @@ import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import {$isInstanceNode} from './base';
 import {numberNodeKey, paragraphSymbol} from './const';
 import {InstanceHeadingNode} from './heading';
-import {InstanceParagraphNode} from './paragraph';
+import {$isInstanceParagraphNode, InstanceParagraphNode} from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
 import {CompleteInstance, Instance, InstanceBaseInfo} from './types';
+
+export {ADD_NEW_INSTANCE_NODE, OPEN_CREATE_WINDOW} from './const';
 
 /** 获取用户自定义类名 */
 export function getCachedClassNameArray(
@@ -109,6 +111,12 @@ export function $getInstanceNodeByChild(node: LexicalNode) {
   });
 }
 
+export function $getTitleNodeByChild(node: LexicalNode) {
+  return $findMatchingParent(node, (e) => {
+    return $isInstanceParagraphNode(e) && e.isTitle;
+  });
+}
+
 /** 是否是选中实例标题节点 */
 export function $isSelectedTitleNode() {
   const selection = $getSelection();
@@ -157,7 +165,7 @@ export function getInstanceBaseInfo(
   if (instance) {
     return {
       insDesc: instance.insDesc,
-      insId: instance.insId,
+      insId: instance.insId || instance.id,
       itemCode: instance.itemCode,
       number: instance.number,
       objectApicode: instance.objectApicode,
@@ -286,4 +294,16 @@ export async function $nodeDowngrade<T extends ElementNode>(
       }
     }
   }
+}
+
+export function setTemporaryContentText<T extends Instance>(
+  instance: T,
+  text: string = '',
+) {
+  instance.__contentText = text;
+  return instance;
+}
+
+export function getTemporaryContentText<T extends Instance>(instance: T) {
+  return instance.__contentText || '';
 }

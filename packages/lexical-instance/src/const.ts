@@ -5,6 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+
+import {createCommand, LexicalCommand} from 'lexical';
+
+import {Instance} from './types';
+
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 export enum InstanceParagraphType {
   Title = 2,
   Description,
@@ -49,3 +61,17 @@ class NumberNodeKey extends Map<string, string> {
 }
 
 export const numberNodeKey = new NumberNodeKey();
+
+export const fixedAddress = new Map<string, {value: Instance}>();
+
+export const OPEN_CREATE_WINDOW: LexicalCommand<{
+  isAddChildLevel: boolean;
+  number: string;
+  insNodeKey?: string;
+}> = createCommand('OPEN_CREATE_WINDOW');
+
+export const ADD_NEW_INSTANCE_NODE: LexicalCommand<{
+  instances: Instance[];
+  isAddChildLevel: boolean;
+  insNodeKey?: string;
+}> = createCommand('ADD_NEW_INSTANCE_NODE');

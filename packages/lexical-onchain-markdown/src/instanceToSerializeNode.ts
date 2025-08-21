@@ -7,10 +7,12 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import {$advanceParseSerializedNode} from '@lexical/file';
 import {
   $getRoot,
   createEditor,
   CreateEditorArgs,
+  ElementNode,
   exportNodeToJSON,
   SerializedLexicalNode,
 } from 'lexical';
@@ -74,10 +76,7 @@ export async function _instanceToSerializeNode({
 }) {
   let markdownChildren: SerializedNode[] = [];
   if (childrenText) {
-    markdownChildren = await markdownToSerializedNode({
-      markdown: childrenText,
-      nodes,
-    });
+    markdownChildren = (await _textToSerializedNode(nodes, childrenText)) || [];
   }
   children = children
     ? [...markdownChildren, ...children]
@@ -86,7 +85,7 @@ export async function _instanceToSerializeNode({
   const copyChildren = [...markdownChildren];
   const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
   for (let index = 0; index < count; index++) {
-    const node = copyChildren.slice(index, 1)[0];
+    const node = copyChildren[index];
     if (!node /**  || node.type !== 'Paragraph' */) {
       children.splice(index, 0, getParagraph());
     }
@@ -143,4 +142,38 @@ export async function _instanceToSerializeNode({
     type: 'Instance',
     version: 1,
   };
+}
+
+export async function _textToSerializedNode(
+  nodes: Required<CreateEditorArgs>['nodes'],
+  childrenText?: string,
+): Promise<SerializedNode[] | undefined> {
+  if (childrenText) {
+    const jsonRegExp = /^JSON<(.+)>$/;
+    if (jsonRegExp.test(childrenText)) {
+      return JSON.parse(childrenText.replace(jsonRegExp, '$1'));
+    } else {
+      return await markdownToSerializedNode({
+        markdown: childrenText,
+        nodes,
+      });
+    }
+  }
+}
+
+export function $textToRichNodes(node: ElementNode, childrenText?: string) {
+  if (childrenText) {
+    const jsonRegExp = /^JSON<(.+)>$/;
+    if (jsonRegExp.test(childrenText)) {
+      return $advanceParseSerializedNode(
+        JSON.parse(childrenText.replace(jsonRegExp, '$1')),
+      );
+    } else {
+      return $convertFromMarkdownString(
+        childrenText,
+        getInstanceTransformers(),
+        node,
+      );
+    }
+  }
 }

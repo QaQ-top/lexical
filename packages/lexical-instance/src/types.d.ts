@@ -25,6 +25,7 @@ export interface Instance
   extends InstanceBaseInfo,
     Partial<InstanceExtraAttributes> {
   children?: Instance[];
+  __contentText?: string;
 }
 
 export type CompleteInstance = Required<InstanceBaseInfo> &

@@ -1,3 +1,6 @@
+import {EditorState} from 'lexical';
+import React from 'react';
+
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -24,8 +27,14 @@ export interface BuiltInInstanceConfig {
 
 export interface InstanceConfigLet {
   loading: boolean;
+  table: React.MutableRefObject<{
+    initSerializedData: string;
+    cancelModification?: () => void;
+  }>;
 }
 export interface InstanceConfig {
+  namespace: string;
+  isCanAdded: boolean;
   icl: InstanceConfigLet;
   setIcl(params: Partial<InstanceConfigLet>): void;
   preview?: boolean;

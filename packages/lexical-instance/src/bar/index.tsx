@@ -106,7 +106,7 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
     return (
       <Bar
         nodeKey={this.getKey()}
-        instance={this.__instance}
+        instance={this.__instance.value}
         insNodeKey={this.getParent()?.getKey()}
       />
     );
@@ -144,7 +144,7 @@ export function $selectionChange(
             return {
               nodeKey: insNode.getKey(),
               // [TODO] number 可能为空 建议换成其他ID
-              number: insNode.__instance.number!,
+              number: insNode.__instance.value.number!,
             };
           }),
         );
