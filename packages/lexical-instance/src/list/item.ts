@@ -218,7 +218,7 @@ export class InstanceListItemNode extends ListItemNode {
     const children = this.getChildren();
     children.forEach((child) => paragraph.append(child));
     const listNode = this.getParentOrThrow();
-    const listNodeParent = listNode.getParentOrThrow();
+    const listNodeParent = listNode.getParent();
     const isIndented = $isListItemNode(listNodeParent);
 
     if (listNode.getChildrenSize() === 1) {
@@ -228,7 +228,9 @@ export class InstanceListItemNode extends ListItemNode {
         listNode.remove();
         listNodeParent.select();
       } else {
-        listNode.replace(paragraph);
+        if (listNodeParent) {
+          listNode.replace(paragraph);
+        }
         // 如果我们选择了列表项，我们需要将其移动到段落
         const [anchor, focus] = selection.getStartEndPoints() || [];
         const key = paragraph.getKey();
