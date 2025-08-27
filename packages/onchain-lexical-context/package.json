@@ -7,7 +7,7 @@
     "@lexical/yjs": "^0.30.0",
     "lexical": "0.30.0",
     "onchain-lexical-ui": "^0.0.2",
-    "onchain-utility": "^0.0.2",
+    "onchain-utility": "^0.0.3",
     "y-websocket": "^1.5.4"
   },
   "exports": {
