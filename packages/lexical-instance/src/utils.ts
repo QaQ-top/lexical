@@ -28,7 +28,7 @@ import {hasOwnProperty} from 'onchain-utility';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
-import {$isInstanceNode} from './base';
+import {$isInstanceNode, InstanceNode} from './base';
 import {numberNodeKey, paragraphSymbol} from './const';
 import {InstanceHeadingNode} from './heading';
 import {$isInstanceParagraphNode, InstanceParagraphNode} from './paragraph';
@@ -201,7 +201,9 @@ export function $scrollTo(number: string) {
   const nodeKey = numberNodeKey.get(number);
   const rootElement = editor.getRootElement();
   if (nodeKey && rootElement) {
-    const target = editor.getElementByKey(nodeKey);
+    const instanceNode = $getNodeByKey<InstanceNode>(nodeKey);
+    const [, numberNode] = instanceNode?.getChildren() || [];
+    const target = editor.getElementByKey(numberNode.getKey() || nodeKey);
     if (target) {
       scrollIntoViewIfNeeded(
         editor,

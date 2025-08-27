@@ -13,6 +13,9 @@ export interface ExtraSettings {
   isShowActions?: boolean;
   showTreeView?: boolean;
   showHeaderToolbar?: boolean;
+  showLeftToolbar?: boolean;
+  getZIndex?: () => number;
+  reduceZIndex?: () => void;
 }
 
 export interface BuiltInInstanceConfig {
@@ -34,7 +37,6 @@ export interface InstanceConfigLet {
 }
 export interface InstanceConfig {
   namespace: string;
-  isCanAdded: boolean;
   icl: InstanceConfigLet;
   setIcl(params: Partial<InstanceConfigLet>): void;
   preview?: boolean;

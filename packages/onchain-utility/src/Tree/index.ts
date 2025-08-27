@@ -485,7 +485,7 @@ export async function upgrade<T extends Item>({
   onFilterFollow?: (item: T[]) => T[];
   onUpgrade?: (params: {
     selected: T[];
-    parent: T | undefined;
+    parent: T;
   }) => Promise<boolean> | boolean;
   onUpgraded?: (upgrades: T[]) => void;
 }) {
@@ -598,13 +598,13 @@ export async function downgrade<T extends Item>({
       const [start] = relArr;
       const {beforeSibling, parent} = start;
 
+      if (beforeSibling.length === 0 || !parent) {
+        break;
+      }
       if (
         !onDowngrade ||
         (await onDowngrade({beforeSibling, parent, selected}))
       ) {
-        if (beforeSibling.length === 0 || !parent) {
-          break;
-        }
         const before = beforeSibling[beforeSibling.length - 1];
 
         // 降级操作

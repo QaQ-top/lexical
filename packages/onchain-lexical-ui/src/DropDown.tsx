@@ -9,6 +9,7 @@
 import type {JSX} from 'react';
 
 import {isDOMNode} from 'lexical';
+import {useSettings} from 'onchain-lexical-context/settings';
 import * as React from 'react';
 import {
   ReactNode,
@@ -72,10 +73,12 @@ export function DropDownItem({
 function DropDownItems({
   children,
   dropDownRef,
+  zIndex = 100,
   onClose,
 }: {
   children: React.ReactNode;
   dropDownRef: React.Ref<HTMLDivElement>;
+  zIndex?: number;
   onClose: () => void;
 }) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
@@ -142,6 +145,7 @@ function DropDownItems({
       <div
         className={`${Styles.dropdown}`}
         ref={dropDownRef}
+        style={{zIndex}}
         onKeyDown={handleKeyDown}>
         {children}
       </div>
@@ -171,6 +175,8 @@ export default function DropDown({
   const dropDownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [showDropDown, setShowDropDown] = useState(false);
+  const {extra} = useSettings();
+  const [zIndex, setZIndex] = useState(100);
 
   const handleClose = () => {
     setShowDropDown(false);
@@ -178,6 +184,18 @@ export default function DropDown({
       buttonRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    if (showDropDown) {
+      if (extra.getZIndex) {
+        setZIndex(extra.getZIndex());
+      }
+    } else {
+      if (extra.reduceZIndex) {
+        extra.reduceZIndex();
+      }
+    }
+  }, [showDropDown]);
 
   useEffect(() => {
     const button = buttonRef.current;
@@ -259,7 +277,10 @@ export default function DropDown({
 
       {showDropDown &&
         createPortal(
-          <DropDownItems dropDownRef={dropDownRef} onClose={handleClose}>
+          <DropDownItems
+            dropDownRef={dropDownRef}
+            zIndex={zIndex}
+            onClose={handleClose}>
             {children}
           </DropDownItems>,
           document.body,

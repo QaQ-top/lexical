@@ -144,12 +144,17 @@ export async function _instanceToSerializeNode({
   };
 }
 
+export function getStorageSerializedString(content: object) {
+  return `JSON<${JSON.stringify(content)}>`;
+}
+
+const jsonRegExp = /^JSON<(.+)>$/;
+
 export async function _textToSerializedNode(
   nodes: Required<CreateEditorArgs>['nodes'],
   childrenText?: string,
 ): Promise<SerializedNode[] | undefined> {
   if (childrenText) {
-    const jsonRegExp = /^JSON<(.+)>$/;
     if (jsonRegExp.test(childrenText)) {
       return JSON.parse(childrenText.replace(jsonRegExp, '$1'));
     } else {
@@ -163,7 +168,6 @@ export async function _textToSerializedNode(
 
 export function $textToRichNodes(node: ElementNode, childrenText?: string) {
   if (childrenText) {
-    const jsonRegExp = /^JSON<(.+)>$/;
     if (jsonRegExp.test(childrenText)) {
       return $advanceParseSerializedNode(
         JSON.parse(childrenText.replace(jsonRegExp, '$1')),

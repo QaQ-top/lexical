@@ -142,7 +142,7 @@ export default function Editor(): JSX.Element {
       window.removeEventListener('resize', updateViewPortWidth);
     };
   }, [isSmallWidthViewport]);
-
+  const isShowToolbar = isRichText && showHeaderToolbar !== false;
   return (
     <>
       {isRichText && showHeaderToolbar !== false && (
@@ -162,7 +162,9 @@ export default function Editor(): JSX.Element {
       <div
         className={`top-container editor-container ${
           showTreeView ? 'tree-view' : ''
-        } ${!isRichText ? 'plain-text' : ''}`}>
+        } ${!isRichText ? 'plain-text' : ''} ${
+          isShowToolbar ? 'hasToolbar' : ''
+        }`}>
         {isMaxLength && <MaxLengthPlugin maxLength={30} />}
         <DragDropPaste />
         <AutoFocusPlugin />
@@ -282,14 +284,14 @@ export default function Editor(): JSX.Element {
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
-        {VITE_IS_DEVELOPMENT && (
+        {/* {VITE_IS_DEVELOPMENT && (
           <ActionsPlugin
             isRichText={isRichText}
             shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
           />
-        )}
+        )} */}
       </div>
-      {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />}
+      {/* {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />} */}
     </>
   );
 }

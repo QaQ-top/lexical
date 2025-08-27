@@ -32,7 +32,11 @@ import {
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import Styles from './base.module.less';
-import {InstanceParagraphType, numberNodeKey} from './const';
+import {
+  DELETE_INSTANCE_NODE,
+  InstanceParagraphType,
+  numberNodeKey,
+} from './const';
 import {$createNumberDecoratorNode, $isNumberDecoratorNode} from './number';
 import {
   $createInstanceParagraphNode,
@@ -232,9 +236,10 @@ export class InstanceNode extends ElementNode {
       const index = String(children.findIndex((node) => node === this)! + 1);
       const ancestor = this.getParent();
       if ($isInstanceNode(ancestor)) {
-        return `${ancestor.getSerialNumber()}.${index}`;
+        const prefix = ancestor.getSerialNumber();
+        return `${prefix}${prefix ? '.' : ''}${index}`;
       } else {
-        return index;
+        return '';
       }
     }
     return '';
@@ -269,6 +274,13 @@ export class InstanceNode extends ElementNode {
       return true;
     }
     return false;
+  }
+
+  remove(preserveEmptyParent?: boolean): void {
+    super.remove(preserveEmptyParent);
+    globalThis.dispatchEvent(
+      new CustomEvent(DELETE_INSTANCE_NODE, {detail: this}),
+    );
   }
 
   select(_anchorOffset?: number, _focusOffset?: number): RangeSelection {

@@ -75,3 +75,5 @@ export const ADD_NEW_INSTANCE_NODE: LexicalCommand<{
   isAddChildLevel: boolean;
   insNodeKey?: string;
 }> = createCommand('ADD_NEW_INSTANCE_NODE');
+
+export const DELETE_INSTANCE_NODE = 'DELETE_INSTANCE_NODE';

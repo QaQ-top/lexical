@@ -9,6 +9,7 @@
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
+import {useSettings} from 'onchain-lexical-context/settings';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import {Icon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
@@ -26,6 +27,8 @@ const Bar = (props: {
   const {insNodeKey, instance} = props;
   const [editor] = useLexicalComposerContext();
   const {preview, selectedInstance, getInstanceIcon} = useInstanceConfig();
+  const {extra} = useSettings();
+
   // icon-front-link1
   const isSelected = useMemo(() => {
     return !!selectedInstance.find((item) => item.nodeKey === insNodeKey);
@@ -78,7 +81,7 @@ const Bar = (props: {
           className={hasChildren ? Styles.hasChildren : undefined}
           type={`icon-front-${icon}`}
         />
-        {!preview ? (
+        {!preview && extra.showLeftToolbar !== false ? (
           <>
             <Icon
               className={`${Styles.hover} ${Styles.link}`}

@@ -5,17 +5,20 @@
   color: #000;
   position: relative;
   font-weight: 400;
-  // height: 100%;
+  height: 100%;
 
   :global {
     .editor-container {
       background: #fff;
       position: relative;
       display: block;
-      // border-bottom-left-radius: 10px;
-      // border-bottom-right-radius: 10px;
-      // max-height: calc(100vh - 200px);
-      // overflow-y: auto;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    div.hasToolbar {
+      height: calc(100% - 36px);
     }
 
     .editor-container.tree-view {

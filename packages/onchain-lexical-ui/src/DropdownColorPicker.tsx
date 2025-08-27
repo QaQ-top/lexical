@@ -30,12 +30,25 @@ export default function DropdownColorPicker({
   onChange,
   ...rest
 }: Props) {
+  const timeout = React.useRef(0);
+  const debounce = React.useCallback(
+    (value: string, skipHistoryStack: boolean) => {
+      clearTimeout(timeout.current);
+      timeout.current = window.setTimeout(() => {
+        if (onChange) {
+          onChange(value, skipHistoryStack);
+        }
+      }, 100);
+    },
+    [onChange],
+  );
+
   return (
     <DropDown
       {...rest}
       disabled={disabled}
       stopCloseOnClickSelf={stopCloseOnClickSelf}>
-      <ColorPicker color={color} onChange={onChange} />
+      <ColorPicker color={color} onChange={debounce} />
     </DropDown>
   );
 }

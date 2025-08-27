@@ -32,7 +32,7 @@ export {
   normalizeCodeLang,
 } from './code/codeHighlightNode';
 export * from './collapsible';
-export {InstanceParagraphType} from './const';
+export * from './const';
 export {
   $createInstanceEquationNode,
   $isInstanceEquationNode,

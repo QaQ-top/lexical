@@ -133,7 +133,8 @@ function TextFormatFloatingToolbar({
       nativeSelection !== null &&
       !nativeSelection.isCollapsed &&
       rootElement !== null &&
-      rootElement.contains(nativeSelection.anchorNode)
+      (rootElement.contains(nativeSelection.anchorNode) ||
+        isRootExtraContains(nativeSelection.anchorNode))
     ) {
       const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
 
@@ -204,7 +205,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isBold ? 'active' : '')}
             title="Bold"
             aria-label="Format text as bold">
-            <i className="format bold" />
+            <i data-root-contains="1" className="format bold" />
           </button>
           <button
             type="button"
@@ -214,7 +215,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isItalic ? 'active' : '')}
             title="Italic"
             aria-label="Format text as italics">
-            <i className="format italic" />
+            <i data-root-contains="1" className="format italic" />
           </button>
           <button
             type="button"
@@ -224,7 +225,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isUnderline ? 'active' : '')}
             title="Underline"
             aria-label="Format text to underlined">
-            <i className="format underline" />
+            <i data-root-contains="1" className="format underline" />
           </button>
           <button
             type="button"
@@ -234,7 +235,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isStrikethrough ? 'active' : '')}
             title="Strikethrough"
             aria-label="Format text with a strikethrough">
-            <i className="format strikethrough" />
+            <i data-root-contains="1" className="format strikethrough" />
           </button>
           <button
             type="button"
@@ -244,7 +245,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isSubscript ? 'active' : '')}
             title="Subscript"
             aria-label="Format Subscript">
-            <i className="format subscript" />
+            <i data-root-contains="1" className="format subscript" />
           </button>
           <button
             type="button"
@@ -254,7 +255,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isSuperscript ? 'active' : '')}
             title="Superscript"
             aria-label="Format Superscript">
-            <i className="format superscript" />
+            <i data-root-contains="1" className="format superscript" />
           </button>
           <button
             type="button"
@@ -264,7 +265,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isUppercase ? 'active' : '')}
             title="Uppercase"
             aria-label="Format text to uppercase">
-            <i className="format uppercase" />
+            <i data-root-contains="1" className="format uppercase" />
           </button>
           <button
             type="button"
@@ -274,7 +275,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isLowercase ? 'active' : '')}
             title="Lowercase"
             aria-label="Format text to lowercase">
-            <i className="format lowercase" />
+            <i data-root-contains="1" className="format lowercase" />
           </button>
           <button
             type="button"
@@ -284,7 +285,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isCapitalize ? 'active' : '')}
             title="Capitalize"
             aria-label="Format text to capitalize">
-            <i className="format capitalize" />
+            <i data-root-contains="1" className="format capitalize" />
           </button>
           <button
             type="button"
@@ -294,7 +295,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isCode ? 'active' : '')}
             title="Insert code block"
             aria-label="Insert code block">
-            <i className="format code" />
+            <i data-root-contains="1" className="format code" />
           </button>
           <button
             type="button"
@@ -302,7 +303,7 @@ function TextFormatFloatingToolbar({
             className={'popup-item spaced ' + (isLink ? 'active' : '')}
             title="Insert link"
             aria-label="Insert link">
-            <i className="format link" />
+            <i data-root-contains="1" className="format link" />
           </button>
         </>
       )}
@@ -312,7 +313,7 @@ function TextFormatFloatingToolbar({
         className={'popup-item spaced insert-comment'}
         title="Insert comment"
         aria-label="Insert comment">
-        <i className="format add-comment" />
+        <i data-root-contains="1" className="format add-comment" />
       </button>
     </div>
   );
@@ -350,7 +351,8 @@ function useFloatingTextFormatToolbar(
         nativeSelection !== null &&
         (!$isRangeSelection(selection) ||
           rootElement === null ||
-          !rootElement.contains(nativeSelection.anchorNode))
+          (!rootElement.contains(nativeSelection.anchorNode) &&
+            !isRootExtraContains(nativeSelection.anchorNode)))
       ) {
         setIsText(false);
         return;
@@ -453,4 +455,8 @@ export default function FloatingTextFormatToolbarPlugin({
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   return useFloatingTextFormatToolbar(editor, anchorElem, setIsLinkEditMode);
+}
+
+function isRootExtraContains(node?: Node | null) {
+  return node instanceof HTMLElement && node.hasAttribute('data-root-contains');
 }

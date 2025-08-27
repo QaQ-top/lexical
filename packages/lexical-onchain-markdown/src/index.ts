@@ -19,6 +19,7 @@ import {
   _instanceToSerializeNode,
   _textToSerializedNode,
   $textToRichNodes,
+  getStorageSerializedString,
 } from './instanceToSerializeNode';
 // import {createMarkdownExport} from './MarkdownExport';
 import {registerMarkdownShortcuts} from './MarkdownShortcuts';
@@ -66,6 +67,7 @@ export {
   ELEMENT_TRANSFORMERS,
   type ElementTransformer,
   getInstanceTransformers,
+  getStorageSerializedString,
   HEADING,
   HIGHLIGHT,
   INLINE_CODE,
