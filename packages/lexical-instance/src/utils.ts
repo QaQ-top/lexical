@@ -228,7 +228,7 @@ export function $getInstanceNodeKeyByNumber(number: string) {
 export function $getInstanceNodeByNumber(number: string) {
   const key = $getInstanceNodeKeyByNumber(number);
   if (key) {
-    return $getNodeByKey(key);
+    return $getNodeByKey<InstanceNode>(key);
   }
 }
 

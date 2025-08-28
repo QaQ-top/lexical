@@ -23,6 +23,9 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {INSERT_PARAMETERS} from 'onchain-lexical-instance';
+import {Icon} from 'onchain-lexical-ui/Icon';
+import {translateI18n} from 'onchain-utility';
 import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
@@ -30,13 +33,14 @@ import {createPortal} from 'react-dom';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPosition} from '../../utils/setFloatingElemPosition';
-import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
+// import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
 import Styles from './index.module.less';
 
 function TextFormatFloatingToolbar({
   editor,
   anchorElem,
   isLink,
+  isParameter,
   isBold,
   isItalic,
   isUnderline,
@@ -55,6 +59,7 @@ function TextFormatFloatingToolbar({
   isCode: boolean;
   isItalic: boolean;
   isLink: boolean;
+  isParameter: boolean;
   isUppercase: boolean;
   isLowercase: boolean;
   isCapitalize: boolean;
@@ -76,8 +81,12 @@ function TextFormatFloatingToolbar({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
-  const insertComment = () => {
-    editor.dispatchCommand(INSERT_INLINE_COMMAND, undefined);
+  // const insertComment = () => {
+  //   editor.dispatchCommand(INSERT_INLINE_COMMAND, undefined);
+  // };
+
+  const insertParameters = () => {
+    editor.dispatchCommand(INSERT_PARAMETERS, undefined);
   };
 
   function mouseMoveListener(e: MouseEvent) {
@@ -309,12 +318,20 @@ function TextFormatFloatingToolbar({
       )}
       <button
         type="button"
+        onClick={insertParameters}
+        className={'popup-item spaced ' + (isParameter ? 'active' : '')}
+        title={translateI18n('[TODO] Insert parameter', {placeholder: '参数'})}
+        aria-label="Insert comment">
+        <Icon type="icon-front-parameterpool" />
+      </button>
+      {/* <button
+        type="button"
         onClick={insertComment}
         className={'popup-item spaced insert-comment'}
         title="Insert comment"
         aria-label="Insert comment">
         <i data-root-contains="1" className="format add-comment" />
-      </button>
+      </button> */}
     </div>
   );
 }
@@ -326,6 +343,8 @@ function useFloatingTextFormatToolbar(
 ): JSX.Element | null {
   const [isText, setIsText] = useState(false);
   const [isLink, setIsLink] = useState(false);
+  // [TODO] 开发参数相关功能
+  const [isParameter, setIsParameter] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -382,6 +401,7 @@ function useFloatingTextFormatToolbar(
         setIsLink(true);
       } else {
         setIsLink(false);
+        setIsParameter(false);
       }
 
       if (
@@ -430,6 +450,7 @@ function useFloatingTextFormatToolbar(
       editor={editor}
       anchorElem={anchorElem}
       isLink={isLink}
+      isParameter={isParameter}
       isBold={isBold}
       isItalic={isItalic}
       isUppercase={isUppercase}

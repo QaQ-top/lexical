@@ -15,7 +15,7 @@
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
     "onchain-lexical-instance": "^0.0.2",
-    "onchain-lexical-markdown": "^0.0.1",
+    "onchain-lexical-markdown": "^0.0.2",
     "onchain-utility": "^0.0.3"
   },
   "peerDependencies": {
