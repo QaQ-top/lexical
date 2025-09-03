@@ -40,7 +40,7 @@
     "onchain-lexical-instance": "^0.0.3",
     "onchain-lexical-markdown": "^0.0.2",
     "onchain-lexical-ui": "^0.0.2",
-    "onchain-utility": "^0.0.3",
+    "onchain-utility": "^0.0.4",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -58,7 +58,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "code-inspector-plugin": "^0.20.10",
     "rollup-plugin-copy": "^3.5.0",
-    "vite": "^5.2.11",
+    "vite": "^7.1.4",
     "vite-plugin-static-copy": "^2.3.0"
   },
   "sideEffects": false,

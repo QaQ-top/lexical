@@ -50,9 +50,18 @@ const distModuleResolution = (environment: 'development' | 'production') => {
         .getNormalizedNpmModuleExportEntries()
         .map((entry: NpmModuleExportEntry) => {
           const [name, moduleExports] = entry;
-          const replacements = ([environment, 'default'] as const).map(
-            (condition) => pkg.resolve('dist', moduleExports.import[condition]),
-          );
+          const replacements = ([environment, 'default'] as const)
+            .map((condition) => {
+              const address = moduleExports.import[condition];
+              if (address) {
+                if (address.includes('./dist')) {
+                  return pkg.resolve('./', address);
+                } else {
+                  return pkg.resolve('dist', address);
+                }
+              }
+            })
+            .filter<string>((value): value is string => !!value);
           const replacement = replacements.find(fs.existsSync.bind(fs));
           if (!replacement) {
             throw new Error(

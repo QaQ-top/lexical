@@ -9,14 +9,18 @@
   ],
   "license": "MIT",
   "version": "0.0.2",
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "@lexical/react": "^0.30.0",
     "@lexical/rich-text": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-instance": "^0.0.2",
+    "onchain-lexical-instance": "^0.0.3",
     "onchain-lexical-markdown": "^0.0.2",
-    "onchain-utility": "^0.0.3"
+    "onchain-utility": "^0.0.4"
   },
   "peerDependencies": {
     "react": ">=17.x",

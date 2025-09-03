@@ -9,6 +9,10 @@
   "license": "MIT",
   "version": "0.0.3",
   "types": "index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "@lexical/code": "^0.30.0",
     "@lexical/hashtag": "^0.30.0",
@@ -20,9 +24,9 @@
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
     "onchain-lexical-context": "^0.0.2",
+    "onchain-lexical-markdown": "^0.0.2",
     "onchain-lexical-ui": "^0.0.2",
-    "onchain-utility": "^0.0.3",
-    "onchain-lexical-markdown": "^0.0.2"
+    "onchain-utility": "^0.0.4"
   },
   "sideEffects": false,
   "exports": {
