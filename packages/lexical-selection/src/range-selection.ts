@@ -13,6 +13,7 @@ import type {
   NodeKey,
   Point,
   RangeSelection,
+  TextDecoratorNode,
   TextNode,
 } from 'lexical';
 
@@ -33,6 +34,7 @@ import {
   $isRangeSelection,
   $isRootNode,
   $isRootOrShadowRoot,
+  $isTextDecoratorNode,
   $isTextNode,
   $setSelection,
   INTERNAL_$isBlock,
@@ -555,7 +557,7 @@ export function $moveCharacter(
  * @returns The value of the property for node.
  */
 function $getNodeStyleValueForProperty(
-  node: TextNode,
+  node: TextNode | TextDecoratorNode<unknown>,
   styleProperty: string,
   defaultValue: string,
 ): string {
@@ -613,7 +615,7 @@ export function $getSelectionStyleValueForProperty(
       continue;
     }
 
-    if ($isTextNode(node)) {
+    if ($isTextNode(node) || $isTextDecoratorNode(node)) {
       const nodeStyleValue = $getNodeStyleValueForProperty(
         node,
         styleProperty,

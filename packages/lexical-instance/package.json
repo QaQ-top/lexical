@@ -7,7 +7,7 @@
     "instance"
   ],
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "types": "index.d.ts",
   "dependencies": {
     "@lexical/code": "^0.30.0",

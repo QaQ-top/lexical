@@ -25,7 +25,7 @@ import {$createInstanceNode, InstanceNode} from '../base';
 import {$getInstanceNodeByChild} from '../utils';
 import Bar from './BarComponent';
 
-export type SerializedPlaceholderDecoratorNode = Spread<
+export type SerializedBarDecoratorNode = Spread<
   {
     __text: string;
   },
@@ -47,7 +47,7 @@ export class BarDecoratorNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(
-    serializedNode: SerializedPlaceholderDecoratorNode,
+    serializedNode: SerializedBarDecoratorNode,
   ): BarDecoratorNode {
     return $createBarDecoratorNode().updateFromJSON(serializedNode);
   }

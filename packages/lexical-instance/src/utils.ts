@@ -29,7 +29,11 @@ import normalizeClassNames from 'shared/normalizeClassNames';
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import {$isInstanceNode, InstanceNode} from './base';
-import {numberNodeKey, paragraphSymbol} from './const';
+import {
+  internalLinkNameUpdateMap,
+  numberNodeKey,
+  paragraphSymbol,
+} from './const';
 import {InstanceHeadingNode} from './heading';
 import {$isInstanceParagraphNode, InstanceParagraphNode} from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
@@ -218,6 +222,7 @@ export function $scrollTo(number: string) {
 export function clearCache() {
   paragraphSymbol.clear();
   numberNodeKey.clear();
+  internalLinkNameUpdateMap.clear();
 }
 
 export function $getInstanceNodeKeyByNumber(number: string) {
@@ -229,6 +234,18 @@ export function $getInstanceNodeByNumber(number: string) {
   const key = $getInstanceNodeKeyByNumber(number);
   if (key) {
     return $getNodeByKey<InstanceNode>(key);
+  }
+}
+
+export function updateRelatedInternalLink<T extends ElementNode>(nodes: T[]) {
+  const insNodes = nodes.filter((node) => $isInstanceNode(node));
+  if (insNodes.length) {
+    insNodes.forEach((node) => {
+      internalLinkNameUpdateMap
+        .get(node.__instance.value.number!)
+        ?.values()
+        .forEach((update) => update());
+    });
   }
 }
 
@@ -244,6 +261,7 @@ export function nodeMoveUp<T extends ElementNode>(nodes?: T[] | null) {
         previous?.insertBefore(current);
       }
     }
+    updateRelatedInternalLink(nodes);
   }
 }
 
@@ -259,6 +277,7 @@ export function nodeMoveDown<T extends ElementNode>(nodes?: T[] | null) {
         next?.insertAfter(current);
       }
     }
+    updateRelatedInternalLink(nodes);
   }
 }
 
@@ -278,6 +297,7 @@ export async function $nodeUpgrade<T extends ElementNode>(nodes?: T[] | null) {
     if (bar) {
       bar.replace($createBarDecoratorNode());
     }
+    updateRelatedInternalLink(nodes);
   }
 }
 
@@ -295,6 +315,7 @@ export async function $nodeDowngrade<T extends ElementNode>(
         bar.replace($createBarDecoratorNode());
       }
     }
+    updateRelatedInternalLink(nodes);
   }
 }
 

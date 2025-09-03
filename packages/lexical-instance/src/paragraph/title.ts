@@ -29,7 +29,7 @@ import {
 } from 'lexical';
 
 import {$isInstanceNode} from '../base';
-import {Placeholder} from '../const';
+import {internalLinkNameUpdateMap, Placeholder} from '../const';
 import {InstanceHeadingNode, isGoogleDocsTitle} from '../heading';
 import {
   $createPlaceholderDecoratorNode,
@@ -137,6 +137,10 @@ export class InstanceTitleNode extends InstanceHeadingNode {
     if (instanceNode && instanceNode.__instance.value) {
       const text = this.getTextContent().trim();
       setInstanceAttrValue(instanceNode.__instance.value, 'insDesc', text);
+      internalLinkNameUpdateMap
+        .get(instanceNode.__instance.value.number!)
+        ?.values()
+        .forEach((update) => update());
     }
     return super.updateDOM(prevNode, dom, config);
   }

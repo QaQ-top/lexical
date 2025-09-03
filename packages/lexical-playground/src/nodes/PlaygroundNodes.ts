@@ -37,6 +37,7 @@ import {
   InstanceQuoteNode,
   InstanceTableNode,
   InstanceTitleNode,
+  InternalLinkNode,
   KeywordNode,
   NumberDecoratorNode,
   PageBreakNode,
@@ -106,6 +107,7 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   InstanceCodeHighlightNode,
   InstanceTableNode,
   InstanceHorizontalRuleNode,
+  InternalLinkNode,
   Fragment,
 ];
 

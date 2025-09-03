@@ -27,7 +27,11 @@ import {InstanceConfigContext} from 'onchain-lexical-context/instanceConfig';
 import {SettingsContext, useSettings} from 'onchain-lexical-context/settings';
 import {SharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
 import {ToolbarContext} from 'onchain-lexical-context/toolBar';
-import {$createInstanceNode} from 'onchain-lexical-instance';
+import {
+  $createInstanceNode,
+  $createInstanceParagraphNode,
+  $createInternalLinkNode,
+} from 'onchain-lexical-instance';
 import {parseAllowedColor} from 'onchain-lexical-ui/ColorPicker';
 import EditorShellStyles from 'onchain-lexical-ui/EditorShellStyles';
 
@@ -202,6 +206,9 @@ function App({namespace}: {namespace: string}): JSX.Element {
         const instance = $createInstanceNode(Instance);
         root.append(instance);
         instance.selectStart();
+        const paragraph = $createInstanceParagraphNode();
+        paragraph.append($createInternalLinkNode(Instance.number));
+        instance.append(paragraph);
       }
     },
     html: {import: buildImportMap()},

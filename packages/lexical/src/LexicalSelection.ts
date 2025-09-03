@@ -90,6 +90,7 @@ import {
   toggleTextFormatType,
 } from './LexicalUtils';
 import {$createTabNode, $isTabNode} from './nodes/LexicalTabNode';
+import {$isTextDecoratorNode} from './nodes/LexicalTextDecoratorNode';
 
 export type TextPointType = {
   _selection: BaseSelection;
@@ -1183,7 +1184,7 @@ export class RangeSelection implements BaseSelection {
     }
     const applyFormatToElements = (alignWith: number | null) => {
       selectedNodes.forEach((node) => {
-        if ($isElementNode(node)) {
+        if ($isElementNode(node) || $isTextDecoratorNode(node)) {
           const newFormat = node.getFormatFlags(formatType, alignWith);
           node.setTextFormat(newFormat);
         }

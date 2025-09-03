@@ -299,6 +299,11 @@ export type {SerializedRootNode} from './nodes/LexicalRootNode';
 export {$isRootNode, RootNode} from './nodes/LexicalRootNode';
 export type {SerializedTabNode} from './nodes/LexicalTabNode';
 export {$createTabNode, $isTabNode, TabNode} from './nodes/LexicalTabNode';
+export {
+  $isTextDecoratorNode,
+  type SerializedTextDecoratorNode,
+  TextDecoratorNode,
+} from './nodes/LexicalTextDecoratorNode';
 export type {
   SerializedTextNode,
   TextFormatType,

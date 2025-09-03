@@ -291,7 +291,7 @@ export default function Editor(): JSX.Element {
           />
         )} */}
       </div>
-      {/* {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />} */}
+      {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />}
     </>
   );
 }

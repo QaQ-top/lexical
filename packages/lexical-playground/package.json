@@ -1,6 +1,6 @@
 {
   "name": "onchain-rich-text-editor",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "files": [
     "lib",
@@ -37,7 +37,7 @@
     "lodash-es": "^4.17.21",
     "onchain-lexical-components": "^0.0.2",
     "onchain-lexical-context": "^0.0.2",
-    "onchain-lexical-instance": "^0.0.2",
+    "onchain-lexical-instance": "^0.0.3",
     "onchain-lexical-markdown": "^0.0.2",
     "onchain-lexical-ui": "^0.0.2",
     "onchain-utility": "^0.0.3",

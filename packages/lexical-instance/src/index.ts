@@ -63,6 +63,11 @@ export {
   type InlineImagePayload,
 } from './image/InlineImageNode';
 export {InstancePlugin} from './instancePlugin';
+export {
+  $createInternalLinkNode,
+  $isInternalLinkNode,
+  InternalLinkNode,
+} from './internalLink';
 export {$createKeywordNode, $isKeywordNode, KeywordNode} from './keyword';
 export {
   $createInstanceListNode,

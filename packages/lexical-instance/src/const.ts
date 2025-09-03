@@ -64,6 +64,11 @@ export const numberNodeKey = new NumberNodeKey();
 
 export const fixedAddress = new Map<string, {value: Instance}>();
 
+export const internalLinkNameUpdateMap = new Map<
+  string,
+  Map<string, () => void>
+>();
+
 export const OPEN_CREATE_WINDOW: LexicalCommand<{
   isAddChildLevel: boolean;
   number: string;
