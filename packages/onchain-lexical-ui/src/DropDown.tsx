@@ -73,12 +73,16 @@ export function DropDownItem({
 function DropDownItems({
   children,
   dropDownRef,
+  arrow = false,
   zIndex = 100,
+  arrowX,
   onClose,
 }: {
   children: React.ReactNode;
   dropDownRef: React.Ref<HTMLDivElement>;
   zIndex?: number;
+  arrow?: boolean;
+  arrowX?: number;
   onClose: () => void;
 }) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
@@ -143,9 +147,9 @@ function DropDownItems({
   return (
     <DropDownContext.Provider value={contextValue}>
       <div
-        className={`${Styles.dropdown}`}
+        className={`${Styles.dropdown} ${arrow ? Styles.arrow : ''}`}
         ref={dropDownRef}
-        style={{zIndex}}
+        style={{left: arrowX, zIndex}}
         onKeyDown={handleKeyDown}>
         {children}
       </div>
@@ -156,12 +160,15 @@ function DropDownItems({
 export default function DropDown({
   disabled = false,
   showIcon = true,
+  arrow = false,
+  arrowX,
   buttonLabel,
   buttonAriaLabel,
   buttonClassName,
   buttonIconClassName,
   children,
   stopCloseOnClickSelf,
+  onOpen,
 }: {
   disabled?: boolean;
   buttonAriaLabel?: string;
@@ -171,6 +178,9 @@ export default function DropDown({
   showIcon?: boolean;
   children: ReactNode;
   stopCloseOnClickSelf?: boolean;
+  arrow?: boolean;
+  arrowX?: number;
+  onOpen?: (value: boolean) => void;
 }): JSX.Element {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -259,6 +269,26 @@ export default function DropDown({
     };
   }, [buttonRef, dropDownRef, showDropDown]);
 
+  useEffect(() => {
+    const wheel = (e: WheelEvent) => {
+      if (e.target instanceof HTMLElement) {
+        if (!e.target.closest(`.${Styles.dropdown}`)) {
+          setShowDropDown(false);
+        }
+      }
+    };
+    window.addEventListener('wheel', wheel);
+    return () => {
+      window.removeEventListener('wheel', wheel);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (onOpen) {
+      onOpen(showDropDown);
+    }
+  }, [showDropDown]);
+
   return (
     <>
       <button
@@ -280,6 +310,8 @@ export default function DropDown({
           <DropDownItems
             dropDownRef={dropDownRef}
             zIndex={zIndex}
+            arrow={arrow}
+            arrowX={arrowX}
             onClose={handleClose}>
             {children}
           </DropDownItems>,

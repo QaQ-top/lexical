@@ -39,6 +39,9 @@ export interface InstanceConfig {
   namespace: string;
   icl: InstanceConfigLet;
   setIcl(params: Partial<InstanceConfigLet>): void;
+  components?: {
+    TrackLinkList?: (props: {number: string}) => JSX.Element;
+  };
   preview?: boolean;
   getInstanceIcon: (objectApicode: string) => string;
   uploadFiles(

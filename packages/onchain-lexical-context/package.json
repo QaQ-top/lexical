@@ -1,12 +1,12 @@
 {
   "name": "onchain-lexical-context",
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@lexical/react": "^0.30.0",
     "@lexical/yjs": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-ui": "^0.0.2",
+    "onchain-lexical-ui": "^0.0.3",
     "onchain-utility": "^0.0.4",
     "y-websocket": "^1.5.4"
   },

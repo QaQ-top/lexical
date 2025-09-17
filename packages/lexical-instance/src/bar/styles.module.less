@@ -11,7 +11,33 @@
   flex-direction: column;
   align-items: center;
   .link {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    > button > span > div {
+      position: relative;
+      > i {
+        position: absolute;
+        font-size: 10px;
+        color: #fff;
+        right: -2px;
+        bottom: -2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: flex;
+        font-style: normal;
+        align-items: center;
+        justify-content: center;
+        background-color: @themeColor;
+        &:empty {
+          display: none;
+        }
+      }
+    }
+  }
+  .hiddenLinkCount {
+    > button > span > div > i {
+      display: none;
+    }
   }
   > * {
     display: inline-flex;

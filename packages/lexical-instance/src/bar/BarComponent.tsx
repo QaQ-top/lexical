@@ -11,9 +11,9 @@ import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
-import {Icon} from 'onchain-lexical-ui/Icon';
+import {Icon, StaticIcon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
-import {useCallback, useMemo} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 
 import {OPEN_CREATE_WINDOW} from '../const';
 import {Instance} from '../types';
@@ -26,8 +26,10 @@ const Bar = (props: {
 }): JSX.Element => {
   const {insNodeKey, instance} = props;
   const [editor] = useLexicalComposerContext();
-  const {preview, selectedInstance, getInstanceIcon} = useInstanceConfig();
+  const {preview, selectedInstance, getInstanceIcon, components} =
+    useInstanceConfig();
   const {extra} = useSettings();
+  const [open, setOpen] = useState(false);
 
   // icon-front-link1
   const isSelected = useMemo(() => {
@@ -72,6 +74,12 @@ const Bar = (props: {
     return 'demand1';
   }, [instance]);
 
+  const Components = useMemo(() => {
+    return {
+      ...components,
+    };
+  }, [components]);
+
   const hasChildren = !!instance?.children?.length || instance?.insBom;
 
   return (
@@ -83,11 +91,33 @@ const Bar = (props: {
         />
         {!preview && extra.showLeftToolbar !== false ? (
           <>
-            <Icon
-              className={`${Styles.hover} ${Styles.link}`}
-              type="icon-front-link1"
-            />
+            <span
+              className={`${Styles.link} ${
+                open ? Styles.hiddenLinkCount : ''
+              }`}>
+              <DropDown
+                arrow={true}
+                showIcon={false}
+                disabled={!instance?.trackLinkCount}
+                stopCloseOnClickSelf={true}
+                buttonLabel={
+                  // [TODO] 显示 trackLinkCount
+                  <div>
+                    <i>{instance?.trackLinkCount || ''}</i>
+                    <StaticIcon
+                      className={`${Styles.hover}`}
+                      type="icon-front-link1"
+                    />
+                  </div>
+                }
+                onOpen={setOpen}>
+                {Components.TrackLinkList && instance ? (
+                  <Components.TrackLinkList number={instance.number!} />
+                ) : null}
+              </DropDown>
+            </span>
             <DropDown
+              arrow={true}
               showIcon={false}
               buttonLabel={
                 <Icon className={Styles.hover} type="icon-front-xinzeng1" />
