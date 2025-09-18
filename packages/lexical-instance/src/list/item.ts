@@ -16,6 +16,7 @@ import {
   COMMAND_PRIORITY_NORMAL,
   DOMConversionMap,
   DOMConversionOutput,
+  EditorConfig,
   ElementNode,
   INSERT_PARAGRAPH_COMMAND,
   LexicalEditor,
@@ -31,6 +32,7 @@ import {
   $createInstanceParagraphNode,
   InstanceParagraphNode,
 } from '../paragraph';
+import {setDisable} from '../utils';
 import {$createInstanceListNode} from '.';
 import {
   $handleIndent,
@@ -67,6 +69,12 @@ export class InstanceListItemNode extends ListItemNode {
 
   static importJSON(serializedNode: SerializedInstanceListItemNode) {
     return $createInstanceListItemNode().updateFromJSON(serializedNode);
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   updateFromJSON(

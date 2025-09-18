@@ -12,6 +12,7 @@ import {
   $isLineBreakNode,
   DOMConversionMap,
   DOMConversionOutput,
+  EditorConfig,
   ElementFormatType,
   LexicalNode,
   RangeSelection,
@@ -24,6 +25,7 @@ import {
   $createInstanceParagraphNode,
   InstanceParagraphNode,
 } from '../paragraph';
+import {setDisable} from '../utils';
 
 export type SerializedInstanceQuoteNode = SerializedElementNode;
 
@@ -50,6 +52,12 @@ export class InstanceQuoteNode extends QuoteNode {
     serializedNode: SerializedInstanceQuoteNode,
   ): InstanceQuoteNode {
     return $createInstanceQuoteNode().updateFromJSON(serializedNode);
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   // Mutation

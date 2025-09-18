@@ -27,7 +27,7 @@ import {
 
 import {$isInstanceNode, $remove} from '../base';
 import {InstanceParagraphType, paragraphSymbol, Placeholder} from '../const';
-import {$isTextTypeNode} from '../utils';
+import {$isTextTypeNode, setDisable} from '../utils';
 import {$convertToTitle, $isInstanceTitleNode} from './title';
 
 export type SerializedInstanceParagraphNode = Spread<
@@ -108,6 +108,7 @@ export class InstanceParagraphNode extends ParagraphNode {
     this.initSymbol();
     const element = super.createDOM(config);
     element.style.paddingLeft = this.__paddingLeft;
+    setDisable(this, element);
     return element;
   }
 

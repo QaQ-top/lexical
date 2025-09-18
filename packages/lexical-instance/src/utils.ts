@@ -330,3 +330,10 @@ export function setTemporaryContentText<T extends Instance>(
 export function getTemporaryContentText<T extends Instance>(instance: T) {
   return instance.__contentText || '';
 }
+
+export function setDisable(node: ElementNode, element: HTMLElement) {
+  const parent = node.getParent();
+  if ($isInstanceNode(parent)) {
+    element.inert = parent.__instance.value.disable || false;
+  }
+}

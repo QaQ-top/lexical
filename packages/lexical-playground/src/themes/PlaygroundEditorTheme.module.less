@@ -263,16 +263,16 @@
   overflow: clip;
   background-color: #ffffff;
   position: sticky;
-  z-index: 2;
-  top: 44px;
+  z-index: 1;
+  top: -1px;
 }
 
 .PlaygroundEditorTheme__tableFrozenRow tr:nth-of-type(1) > th {
   overflow: clip;
   background-color: #f2f3f5;
   position: sticky;
-  z-index: 2;
-  top: 44px;
+  z-index: 1;
+  top: -1px;
 }
 
 .PlaygroundEditorTheme__tableFrozenRow tr:nth-of-type(1) > th:after,
@@ -297,6 +297,10 @@
   position: sticky;
   z-index: 2;
   left: 0;
+}
+
+.PlaygroundEditorTheme__tableFrozenRow.PlaygroundEditorTheme__tableFrozenColumn tr:nth-of-type(1) > th:first-child,td:first-child {
+  z-index: 3;
 }
 
 .PlaygroundEditorTheme__tableFrozenColumn tr > :first-child::after {

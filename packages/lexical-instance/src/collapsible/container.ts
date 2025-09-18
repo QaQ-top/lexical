@@ -25,6 +25,7 @@ import {
   Spread,
 } from 'lexical';
 
+import {setDisable} from '../utils';
 import Styles from './collapsible.module.less';
 import {setDomHiddenUntilFound} from './utils';
 
@@ -103,7 +104,7 @@ export class CollapsibleContainerNode extends ElementNode {
       dom = detailsDom;
     }
     dom.classList.add(Styles.container);
-
+    setDisable(this, dom);
     return dom;
   }
 

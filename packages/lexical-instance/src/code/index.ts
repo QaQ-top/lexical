@@ -9,6 +9,7 @@
 import type {
   DOMConversionMap,
   DOMConversionOutput,
+  EditorConfig,
   LexicalNode,
   ParagraphNode,
   RangeSelection,
@@ -29,6 +30,7 @@ import {
 
 import {$removedFixedParagraph} from '../base';
 import {$createInstanceParagraphNode} from '../paragraph';
+import {setDisable} from '../utils';
 import {
   $createInstanceCodeHighlightNode,
   $getFirstCodeNodeOfLine,
@@ -134,6 +136,12 @@ export class InstanceCodeNode extends CodeNode {
 
   static importJSON(serializedNode: SerializedCodeNode): InstanceCodeNode {
     return $createInstanceCodeNode().updateFromJSON(serializedNode);
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   // Mutation

@@ -20,6 +20,7 @@ import {
   SerializedElementNode,
 } from 'lexical';
 
+import {setDisable} from '../utils';
 import Styles from './collapsible.module.less';
 import {$isCollapsibleContainerNode} from './container';
 import {$isCollapsibleContentNode} from './content';
@@ -60,6 +61,7 @@ export class CollapsibleTitleNode extends ElementNode {
         });
       });
     }
+    setDisable(this, dom);
     return dom;
   }
 

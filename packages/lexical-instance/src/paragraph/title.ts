@@ -35,7 +35,7 @@ import {
   $createPlaceholderDecoratorNode,
   $isPlaceholderDecoratorNode,
 } from '../placeholder';
-import {getLatestValue, setInstanceAttrValue} from '../utils';
+import {getLatestValue, setDisable, setInstanceAttrValue} from '../utils';
 import {$isInstanceParagraphNode, InstanceParagraphNode} from '.';
 
 export class InstanceTitleNode extends InstanceHeadingNode {
@@ -108,6 +108,12 @@ export class InstanceTitleNode extends InstanceHeadingNode {
     return $createInstanceTitleNode(serializedNode.tag).updateFromJSON(
       serializedNode,
     );
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   exportDOM(editor: LexicalEditor): DOMExportOutput {

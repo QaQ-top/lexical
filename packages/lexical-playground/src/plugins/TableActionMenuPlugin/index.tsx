@@ -872,7 +872,7 @@ function TableCellActionMenuContainer({
       const anchorRect = anchorElem.getBoundingClientRect();
       const top = tableCellRect.top - anchorRect.top;
       const left = tableCellRect.right - anchorRect.left;
-      menu.style.transform = `translate(${left}px, ${top}px)`;
+      menu.style.transform = `translate(${left + 5}px, ${top - 7}px)`;
     }
   }, [editor, anchorElem, checkTableCellOverflow]);
 

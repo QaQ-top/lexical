@@ -15,6 +15,7 @@ import {
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
+  EditorConfig,
   ElementFormatType,
   isHTMLElement,
   LexicalEditor,
@@ -28,6 +29,7 @@ import {
   $createInstanceParagraphNode,
   $isInstanceParagraphNode,
 } from '../paragraph';
+import {setDisable} from '../utils';
 
 export function isGoogleDocsTitle(domNode: Node): boolean {
   if (domNode.nodeName.toLowerCase() === 'span') {
@@ -103,6 +105,12 @@ export class InstanceHeadingNode extends HeadingNode {
     return $createInstanceHeadingNode(serializedNode.tag).updateFromJSON(
       serializedNode,
     );
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   exportDOM(editor: LexicalEditor): DOMExportOutput {

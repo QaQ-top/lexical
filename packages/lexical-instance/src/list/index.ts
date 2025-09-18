@@ -13,6 +13,7 @@ import {
   $isElementNode,
   DOMConversionMap,
   DOMConversionOutput,
+  EditorConfig,
   isHTMLElement,
   LexicalNode,
   LexicalUpdateJSON,
@@ -21,6 +22,7 @@ import {
 } from 'lexical';
 import invariant from 'shared/invariant';
 
+import {setDisable} from '../utils';
 import {
   mergeNextSiblingListIfSameType,
   updateChildrenListItemValue,
@@ -75,6 +77,12 @@ export class InstanceListNode extends ListNode {
 
   static importJSON(serializedNode: SerializedInstanceListNode) {
     return $createInstanceListNode().updateFromJSON(serializedNode);
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   updateFromJSON(

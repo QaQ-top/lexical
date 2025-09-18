@@ -34,6 +34,7 @@ import {
   COMMAND_PRIORITY_LOW,
   DOMConversionMap,
   DOMConversionOutput,
+  EditorConfig,
   LexicalEditor,
   LexicalNode,
   SerializedElementNode,
@@ -42,6 +43,7 @@ import {
 import invariant from 'shared/invariant';
 
 import {$createInstanceParagraphNode} from '../paragraph';
+import {setDisable} from '../utils';
 
 export type SerializedInstanceTableNode = Spread<
   {
@@ -100,6 +102,12 @@ export class InstanceTableNode extends TableNode {
     serializedNode: SerializedInstanceTableNode,
   ): InstanceTableNode {
     return $createInstanceTableNode().updateFromJSON(serializedNode);
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = super.createDOM(config);
+    setDisable(this, element);
+    return element;
   }
 
   remove(preserveEmptyParent?: boolean): void {

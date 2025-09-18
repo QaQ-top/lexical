@@ -64,6 +64,7 @@ export const numberNodeKey = new NumberNodeKey();
 
 export const fixedAddress = new Map<string, {value: Instance}>();
 
+/** 用来存储内联链接，更新文本函数，用来实现链接目标标题变化时，引用处可以实时更新 */
 export const internalLinkNameUpdateMap = new Map<
   string,
   Map<string, () => void>

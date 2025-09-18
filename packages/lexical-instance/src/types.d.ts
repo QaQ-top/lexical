@@ -25,6 +25,7 @@ export interface Instance
   extends InstanceBaseInfo,
     Partial<InstanceExtraAttributes> {
   children?: Instance[];
+  disable?: boolean;
   trackLinkCount?: number | null;
   __contentText?: string;
 }
