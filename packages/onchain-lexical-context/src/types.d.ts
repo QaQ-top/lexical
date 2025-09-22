@@ -30,6 +30,7 @@ export interface BuiltInInstanceConfig {
 
 export interface InstanceConfigLet {
   loading: boolean;
+  verifyPermissions: boolean;
   table: React.MutableRefObject<{
     initSerializedData: string;
     cancelModification?: () => void;

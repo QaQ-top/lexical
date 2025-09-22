@@ -18,7 +18,7 @@ import classNames from 'classnames';
 // import { history } from '@/app/main/compatible';
 import {includes} from 'lodash';
 import {useReactive} from 'onchain-utility/hooks';
-import {useEffect, useRef} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 
 import Styles from './index.module.less';
 
@@ -92,6 +92,21 @@ const ScrollBarAssembly: React.FC<ScrollBarAssembly> = (props) => {
     };
   }, []);
 
+  const UpIcon = useMemo(() => {
+    return <UpOutlined className={Styles.iconBox} />;
+  }, []);
+
+  const LeftIcon = useMemo(() => {
+    return <LeftOutlined className={Styles.iconBox} />;
+  }, []);
+  const DownIcon = useMemo(() => {
+    return <DownOutlined className={Styles.iconBox} />;
+  }, []);
+
+  const RightIcon = useMemo(() => {
+    return <RightOutlined className={Styles.iconBox} />;
+  }, []);
+
   return (
     <div
       className={`${Styles.scrollBarAssembly} ${props.className}`}
@@ -132,11 +147,7 @@ const ScrollBarAssembly: React.FC<ScrollBarAssembly> = (props) => {
                 });
               }
             }}>
-            {props.direction ? (
-              <UpOutlined className={Styles.iconBox} />
-            ) : (
-              <LeftOutlined className={Styles.iconBox} />
-            )}
+            {props.direction ? UpIcon : LeftIcon}
           </div>
         )}
       {props.children}
@@ -165,11 +176,7 @@ const ScrollBarAssembly: React.FC<ScrollBarAssembly> = (props) => {
                 });
               }
             }}>
-            {props.direction ? (
-              <DownOutlined className={Styles.iconBox} />
-            ) : (
-              <RightOutlined className={Styles.iconBox} />
-            )}
+            {props.direction ? DownIcon : RightIcon}
           </div>
         )}
     </div>

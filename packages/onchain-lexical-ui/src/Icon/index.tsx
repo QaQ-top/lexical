@@ -26,13 +26,17 @@ export const Icon: React.FC<IconFontProps<string>> = ({
 }) => {
   const {extra} = useSettings();
   const AliIconFont = AliIconFontFn(extra.iconScriptUrl);
-  return (
-    <AliIconFont
-      {...props}
-      className={`${Styles.icon} ${className}`}
-      type={type}
-    />
-  );
+  const staticIcon = useMemo(() => {
+    return (
+      <AliIconFont
+        {...props}
+        className={`${Styles.icon} ${className}`}
+        type={type}
+      />
+    );
+  }, []);
+
+  return staticIcon;
 };
 
 export const StaticIcon: React.FC<IconFontProps<string>> = ({

@@ -138,19 +138,24 @@ function loopDescendants<T extends Item>(
 /** 数组对象扁平化 */
 export function arrayAttributeFlat<T extends Item>(
   {data, childrenKey = 'children'}: {data: T[]; childrenKey?: string},
-  fn?: (item: T) => void,
+  fn?: (item: T, index: number, parent?: T) => void,
 ): T[] {
   const stack = [...data];
   const array = [];
+  const parentMap = new Map<T, T>();
+  let index = 0;
   while (stack.length) {
     const item = stack.shift()!;
     const children = item ? (item as any)[childrenKey] : [];
-    fn?.(item);
+    fn?.(item, index, parentMap.get(item));
     array.push(item);
+    index++;
     if (children?.length) {
       // 有使用的地方依赖这个 减法 生产的顺序谨慎修改
       for (let i = children.length - 1; i >= 0; i--) {
-        stack.unshift(children[i]);
+        const child = children[i];
+        parentMap.set(child, item);
+        stack.unshift(child);
       }
     }
   }

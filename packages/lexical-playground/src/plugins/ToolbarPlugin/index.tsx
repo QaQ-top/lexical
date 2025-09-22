@@ -62,7 +62,7 @@ import {
 } from 'onchain-lexical-instance';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import DropdownColorPicker from 'onchain-lexical-ui/DropdownColorPicker';
-import {Dispatch, useCallback, useEffect, useState} from 'react';
+import React, {Dispatch, useCallback, useEffect, useState} from 'react';
 
 import useModal from '../../hooks/useModal';
 import {$createStickyNode} from '../../nodes/StickyNode';
@@ -187,7 +187,7 @@ function dropDownActiveClass(active: boolean) {
   }
 }
 
-function BlockFormatDropDown({
+const BlockFormatDropDown = React.memo(function ({
   editor,
   blockType,
   rootType,
@@ -294,13 +294,13 @@ function BlockFormatDropDown({
       </DropDownItem>
     </DropDown>
   );
-}
+});
 
 function Divider(): JSX.Element {
   return <div className="divider" />;
 }
 
-function FontDropDown({
+const FontDropDown = React.memo(function ({
   editor,
   value,
   style,
@@ -353,9 +353,9 @@ function FontDropDown({
       )}
     </DropDown>
   );
-}
+});
 
-function ElementFormatDropdown({
+const ElementFormatDropdown = React.memo(function ({
   editor,
   value,
   isRTL,
@@ -474,9 +474,9 @@ function ElementFormatDropdown({
       </DropDownItem>
     </DropDown>
   );
-}
+});
 
-export default function ToolbarPlugin({
+export default React.memo(function ToolbarPlugin({
   editor,
   activeEditor,
   setActiveEditor,
@@ -1225,4 +1225,4 @@ export default function ToolbarPlugin({
       </ScrollBarAssembly>
     </div>
   );
-}
+});
