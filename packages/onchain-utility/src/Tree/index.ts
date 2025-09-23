@@ -137,7 +137,11 @@ function loopDescendants<T extends Item>(
 
 /** 数组对象扁平化 */
 export function arrayAttributeFlat<T extends Item>(
-  {data, childrenKey = 'children'}: {data: T[]; childrenKey?: string},
+  {
+    data,
+    childrenKey = 'children',
+    getChildren,
+  }: {data: T[]; childrenKey?: string; getChildren?: (item: T) => T[]},
   fn?: (item: T, index: number, parent?: T) => void,
 ): T[] {
   const stack = [...data];
@@ -146,7 +150,11 @@ export function arrayAttributeFlat<T extends Item>(
   let index = 0;
   while (stack.length) {
     const item = stack.shift()!;
-    const children = item ? (item as any)[childrenKey] : [];
+    const children = item
+      ? getChildren
+        ? getChildren(item)
+        : (item as any)[childrenKey]
+      : [];
     fn?.(item, index, parentMap.get(item));
     array.push(item);
     index++;
