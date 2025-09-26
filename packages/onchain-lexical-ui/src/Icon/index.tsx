@@ -34,7 +34,7 @@ export const Icon: React.FC<IconFontProps<string>> = ({
         type={type}
       />
     );
-  }, []);
+  }, [className, props, type]);
 
   return staticIcon;
 };

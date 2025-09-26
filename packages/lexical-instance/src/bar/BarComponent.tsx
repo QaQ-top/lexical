@@ -8,6 +8,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {$getNodeByKey} from 'lexical';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
@@ -15,6 +16,7 @@ import {Icon, StaticIcon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
 import {useCallback, useMemo, useState} from 'react';
 
+import {$isInstanceNode} from '../base';
 import {OPEN_CREATE_WINDOW} from '../const';
 import {Instance} from '../types';
 import Styles from './styles.module.less';
@@ -26,8 +28,13 @@ const Bar = (props: {
 }): JSX.Element => {
   const {insNodeKey, instance} = props;
   const [editor] = useLexicalComposerContext();
-  const {preview, selectedInstance, getInstanceIcon, components} =
-    useInstanceConfig();
+  const {
+    preview,
+    selectedInstance,
+    getInstanceIcon,
+    components,
+    setSelectedInstance,
+  } = useInstanceConfig();
   const {extra} = useSettings();
   const [open, setOpen] = useState(false);
 
@@ -142,6 +149,21 @@ const Bar = (props: {
           <Icon
             className={isSelected ? Styles.selected : undefined}
             type="icon-front-corresponding"
+            onClick={() => {
+              if (insNodeKey) {
+                editor.read(() => {
+                  const node = $getNodeByKey(insNodeKey);
+                  if ($isInstanceNode(node)) {
+                    setSelectedInstance([
+                      {
+                        nodeKey: node.getKey(),
+                        number: node.__instance.value.number!,
+                      },
+                    ]);
+                  }
+                });
+              }
+            }}
           />
         </span>
       </div>
