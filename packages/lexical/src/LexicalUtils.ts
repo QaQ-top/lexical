@@ -1287,6 +1287,7 @@ export function scrollIntoViewIfNeeded(
   editor: LexicalEditor,
   selectionRect: DOMRect,
   rootElement: HTMLElement,
+  showWindowElement?: HTMLElement | null,
 ): void {
   const doc = getDOMOwnerDocument(rootElement);
   const defaultView = getDefaultView(doc);
@@ -1298,6 +1299,9 @@ export function scrollIntoViewIfNeeded(
   let targetTop = 0;
   let targetBottom = 0;
   let element: HTMLElement | null = rootElement;
+  const {height: windowHeight = 0} = showWindowElement
+    ? showWindowElement.getBoundingClientRect()
+    : {};
 
   while (element !== null) {
     const isBodyElement = element === doc.body;
@@ -1314,7 +1318,7 @@ export function scrollIntoViewIfNeeded(
     if (currentTop < targetTop) {
       diff = -(targetTop - currentTop);
     } else if (currentBottom > targetBottom) {
-      diff = currentBottom - targetBottom;
+      diff = currentBottom - targetBottom + (windowHeight - 40);
     }
 
     if (diff !== 0) {

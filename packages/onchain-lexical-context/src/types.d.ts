@@ -1,4 +1,5 @@
 import {EditorState} from 'lexical';
+import type {Instance} from 'onchain-lexical-instance';
 import React from 'react';
 
 /**
@@ -14,6 +15,7 @@ export interface ExtraSettings {
   showTreeView?: boolean;
   showHeaderToolbar?: boolean;
   showLeftToolbar?: boolean;
+  showRightToolbar?: boolean;
   getZIndex?: () => number;
   reduceZIndex?: () => void;
 }
@@ -33,6 +35,10 @@ export interface InstanceConfigLet {
   verifyPermissions: boolean;
   table: React.MutableRefObject<{
     initSerializedData: string;
+    saveModification?: (params: {
+      onSaved?: () => Promise<void>;
+      setLoading?: (value: boolean) => void;
+    }) => void | Promise<void>;
     cancelModification?: () => void;
   }>;
 }
@@ -44,6 +50,11 @@ export interface InstanceConfig {
     TrackLinkList?: (props: {number: string}) => JSX.Element;
   };
   preview?: boolean;
+  checkOut: (instance: Instance) => Instance | void | Promise<Instance | void>;
+  checkIn: (instance: Instance) => Instance | void | Promise<Instance | void>;
+  cancelCheckout: (
+    instance: Instance,
+  ) => Instance | void | Promise<Instance | void>;
   getInstanceIcon: (objectApicode: string) => string;
   uploadFiles(
     params: {type: string; text: string; suffix: string}[],

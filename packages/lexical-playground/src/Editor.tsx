@@ -114,6 +114,7 @@ export default function Editor(): JSX.Element {
     : 'Enter some plain text...';
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
+  const [treeViewOffset, setTreeViewOffset] = useState(100);
   const [isSmallWidthViewport, setIsSmallWidthViewport] =
     useState<boolean>(false);
   const [editor] = useLexicalComposerContext();
@@ -291,7 +292,36 @@ export default function Editor(): JSX.Element {
           />
         )} */}
       </div>
-      {/* {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />} */}
+      {(showTreeView || VITE_IS_DEVELOPMENT) && (
+        <div
+          style={{
+            bottom: 0,
+            opacity: 0.7,
+            position: 'fixed',
+            right: 0,
+            zIndex: 9999,
+          }}>
+          <div
+            style={{
+              bottom: 0,
+              left: `-${treeViewOffset}%`,
+              opacity: 0.7,
+              overflow: 'scroll',
+              position: 'fixed',
+              top: 0,
+              transition: 'all 0.35s ease',
+              zIndex: 9999,
+            }}>
+            <TreeViewPlugin />
+          </div>
+          <button
+            onClick={() => {
+              setTreeViewOffset(treeViewOffset === 100 ? 0 : 100);
+            }}>
+            {'>'}
+          </button>
+        </div>
+      )}
     </>
   );
 }

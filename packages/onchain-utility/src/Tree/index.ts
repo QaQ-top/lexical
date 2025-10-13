@@ -414,6 +414,7 @@ function _simpleGetRel<T extends Item>({
 
 type MoveParams<T> = Params<T> & {
   selectKeys: string[];
+  onMove?: (params: {selected: T[]; parent: T}) => boolean;
   onMoved?: (moves: T[]) => void;
   onError?: (params: {selected: T[]; isMoveUp?: boolean}) => boolean | void;
 };
@@ -424,6 +425,7 @@ export function move<T extends Item>({
   isMoveUp,
   selectKeys,
   childrenKey = 'children',
+  onMove,
   onMoved,
   onError,
 }: MoveParams<T> & {
@@ -443,7 +445,12 @@ export function move<T extends Item>({
       const changePosition = isMoveUp
         ? start.beforeSibling.pop()
         : end.afterSibling.shift();
-      if (changePosition) {
+      // 锚点的父级
+      const anchorParent = isMoveUp ? start.parent : end.parent;
+      if (
+        changePosition &&
+        (!onMove || onMove({parent: anchorParent!, selected}))
+      ) {
         // 锚点的父级
         const anchorParent = isMoveUp ? start.parent : end.parent;
         // 删除选中
@@ -499,6 +506,7 @@ export async function upgrade<T extends Item>({
   onUpgrade?: (params: {
     selected: T[];
     parent: T;
+    grandpa?: T;
   }) => Promise<boolean> | boolean;
   onUpgraded?: (upgrades: T[]) => void;
 }) {
@@ -516,7 +524,7 @@ export async function upgrade<T extends Item>({
       const [start] = relArr;
       const end = relArr[len - 1];
       const {parent} = start;
-      if (parent && (!onUpgrade || (await onUpgrade({parent, selected})))) {
+      if (parent) {
         const parentRel = _simpleGetRel({
           childrenKey,
           data,
@@ -524,6 +532,9 @@ export async function upgrade<T extends Item>({
           signKey,
         });
         const {parent: grandpa, index: parentIndex} = parentRel;
+        if (onUpgrade && !(await onUpgrade({grandpa, parent, selected}))) {
+          continue;
+        }
         // const originalOldPrtCdr = parent.children?.slice(0, Infinity) || [];
         let followChildren: T[];
         /** 无法跟随的节点 */

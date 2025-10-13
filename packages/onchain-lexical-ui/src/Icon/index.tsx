@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable lexical/no-optional-chaining */
 import type {IconFontProps} from '@ant-design/icons/lib/components/IconFont';
 
 import {createFromIconfontCN} from '@ant-design/icons';
@@ -28,11 +29,13 @@ export const Icon: React.FC<IconFontProps<string>> = ({
   const AliIconFont = AliIconFontFn(extra.iconScriptUrl);
   const staticIcon = useMemo(() => {
     return (
-      <AliIconFont
-        {...props}
-        className={`${Styles.icon} ${className}`}
-        type={type}
-      />
+      <span className={props.disabled ? Styles.disabled : undefined}>
+        <AliIconFont
+          {...props}
+          className={`${Styles.icon} ${className}`}
+          type={type}
+        />
+      </span>
     );
   }, [className, props, type]);
 
@@ -49,11 +52,13 @@ export const StaticIcon: React.FC<IconFontProps<string>> = ({
 
   const staticIcon = useMemo(() => {
     return (
-      <AliIconFont
-        {...props}
-        className={`${Styles.icon} ${className}`}
-        type={type}
-      />
+      <span className={props.disabled ? Styles.disabled : undefined}>
+        <AliIconFont
+          {...props}
+          className={`${Styles.icon} ${className}`}
+          type={type}
+        />
+      </span>
     );
   }, []);
 

@@ -8,16 +8,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$getNodeByKey} from 'lexical';
+import {mergeRegister} from '@lexical/utils';
+import {$getNodeByKey, COMMAND_PRIORITY_EDITOR} from 'lexical';
 import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import {Icon, StaticIcon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
-import {$isInstanceNode} from '../base';
-import {OPEN_CREATE_WINDOW} from '../const';
+import {$isInstanceNode, InstanceNode} from '../base';
+import {COMPONENT_UPDATE, OPEN_CREATE_WINDOW} from '../const';
 import {Instance} from '../types';
 import Styles from './styles.module.less';
 
@@ -26,7 +27,7 @@ const Bar = (props: {
   insNodeKey?: string;
   instance?: Instance;
 }): JSX.Element => {
-  const {insNodeKey, instance} = props;
+  const {insNodeKey} = props;
   const [editor] = useLexicalComposerContext();
   const {
     preview,
@@ -34,9 +35,16 @@ const Bar = (props: {
     getInstanceIcon,
     components,
     setSelectedInstance,
+    checkIn,
+    checkOut,
+    cancelCheckout,
   } = useInstanceConfig();
   const {extra} = useSettings();
   const [open, setOpen] = useState(false);
+  const [instance, setInstance] = useState(props.instance);
+  const [parentInstance, setParentInstance] = useState<
+    Instance | undefined | null
+  >(null);
 
   // icon-front-link1
   const isSelected = useMemo(() => {
@@ -87,7 +95,44 @@ const Bar = (props: {
     };
   }, [components]);
 
+  useEffect(() => {
+    editor.read(() => {
+      setParentInstance(
+        ($getNodeByKey(insNodeKey!)?.getParent() as InstanceNode)?.__instance
+          ?.value,
+      );
+    });
+  }, [insNodeKey, editor]);
+
   const hasChildren = !!instance?.children?.length || instance?.insBom;
+
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerCommand(
+        COMPONENT_UPDATE,
+        ({name, insNodeKey: key}) => {
+          if (name !== 'bar') {
+            return false;
+          }
+          if (key) {
+            if (key !== insNodeKey) {
+              return false;
+            }
+          }
+          if (insNodeKey) {
+            const instanceNode = $getNodeByKey(insNodeKey);
+            if ($isInstanceNode(instanceNode)) {
+              const instance = instanceNode.__instance.value;
+              setInstance({...instance});
+            }
+          }
+
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+    );
+  }, []);
 
   return (
     <>
@@ -130,12 +175,18 @@ const Bar = (props: {
                 <Icon className={Styles.hover} type="icon-front-xinzeng1" />
               }
               buttonAriaLabel="Formatting options for text style">
-              <DropDownItem onClick={() => onInsertBlock(false)}>
-                {translateI18n('[TODO] 国际化', {
-                  placeholder: '添加到同级',
-                })}
-              </DropDownItem>
-              <DropDownItem onClick={() => onInsertBlock(true)}>
+              {parentInstance ? (
+                <DropDownItem
+                  disabled={parentInstance.disable}
+                  onClick={() => onInsertBlock(false)}>
+                  {translateI18n('[TODO] 国际化', {
+                    placeholder: '添加到同级',
+                  })}
+                </DropDownItem>
+              ) : null}
+              <DropDownItem
+                disabled={instance?.disable}
+                onClick={() => onInsertBlock(true)}>
                 {translateI18n('[TODO] 国际化', {
                   placeholder: '添加到子级',
                 })}
@@ -145,6 +196,50 @@ const Bar = (props: {
         ) : null}
       </div>
       <div data-bar="right" className={Styles.right}>
+        {!preview && extra.showRightToolbar !== false ? (
+          <>
+            {instance?.checkOut && instance.insVersionOrderUnbound !== '1' ? (
+              <>
+                <span
+                  title={translateI18n('[TODO] 国际化', {
+                    placeholder: '签入',
+                  })}>
+                  <Icon
+                    disabled={!instance.isSelfCheckOut}
+                    type="icon-front-rightbar-checkin"
+                    onClick={async () => {
+                      await checkIn(instance);
+                    }}
+                  />
+                </span>
+                <span
+                  title={translateI18n('[TODO] 国际化', {
+                    placeholder: '取消签出',
+                  })}>
+                  <Icon
+                    disabled={!instance.isSelfCheckOut}
+                    type="icon-front-rightbar-cancelcheckout"
+                    onClick={async () => {
+                      await cancelCheckout(instance);
+                    }}
+                  />
+                </span>
+              </>
+            ) : (
+              <span
+                title={translateI18n('[TODO] 国际化', {
+                  placeholder: '签出',
+                })}>
+                <Icon
+                  type="icon-front-rightbar-checkout"
+                  onClick={async () => {
+                    await checkOut(instance!);
+                  }}
+                />
+              </span>
+            )}
+          </>
+        ) : null}
         <span>
           <Icon
             className={isSelected ? Styles.selected : undefined}

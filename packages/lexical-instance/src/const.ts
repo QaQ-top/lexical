@@ -86,3 +86,8 @@ export const DELETE_INSTANCE_NODE = 'DELETE_INSTANCE_NODE';
 
 export const INSERT_PARAMETERS: LexicalCommand<undefined> =
   createCommand('INSERT_PARAMETERS');
+
+export const COMPONENT_UPDATE: LexicalCommand<{
+  insNodeKey?: string;
+  name: 'bar';
+}> = createCommand('COMPONENT_UPDATE');

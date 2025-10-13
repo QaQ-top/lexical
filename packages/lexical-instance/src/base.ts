@@ -18,6 +18,7 @@ import type {
 
 import {
   $applyNodeReplacement,
+  $isElementNode,
   $isTextNode,
   EditorConfig,
   ElementFormatType,
@@ -44,7 +45,11 @@ import {
   $isInstanceParagraphNode,
 } from './paragraph';
 import {Instance, InstanceBaseInfo} from './types';
-import {getCachedClassNameArray, getInstanceBaseInfo} from './utils';
+import {
+  getCachedClassNameArray,
+  getInstanceBaseInfo,
+  setDisable,
+} from './utils';
 
 /** TODO 数据类型 */
 export type SerializedInstanceNode = Spread<
@@ -206,6 +211,7 @@ export class InstanceNode extends ElementNode {
       .join('');
   }
 
+  /** 获取实例文档内容的子节点 */
   getPracticalChildren<T extends LexicalNode>(): Array<T> {
     return super
       .getChildren<T>()
@@ -219,9 +225,12 @@ export class InstanceNode extends ElementNode {
       );
   }
 
+  /** 获取实例 非实例类型 子节点 */
   getSelfContentChildren<T extends LexicalNode>(): Array<T> {
     return this.getChildren<T>().filter((node) => !$isInstanceNode(node));
   }
+
+  /** 获取实例 实例类型 子节点 */
   getSelfInstanceChildren<T extends InstanceNode>(): Array<T> {
     return this.getPracticalChildren<T>().filter((node) =>
       $isInstanceNode(node),
@@ -243,6 +252,18 @@ export class InstanceNode extends ElementNode {
       }
     }
     return '';
+  }
+
+  contentEditable(editor: LexicalEditor) {
+    const content = this.getSelfContentChildren();
+    content.forEach((node) => {
+      if ($isElementNode(node)) {
+        const element = editor.getElementByKey(node.getKey());
+        if (element) {
+          setDisable(node, element);
+        }
+      }
+    });
   }
 
   collapseAtStart(): boolean {

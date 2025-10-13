@@ -26,6 +26,9 @@ export interface Instance
     Partial<InstanceExtraAttributes> {
   children?: Instance[];
   disable?: boolean;
+  checkOut?: boolean;
+  insVersionUnbound?: string;
+  insVersionOrderUnbound?: string;
   trackLinkCount?: number | null;
   __contentText?: string;
 }

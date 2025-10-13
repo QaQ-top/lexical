@@ -34,11 +34,13 @@ const dropDownPadding = 4;
 export function DropDownItem({
   children,
   className,
+  disabled,
   onClick,
   title,
 }: {
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   title?: string;
 }) {
@@ -61,6 +63,7 @@ export function DropDownItem({
   return (
     <button
       className={className ?? 'item'}
+      disabled={disabled}
       onClick={onClick}
       ref={ref}
       title={title}

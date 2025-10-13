@@ -10,6 +10,7 @@ import type {
   EditorState,
   InternalSerializedNode,
   LexicalEditor,
+  LexicalNode,
   SerializedEditorState,
   SerializedLexicalNode,
 } from 'lexical';
@@ -89,14 +90,14 @@ export function importFile(editor: LexicalEditor) {
  * @param serializedNode
  * @returns
  */
-export function $advanceParseSerializedNode(
+export function $advanceParseSerializedNode<T = LexicalNode>(
   serializedNode: SerializedLexicalNode,
 ) {
   serializedNode = {...serializedNode};
   if (serializedNode.type === 'root') {
     serializedNode.type = 'Fragment';
   }
-  return $baseParseSerializedNode(serializedNode);
+  return $baseParseSerializedNode(serializedNode) as T;
 }
 
 export function importSerializedNode(

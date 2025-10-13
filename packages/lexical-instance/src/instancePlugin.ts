@@ -7,7 +7,13 @@
  */
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
-import {$getNodeByKey, COMMAND_PRIORITY_LOW} from 'lexical';
+import {
+  $getNodeByKey,
+  $getSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_LOW,
+  INSERT_PARAGRAPH_COMMAND,
+} from 'lexical';
 import {$textToRichNodes} from 'onchain-lexical-markdown';
 import React, {useEffect} from 'react';
 
@@ -42,6 +48,18 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
       $registerNumberDecoratorDomUpdate(editor),
       $registerTableCommand(editor),
       // $selectionChange(editor, setSelectedInstance),
+      editor.registerCommand(
+        INSERT_PARAGRAPH_COMMAND,
+        (event) => {
+          const selection = $getSelection();
+          const [start, end] = selection?.getStartEndPoints() || [];
+          if (start && end && start.key === end.key) {
+            return $isInstanceNode($getNodeByKey(start.key));
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
       editor.registerCommand(
         ADD_NEW_INSTANCE_NODE,
         ({insNodeKey, instances, isAddChildLevel}) => {

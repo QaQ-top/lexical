@@ -7,6 +7,8 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type {HistoryState, HistoryStateEntry} from '@lexical/history';
+
 import {$isCodeNode} from '@lexical/code';
 import {$isListNode} from '@lexical/list';
 import {$isQuoteNode} from '@lexical/rich-text';
@@ -19,12 +21,14 @@ import {
   $isRootNode,
   type EditorThemeClasses,
   ElementNode,
+  LexicalEditor,
   type LexicalNode,
   scrollIntoViewIfNeeded,
   TextNode,
 } from 'lexical';
 import {$isRootOrShadowRoot} from 'lexical';
-import {hasOwnProperty} from 'onchain-utility';
+import {$textToRichNodes} from 'onchain-lexical-markdown';
+import {dfs, hasOwnProperty} from 'onchain-utility';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
@@ -34,8 +38,13 @@ import {
   numberNodeKey,
   paragraphSymbol,
 } from './const';
+import {$createFragmentNode} from './fragment';
 import {InstanceHeadingNode} from './heading';
-import {$isInstanceParagraphNode, InstanceParagraphNode} from './paragraph';
+import {
+  $createInstanceParagraphNode,
+  $isInstanceParagraphNode,
+  InstanceParagraphNode,
+} from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
 import {CompleteInstance, Instance, InstanceBaseInfo} from './types';
 
@@ -213,6 +222,9 @@ export function $scrollTo(number: string) {
         editor,
         target.getBoundingClientRect(),
         rootElement,
+        document.querySelector<HTMLDivElement>(
+          '.top-container.editor-container',
+        ),
       );
       $getNodeByKey(nodeKey)?.selectStart();
     }
@@ -334,6 +346,120 @@ export function getTemporaryContentText<T extends Instance>(instance: T) {
 export function setDisable(node: ElementNode, element: HTMLElement) {
   const parent = node.getParent();
   if ($isInstanceNode(parent)) {
-    element.inert = parent.__instance.value.disable || false;
+    if (parent.__instance.value.disable) {
+      element.setAttribute('contenteditable', 'false');
+    } else {
+      element.setAttribute('contenteditable', 'true');
+    }
   }
+}
+
+export function ignoreHistory({
+  editor,
+  historyState,
+  update,
+  updated,
+}: {
+  editor: LexicalEditor;
+  historyState: HistoryState;
+  update: () => void;
+  updated?: () => void;
+}) {
+  historyState.isEntry = false;
+  editor.update(() => {
+    update();
+    setTimeout(() => {
+      historyState.isEntry = true;
+      updated?.();
+    });
+  });
+}
+
+/** 更新富文本实例名称 */
+export function $updateRichInstanceTitle(
+  instance: Instance,
+  {text}: {text: string},
+) {
+  const insNode = $getInstanceNodeByNumber(instance.number!);
+  if ($isInstanceNode(insNode)) {
+    const [, , title] = insNode.getChildren();
+    if ($isInstanceParagraphNode(title)) {
+      const textNode = title.getFirstTextNode();
+      textNode.setTextContent(text);
+    }
+  }
+}
+
+export function $updateRichInstanceContent(
+  instance: Instance,
+  {content}: {content: string},
+) {
+  const insNode = $getInstanceNodeByNumber(instance.number!);
+  if ($isInstanceNode(insNode)) {
+    const fragment = $createFragmentNode();
+    $textToRichNodes(fragment, content);
+    const nodes = fragment.getChildren();
+    const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
+    for (let index = 0; index < count; index++) {
+      const node = nodes[0];
+      if (!node /**  || !$isInstanceParagraphNode(node) */) {
+        nodes.splice(index, 0, $createInstanceParagraphNode());
+      }
+    }
+    const oldChildren = insNode
+      .getPracticalChildren()
+      .filter((node) => !$isInstanceNode(node))
+      .slice(1, Infinity);
+    const previous = oldChildren.at(0);
+    for (let index = nodes.length - 1; index > -1; index--) {
+      const current = nodes[index];
+      const pre = nodes[index + 1];
+      if (pre) {
+        pre.insertBefore(current);
+      } else {
+        previous?.insertBefore(current);
+      }
+    }
+    oldChildren.forEach((node) => node.remove());
+    return nodes;
+  }
+  return [];
+}
+
+export function $updateRichHistoryStateMap(
+  instance: Instance,
+  {editor, historyState}: {editor: LexicalEditor; historyState: HistoryState},
+) {
+  editor.read(() => {
+    const node = $getInstanceNodeByNumber(instance.number!);
+    if (node) {
+      const current = historyState?.current?.editorState;
+      if (current) {
+        historyState.current = setHSEntryMap([historyState.current!], node)[0];
+        historyState.redoStack = setHSEntryMap(historyState.redoStack, node);
+        historyState.undoStack = setHSEntryMap(historyState.undoStack, node);
+      }
+    }
+  });
+}
+
+function setHSEntryMap(hs: HistoryStateEntry[], instanceNode: InstanceNode) {
+  return hs.map((state) => {
+    const map = new Map(state.editorState._nodeMap.entries());
+    map.set(instanceNode.getKey(), instanceNode);
+    dfs(
+      instanceNode
+        .getPracticalChildren()
+        .filter((node) => !$isInstanceNode(node)),
+      (node) => {
+        map.set(node.getKey(), node);
+        if ($isElementNode(node)) {
+          return node.getChildren();
+        }
+        return [];
+      },
+    );
+    state.editorState._nodeMap = map;
+    return state;
+  });
 }

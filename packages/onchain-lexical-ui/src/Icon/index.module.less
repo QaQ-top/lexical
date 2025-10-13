@@ -2,3 +2,22 @@
   font-size: 16px;
   color: #666666;
 }
+
+.disabled {
+  position: relative;
+  > .icon {
+    font-size: 16px;
+    color: #bdc1cd !important;
+  }
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    z-index: 1;
+    cursor: not-allowed;
+  }
+}

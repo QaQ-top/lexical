@@ -47,6 +47,9 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     <App
       namespace="Playground"
       config={{
+        async cancelCheckout(instance) {},
+        async checkIn(instance) {},
+        async checkOut(instance) {},
         generateNumber(nodeKey) {
           return Promise.resolve('Number');
         },
@@ -55,7 +58,14 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         },
         icl: {
           loading: true,
+          table: {
+            current: {
+              initSerializedData: '',
+            },
+          },
+          verifyPermissions: false,
         },
+        namespace: '',
         setIcl(params) {},
         uploadFiles(params) {
           return Promise.resolve(params.map((i) => i.text));

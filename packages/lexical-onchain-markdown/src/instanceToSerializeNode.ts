@@ -131,7 +131,7 @@ export async function _instanceToSerializeNode({
         type: 'Paragraph',
         version: 1,
       },
-      ...children,
+      ...children.filter((node) => node.type !== 'paragraph'),
     ],
     direction: null,
     format: '',
@@ -169,8 +169,15 @@ export async function _textToSerializedNode(
 export function $textToRichNodes(node: ElementNode, childrenText?: string) {
   if (childrenText) {
     if (jsonRegExp.test(childrenText)) {
-      return $advanceParseSerializedNode(
+      const serializedNodeList:
+        | SerializedLexicalNode
+        | SerializedLexicalNode[][] = [
         JSON.parse(childrenText.replace(jsonRegExp, '$1')),
+      ];
+      return node.append(
+        ...serializedNodeList
+          .flat(1)
+          .map((serializedNode) => $advanceParseSerializedNode(serializedNode)),
       );
     } else {
       return $convertFromMarkdownString(
