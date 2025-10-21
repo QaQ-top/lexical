@@ -10,6 +10,7 @@ import React from 'react';
  *
  */
 export interface ExtraSettings {
+  placeholder?: string;
   iconScriptUrl?: string;
   isShowActions?: boolean;
   showTreeView?: boolean;
@@ -20,21 +21,20 @@ export interface ExtraSettings {
   reduceZIndex?: () => void;
 }
 
-export interface BuiltInInstanceConfig {
+export interface BuiltInInstanceConfig<Ins = Instance> {
   selectedInstance: {
     number: string;
     nodeKey: string;
   }[];
   setSelectedInstance(params: InstanceConfig['selectedInstance']): void;
-  instanceMap: Map<string, Instance>;
-  setInstanceMap(map: Map<string, Instance>): void;
+  instanceMap: Map<string, Ins>;
+  setInstanceMap(map: Map<string, Ins>): void;
 }
 
 export interface InstanceConfigLet {
   loading: boolean;
   verifyPermissions: boolean;
   table: React.MutableRefObject<{
-    initSerializedData: string;
     saveModification?: (params: {
       onSaved?: () => Promise<void>;
       setLoading?: (value: boolean) => void;
@@ -42,7 +42,7 @@ export interface InstanceConfigLet {
     cancelModification?: () => void;
   }>;
 }
-export interface InstanceConfig {
+export interface InstanceConfig<Ins = Instance> {
   namespace: string;
   icl: InstanceConfigLet;
   setIcl(params: Partial<InstanceConfigLet>): void;
@@ -50,11 +50,9 @@ export interface InstanceConfig {
     TrackLinkList?: (props: {number: string}) => JSX.Element;
   };
   preview?: boolean;
-  checkOut: (instance: Instance) => Instance | void | Promise<Instance | void>;
-  checkIn: (instance: Instance) => Instance | void | Promise<Instance | void>;
-  cancelCheckout: (
-    instance: Instance,
-  ) => Instance | void | Promise<Instance | void>;
+  checkOut: (instance: Ins) => Ins | void | Promise<Ins | void>;
+  checkIn: (instance: Ins) => Ins | void | Promise<Ins | void>;
+  cancelCheckout: (instance: Ins) => Ins | void | Promise<Ins | void>;
   getInstanceIcon: (objectApicode: string) => string;
   uploadFiles(
     params: {type: string; text: string; suffix: string}[],

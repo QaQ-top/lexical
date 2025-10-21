@@ -670,3 +670,30 @@ export function insert<T extends Item>({
     }
   }
 }
+
+/** 树结构搜索 */
+export function treeSearch<T extends Record<string, any>>({
+  data,
+  searchValue,
+  childrenKey = 'children',
+}: {
+  data: T[];
+  searchValue: (item: T) => boolean;
+  childrenKey?: string;
+}) {
+  return data
+    .map((row) => {
+      const children: T[] = treeSearch({
+        childrenKey,
+        data: row[childrenKey] || [],
+        searchValue,
+      });
+      if (searchValue(row) || children.length) {
+        return {
+          ...row,
+          [childrenKey]: children,
+        };
+      }
+    })
+    .filter((row): row is T => !!row);
+}

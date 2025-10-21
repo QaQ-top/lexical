@@ -19,6 +19,7 @@ import {
   _instanceToSerializeNode,
   _textToSerializedNode,
   $textToRichNodes,
+  getJSONRegexp,
   getStorageSerializedString,
 } from './instanceToSerializeNode';
 // import {createMarkdownExport} from './MarkdownExport';
@@ -67,6 +68,7 @@ export {
   ELEMENT_TRANSFORMERS,
   type ElementTransformer,
   getInstanceTransformers,
+  getJSONRegexp,
   getStorageSerializedString,
   HEADING,
   HIGHLIGHT,

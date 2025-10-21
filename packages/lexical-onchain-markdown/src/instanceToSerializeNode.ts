@@ -150,6 +150,10 @@ export function getStorageSerializedString(content: object) {
 
 const jsonRegExp = /^JSON<(.+)>$/;
 
+export function getJSONRegexp() {
+  return jsonRegExp;
+}
+
 export async function _textToSerializedNode(
   nodes: Required<CreateEditorArgs>['nodes'],
   childrenText?: string,

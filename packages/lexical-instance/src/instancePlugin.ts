@@ -12,6 +12,7 @@ import {
   $getSelection,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_LOW,
+  DELETE_CHARACTER_COMMAND,
   INSERT_PARAGRAPH_COMMAND,
 } from 'lexical';
 import {$textToRichNodes} from 'onchain-lexical-markdown';
@@ -48,6 +49,33 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
       $registerNumberDecoratorDomUpdate(editor),
       $registerTableCommand(editor),
       // $selectionChange(editor, setSelectedInstance),
+      editor.registerCommand(
+        DELETE_CHARACTER_COMMAND,
+        (event) => {
+          const selection = $getSelection();
+          if (selection) {
+            return selection.getNodes().some((node) => {
+              return editor
+                .getElementByKey(node.getKey())
+                ?.closest(`[contenteditable='false']`);
+            });
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
+      editor.registerCommand(
+        INSERT_PARAGRAPH_COMMAND,
+        (event) => {
+          const selection = $getSelection();
+          const [start, end] = selection?.getStartEndPoints() || [];
+          if (start && end && start.key === end.key) {
+            return $isInstanceNode($getNodeByKey(start.key));
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
       editor.registerCommand(
         INSERT_PARAGRAPH_COMMAND,
         (event) => {

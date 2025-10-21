@@ -198,7 +198,7 @@ const Bar = (props: {
       <div data-bar="right" className={Styles.right}>
         {!preview && extra.showRightToolbar !== false ? (
           <>
-            {instance?.checkOut && instance.insVersionOrderUnbound !== '1' ? (
+            {instance?.checkOut ? (
               <>
                 <span
                   title={translateI18n('[TODO] 国际化', {

@@ -2,7 +2,7 @@
   "name": "onchain-utility",
   "description": "This package contains misc utilities for onchain.",
   "license": "MIT",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "files": [
     "dist",
     "src"

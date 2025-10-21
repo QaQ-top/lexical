@@ -104,14 +104,16 @@ export default function Editor(): JSX.Element {
       selectionAlwaysOnDisplay,
       listStrictIndent,
     },
-    extra: {showTreeView, showHeaderToolbar},
+    extra: {placeholder: phr, showTreeView, showHeaderToolbar},
   } = useSettings();
   const isEditable = useLexicalEditable();
-  const placeholder = isCollab
-    ? 'Enter some collaborative rich text...'
-    : isRichText
-    ? 'Enter some rich text...'
-    : 'Enter some plain text...';
+  const placeholder =
+    phr ??
+    (isCollab
+      ? 'Enter some collaborative rich text...'
+      : isRichText
+      ? 'Enter some rich text...'
+      : 'Enter some plain text...');
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [treeViewOffset, setTreeViewOffset] = useState(100);

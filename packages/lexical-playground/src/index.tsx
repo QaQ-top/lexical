@@ -59,9 +59,7 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         icl: {
           loading: true,
           table: {
-            current: {
-              initSerializedData: '',
-            },
+            current: {},
           },
           verifyPermissions: false,
         },

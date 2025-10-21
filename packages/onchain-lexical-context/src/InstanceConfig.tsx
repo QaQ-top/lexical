@@ -14,19 +14,20 @@ import type {JSX} from 'react';
 import * as React from 'react';
 import {createContext, ReactNode, useContext} from 'react';
 
-type InstanceConfigContext = InstanceConfig & BuiltInInstanceConfig;
+type InstanceConfigContext<Ins = Instance> = InstanceConfig<Ins> &
+  BuiltInInstanceConfig<Ins>;
 
 const Context: React.Context<InstanceConfigContext> = createContext({} as any);
 
-export const InstanceConfigContext = ({
+export const InstanceConfigContext = <Ins = Instance,>({
   children,
   value,
 }: {
   children: ReactNode;
-  value: InstanceConfig;
+  value: InstanceConfig<Ins>;
 }): JSX.Element => {
   const [selectedInstance, setSelectedInstance] = React.useState<
-    BuiltInInstanceConfig['selectedInstance']
+    BuiltInInstanceConfig<Ins>['selectedInstance']
   >([]);
   const [instanceMap, setInstanceMap] = React.useState(
     new Map<string, Instance>(),
@@ -35,7 +36,7 @@ export const InstanceConfigContext = ({
   return (
     <Context.Provider
       value={{
-        ...value,
+        ...(value as unknown as InstanceConfig),
         instanceMap,
         selectedInstance,
         setInstanceMap,
@@ -46,6 +47,6 @@ export const InstanceConfigContext = ({
   );
 };
 
-export const useInstanceConfig = (): InstanceConfigContext => {
-  return useContext(Context);
+export const useInstanceConfig = <Ins = Instance,>() => {
+  return useContext(Context) as unknown as InstanceConfigContext<Ins>;
 };

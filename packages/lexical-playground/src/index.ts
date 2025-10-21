@@ -15,7 +15,10 @@ import {
   LexicalNode,
   SerializedLexicalNode,
 } from 'lexical';
-import {_instanceToSerializeNode} from 'onchain-lexical-markdown';
+import {
+  _instanceToSerializeNode,
+  _textToSerializedNode,
+} from 'onchain-lexical-markdown';
 
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 
@@ -76,4 +79,8 @@ export function instanceToSerializeNode(params: {
     ...params,
     nodes: [...PlaygroundNodes],
   });
+}
+
+export function textToSerializedNode(text: string) {
+  return _textToSerializedNode([...PlaygroundNodes], text);
 }
