@@ -20,7 +20,7 @@ import InternalLinkComponent from './internalLinkComponent';
 
 export type SerializedInternalNode = Spread<
   {
-    __number: string;
+    number: string;
   },
   SerializedTextDecoratorNode
 >;
@@ -35,7 +35,7 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
   }
 
   static importJSON(serializedNode: SerializedInternalNode): InternalLinkNode {
-    return $createInternalLinkNode(serializedNode.__number).updateFromJSON(
+    return $createInternalLinkNode(serializedNode.number).updateFromJSON(
       serializedNode,
     );
   }
@@ -43,6 +43,19 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
   constructor(number: string, key?: string) {
     super(key);
     this.__number = number;
+  }
+
+  exportJSON(): SerializedInternalNode {
+    return {
+      ...super.exportJSON(),
+      number: this.__number,
+    };
+  }
+
+  createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
+    const span = super.createDOM(config, editor);
+    span.setAttribute('ignorecontenteditable', '');
+    return span;
   }
 
   updateDOM(prevNode: this, dom: HTMLElement, config: EditorConfig): boolean {

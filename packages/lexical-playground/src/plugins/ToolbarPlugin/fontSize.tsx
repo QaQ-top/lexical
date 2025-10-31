@@ -11,6 +11,7 @@ import {
   MAX_ALLOWED_FONT_SIZE,
   MIN_ALLOWED_FONT_SIZE,
 } from 'onchain-lexical-context/toolBar';
+import {translateI18n} from 'onchain-utility/language';
 import * as React from 'react';
 
 import {SHORTCUTS} from '../ShortcutsPlugin/shortcuts';
@@ -101,7 +102,10 @@ export default function FontSize({
         }
         className={`toolbar-item ${Styles['font-decrement']}`}
         aria-label="Decrease font size"
-        title={`Decrease font size (${SHORTCUTS.DECREASE_FONT_SIZE})`}>
+        title={translateI18n('[TODO] Decrease font size ({sk})', {
+          placeholder: '缩小字体{sk}',
+          variate: {sk: SHORTCUTS.DECREASE_FONT_SIZE},
+        })}>
         <i className={`format ${Styles['minus-icon']}`} />
       </button>
 
@@ -130,7 +134,10 @@ export default function FontSize({
         }
         className={`toolbar-item ${Styles['font-increment']}`}
         aria-label="Increase font size"
-        title={`Increase font size (${SHORTCUTS.INCREASE_FONT_SIZE})`}>
+        title={translateI18n('[TODO] Increase font size ({sk})', {
+          placeholder: '增大字体{sk}',
+          variate: {sk: SHORTCUTS.INCREASE_FONT_SIZE},
+        })}>
         <i className={`format ${Styles['add-icon']}`} />
       </button>
     </>

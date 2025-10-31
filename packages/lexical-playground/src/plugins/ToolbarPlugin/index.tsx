@@ -62,8 +62,16 @@ import {
 } from 'onchain-lexical-instance';
 import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
 import DropdownColorPicker from 'onchain-lexical-ui/DropdownColorPicker';
-import React, {Dispatch, useCallback, useEffect, useState} from 'react';
+import {translateI18n} from 'onchain-utility/language';
+import React, {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
+import useContentEditable from '../../hooks/useContentEditable';
 import useModal from '../../hooks/useModal';
 import {$createStickyNode} from '../../nodes/StickyNode';
 import {getSelectedNode} from '../../utils/getSelectedNode';
@@ -213,7 +221,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatParagraph(editor)}>
         <div className="icon-text-container">
           <i className="icon paragraph" />
-          <span className="text">Normal</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Normal', {placeholder: '正文'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.NORMAL}</span>
       </DropDownItem>
@@ -222,7 +232,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatHeading(editor, blockType, 'h1')}>
         <div className="icon-text-container">
           <i className="icon h1" />
-          <span className="text">Heading 1</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Heading 1', {placeholder: '标题1'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.HEADING1}</span>
       </DropDownItem>
@@ -231,7 +243,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatHeading(editor, blockType, 'h2')}>
         <div className="icon-text-container">
           <i className="icon h2" />
-          <span className="text">Heading 2</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Heading 2', {placeholder: '标题2'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.HEADING2}</span>
       </DropDownItem>
@@ -240,7 +254,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatHeading(editor, blockType, 'h3')}>
         <div className="icon-text-container">
           <i className="icon h3" />
-          <span className="text">Heading 3</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Heading 3', {placeholder: '标题3'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.HEADING3}</span>
       </DropDownItem>
@@ -249,7 +265,11 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatBulletList(editor, blockType)}>
         <div className="icon-text-container">
           <i className="icon bullet-list" />
-          <span className="text">Bullet List</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Bullet List', {
+              placeholder: '无序列表',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.BULLET_LIST}</span>
       </DropDownItem>
@@ -258,7 +278,11 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatNumberedList(editor, blockType)}>
         <div className="icon-text-container">
           <i className="icon numbered-list" />
-          <span className="text">Numbered List</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Numbered List', {
+              placeholder: '有序列表',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.NUMBERED_LIST}</span>
       </DropDownItem>
@@ -267,7 +291,11 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatCheckList(editor, blockType)}>
         <div className="icon-text-container">
           <i className="icon check-list" />
-          <span className="text">Check List</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Check List', {
+              placeholder: '待办列表',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.CHECK_LIST}</span>
       </DropDownItem>
@@ -279,7 +307,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatQuote(editor, blockType)}>
         <div className="icon-text-container">
           <i className="icon quote" />
-          <span className="text">Quote</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Quote', {placeholder: '引用'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.QUOTE}</span>
       </DropDownItem>
@@ -288,7 +318,9 @@ const BlockFormatDropDown = React.memo(function ({
         onClick={() => formatCode(editor, blockType)}>
         <div className="icon-text-container">
           <i className="icon code" />
-          <span className="text">Code Block</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Code Block', {placeholder: '代码块'})}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.CODE_BLOCK}</span>
       </DropDownItem>
@@ -384,7 +416,11 @@ const ElementFormatDropdown = React.memo(function ({
         className="item wide">
         <div className="icon-text-container">
           <i className="icon left-align" />
-          <span className="text">Left Align</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Left Align', {
+              placeholder: '左对齐',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.LEFT_ALIGN}</span>
       </DropDownItem>
@@ -395,7 +431,11 @@ const ElementFormatDropdown = React.memo(function ({
         className="item wide">
         <div className="icon-text-container">
           <i className="icon center-align" />
-          <span className="text">Center Align</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Center Align', {
+              placeholder: '居中对齐',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.CENTER_ALIGN}</span>
       </DropDownItem>
@@ -406,7 +446,11 @@ const ElementFormatDropdown = React.memo(function ({
         className="item wide">
         <div className="icon-text-container">
           <i className="icon right-align" />
-          <span className="text">Right Align</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Right Align', {
+              placeholder: '右对齐',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.RIGHT_ALIGN}</span>
       </DropDownItem>
@@ -417,7 +461,11 @@ const ElementFormatDropdown = React.memo(function ({
         className="item wide">
         <div className="icon-text-container">
           <i className="icon justify-align" />
-          <span className="text">Justify Align</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Justify Align', {
+              placeholder: '两端对齐',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.JUSTIFY_ALIGN}</span>
       </DropDownItem>
@@ -433,7 +481,11 @@ const ElementFormatDropdown = React.memo(function ({
               : ELEMENT_FORMAT_OPTIONS.start.icon
           }`}
         />
-        <span className="text">Start Align</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Start Align', {
+            placeholder: '头部对齐',
+          })}
+        </span>
       </DropDownItem>
       <DropDownItem
         onClick={() => {
@@ -447,20 +499,13 @@ const ElementFormatDropdown = React.memo(function ({
               : ELEMENT_FORMAT_OPTIONS.end.icon
           }`}
         />
-        <span className="text">End Align</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 End Align', {
+            placeholder: '尾部对齐',
+          })}
+        </span>
       </DropDownItem>
       <Divider />
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
-        }}
-        className="item wide">
-        <div className="icon-text-container">
-          <i className={'icon ' + (isRTL ? 'indent' : 'outdent')} />
-          <span className="text">Outdent</span>
-        </div>
-        <span className="shortcut">{SHORTCUTS.OUTDENT}</span>
-      </DropDownItem>
       <DropDownItem
         onClick={() => {
           editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
@@ -468,9 +513,28 @@ const ElementFormatDropdown = React.memo(function ({
         className="item wide">
         <div className="icon-text-container">
           <i className={'icon ' + (isRTL ? 'outdent' : 'indent')} />
-          <span className="text">Indent</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Indent', {
+              placeholder: '缩进',
+            })}
+          </span>
         </div>
         <span className="shortcut">{SHORTCUTS.INDENT}</span>
+      </DropDownItem>
+      <DropDownItem
+        onClick={() => {
+          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+        }}
+        className="item wide">
+        <div className="icon-text-container">
+          <i className={'icon ' + (isRTL ? 'indent' : 'outdent')} />
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Outdent', {
+              placeholder: '取消缩进',
+            })}
+          </span>
+        </div>
+        <span className="shortcut">{SHORTCUTS.OUTDENT}</span>
       </DropDownItem>
     </DropDown>
   );
@@ -491,8 +555,15 @@ export default React.memo(function ToolbarPlugin({
     null,
   );
   const [modal, showModal] = useModal();
-  const [isEditable, setIsEditable] = useState(() => editor.isEditable());
+  const [isGlobalEditable, setIsGlobalEditable] = useState(() =>
+    editor.isEditable(),
+  );
   const {toolbarState, updateToolbarState} = useToolbarState();
+  const {contentEditable} = useContentEditable();
+
+  const isEditable = useMemo(() => {
+    return contentEditable && isGlobalEditable;
+  }, [isGlobalEditable, contentEditable]);
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -647,7 +718,7 @@ export default React.memo(function ToolbarPlugin({
   useEffect(() => {
     return mergeRegister(
       editor.registerEditableListener((editable) => {
-        setIsEditable(editable);
+        setIsGlobalEditable(editable);
       }),
       activeEditor.registerUpdateListener(({editorState}) => {
         editorState.read(() => {
@@ -743,22 +814,28 @@ export default React.memo(function ToolbarPlugin({
     <div className={Styles.bar}>
       <ScrollBarAssembly className={Styles.toolbar}>
         <button
-          disabled={!toolbarState.canUndo || !isEditable}
+          disabled={!toolbarState.canUndo || !isGlobalEditable}
           onClick={() => {
             activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
           }}
-          title={IS_APPLE ? 'Undo (⌘Z)' : 'Undo (Ctrl+Z)'}
+          title={translateI18n('[TODO] Undo ({sk})', {
+            placeholder: '上一步({sk})',
+            variate: {sk: IS_APPLE ? '(⌘Z)' : '(Ctrl+Z)'},
+          })}
           type="button"
           className="toolbar-item spaced"
           aria-label="Undo">
           <i className="format undo" />
         </button>
         <button
-          disabled={!toolbarState.canRedo || !isEditable}
+          disabled={!toolbarState.canRedo || !isGlobalEditable}
           onClick={() => {
             activeEditor.dispatchCommand(REDO_COMMAND, undefined);
           }}
-          title={IS_APPLE ? 'Redo (⇧⌘Z)' : 'Redo (Ctrl+Y)'}
+          title={translateI18n('[TODO] Redo ({sk})', {
+            placeholder: '下一步({sk})',
+            variate: {sk: IS_APPLE ? '(⇧⌘Z)' : '(Ctrl+Y)'},
+          })}
           type="button"
           className="toolbar-item"
           aria-label="Redo">
@@ -819,7 +896,10 @@ export default React.memo(function ToolbarPlugin({
               className={
                 'toolbar-item spaced ' + (toolbarState.isBold ? 'active' : '')
               }
-              title={`Bold (${SHORTCUTS.BOLD})`}
+              title={translateI18n('[TODO] Bold ({sk})', {
+                placeholder: '粗体({sk})',
+                variate: {sk: SHORTCUTS.BOLD},
+              })}
               type="button"
               aria-label={`Format text as bold. Shortcut: ${SHORTCUTS.BOLD}`}>
               <i className="format bold" />
@@ -832,7 +912,10 @@ export default React.memo(function ToolbarPlugin({
               className={
                 'toolbar-item spaced ' + (toolbarState.isItalic ? 'active' : '')
               }
-              title={`Italic (${SHORTCUTS.ITALIC})`}
+              title={translateI18n('[TODO] Italic ({sk})', {
+                placeholder: '斜体({sk})',
+                variate: {sk: SHORTCUTS.ITALIC},
+              })}
               type="button"
               aria-label={`Format text as italics. Shortcut: ${SHORTCUTS.ITALIC}`}>
               <i className="format italic" />
@@ -846,7 +929,10 @@ export default React.memo(function ToolbarPlugin({
                 'toolbar-item spaced ' +
                 (toolbarState.isUnderline ? 'active' : '')
               }
-              title={`Underline (${SHORTCUTS.UNDERLINE})`}
+              title={translateI18n('[TODO] Underline ({sk})', {
+                placeholder: '下划线({sk})',
+                variate: {sk: SHORTCUTS.UNDERLINE},
+              })}
               type="button"
               aria-label={`Format text to underlined. Shortcut: ${SHORTCUTS.UNDERLINE}`}>
               <i className="format underline" />
@@ -860,7 +946,10 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'toolbar-item spaced ' + (toolbarState.isCode ? 'active' : '')
                 }
-                title={`Insert code block (${SHORTCUTS.INSERT_CODE_BLOCK})`}
+                title={translateI18n('[TODO] Insert code block ({sk})', {
+                  placeholder: '行内代码块({sk})',
+                  variate: {sk: SHORTCUTS.INSERT_CODE_BLOCK},
+                })}
                 type="button"
                 aria-label="Insert code block">
                 <i className="format code" />
@@ -873,7 +962,10 @@ export default React.memo(function ToolbarPlugin({
                 'toolbar-item spaced ' + (toolbarState.isLink ? 'active' : '')
               }
               aria-label="Insert link"
-              title={`Insert link (${SHORTCUTS.INSERT_LINK})`}
+              title={translateI18n('[TODO] Insert link ({sk})', {
+                placeholder: '插入链接({sk})',
+                variate: {sk: SHORTCUTS.INSERT_LINK},
+              })}
               type="button">
               <i className="format link" />
             </button>
@@ -911,11 +1003,14 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isLowercase)
                 }
-                title="Lowercase"
                 aria-label="Format text to lowercase">
                 <div className="icon-text-container">
                   <i className="icon lowercase" />
-                  <span className="text">Lowercase</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Lowercase', {
+                      placeholder: '小写',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.LOWERCASE}</span>
               </DropDownItem>
@@ -929,11 +1024,14 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isUppercase)
                 }
-                title="Uppercase"
                 aria-label="Format text to uppercase">
                 <div className="icon-text-container">
                   <i className="icon uppercase" />
-                  <span className="text">Uppercase</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Uppercase', {
+                      placeholder: '大写',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.UPPERCASE}</span>
               </DropDownItem>
@@ -947,11 +1045,14 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isCapitalize)
                 }
-                title="Capitalize"
                 aria-label="Format text to capitalize">
                 <div className="icon-text-container">
                   <i className="icon capitalize" />
-                  <span className="text">Capitalize</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Capitalize', {
+                      placeholder: '首字母大写',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.CAPITALIZE}</span>
               </DropDownItem>
@@ -966,11 +1067,14 @@ export default React.memo(function ToolbarPlugin({
                   'item wide ' +
                   dropDownActiveClass(toolbarState.isStrikethrough)
                 }
-                title="Strikethrough"
                 aria-label="Format text with a strikethrough">
                 <div className="icon-text-container">
                   <i className="icon strikethrough" />
-                  <span className="text">Strikethrough</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Strikethrough', {
+                      placeholder: '删除线',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.STRIKETHROUGH}</span>
               </DropDownItem>
@@ -984,11 +1088,14 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isSubscript)
                 }
-                title="Subscript"
                 aria-label="Format text with a subscript">
                 <div className="icon-text-container">
                   <i className="icon subscript" />
-                  <span className="text">Subscript</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Subscript', {
+                      placeholder: '下标',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.SUBSCRIPT}</span>
               </DropDownItem>
@@ -1002,11 +1109,14 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isSuperscript)
                 }
-                title="Superscript"
                 aria-label="Format text with a superscript">
                 <div className="icon-text-container">
                   <i className="icon superscript" />
-                  <span className="text">Superscript</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Superscript', {
+                      placeholder: '上标',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.SUPERSCRIPT}</span>
               </DropDownItem>
@@ -1020,21 +1130,27 @@ export default React.memo(function ToolbarPlugin({
                 className={
                   'item wide ' + dropDownActiveClass(toolbarState.isHighlight)
                 }
-                title="Highlight"
                 aria-label="Format text with a highlight">
                 <div className="icon-text-container">
                   <i className="icon highlight" />
-                  <span className="text">Highlight</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Highlight', {
+                      placeholder: '高亮显示',
+                    })}
+                  </span>
                 </div>
               </DropDownItem>
               <DropDownItem
                 onClick={() => clearFormatting(activeEditor)}
                 className="item wide"
-                title="Clear text formatting"
                 aria-label="Clear all text formatting">
                 <div className="icon-text-container">
                   <i className="icon clear" />
-                  <span className="text">Clear Formatting</span>
+                  <span className="text">
+                    {translateI18n('[TODO] Clear Formatting', {
+                      placeholder: '清除格式',
+                    })}
+                  </span>
                 </div>
                 <span className="shortcut">{SHORTCUTS.CLEAR_FORMATTING}</span>
               </DropDownItem>
@@ -1057,7 +1173,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon horizontal-rule" />
-                    <span className="text">Horizontal Rule</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Horizontal Rule', {
+                        placeholder: '分割线',
+                      })}
+                    </span>
                   </DropDownItem>
                   <DropDownItem
                     onClick={() => {
@@ -1068,7 +1188,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon page-break" />
-                    <span className="text">Page Break</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Page Break', {
+                        placeholder: '分页符',
+                      })}
+                    </span>
                   </DropDownItem>
                   <DropDownItem
                     onClick={() => {
@@ -1081,7 +1205,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon image" />
-                    <span className="text">Image</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Image', {
+                        placeholder: '图片',
+                      })}
+                    </span>
                   </DropDownItem>
                   {/* <DropDownItem
                     onClick={() => {
@@ -1129,7 +1257,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon table" />
-                    <span className="text">Table</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Table', {
+                        placeholder: '表格',
+                      })}
+                    </span>
                   </DropDownItem>
                   {/* <DropDownItem
                     onClick={() => {
@@ -1169,7 +1301,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon equation" />
-                    <span className="text">Equation</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Equation', {
+                        placeholder: '公式',
+                      })}
+                    </span>
                   </DropDownItem>
                   {/* <DropDownItem
                     onClick={() => {
@@ -1192,7 +1328,11 @@ export default React.memo(function ToolbarPlugin({
                     }}
                     className="item">
                     <i className="icon caret-right" />
-                    <span className="text">Collapsible container</span>
+                    <span className="text">
+                      {translateI18n('[TODO] Collapsible container', {
+                        placeholder: '折叠内容',
+                      })}
+                    </span>
                   </DropDownItem>
                   {EmbedConfigs.map((embedConfig) => (
                     <DropDownItem

@@ -40,6 +40,7 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
+import {DisableSelector} from '../../hooks/useContentEditable';
 import Styles from './index.module.less';
 
 type PointerPosition = {
@@ -57,6 +58,7 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
   const resizerRef = useRef<HTMLDivElement | null>(null);
   const tableRectRef = useRef<ClientRect | null>(null);
   const [hasTable, setHasTable] = useState(false);
+  const [contentEditable, setContentEditable] = useState(false);
 
   const pointerStartPosRef = useRef<PointerPosition | null>(null);
   const [pointerCurrentPos, updatePointerCurrentPos] =
@@ -150,6 +152,7 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
 
               targetRef.current = target as HTMLElement;
               tableRectRef.current = tableElement.getBoundingClientRect();
+              setContentEditable(!tableElement.closest(DisableSelector));
               updateActiveCell(cell);
             },
             {editor},
@@ -437,7 +440,7 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
 
   return (
     <div ref={resizerRef}>
-      {activeCell != null && (
+      {activeCell != null && contentEditable && (
         <>
           <div
             className={Styles.resizer}

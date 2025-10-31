@@ -13,6 +13,7 @@ import {
 import {
   $applyNodeReplacement,
   $createTextNode,
+  $getEditor,
   $getSelection,
   $isTextNode,
   BaseSelection,
@@ -29,7 +30,7 @@ import {
 } from 'lexical';
 
 import {$isInstanceNode} from '../base';
-import {internalLinkNameUpdateMap, Placeholder} from '../const';
+import {INSTANCE_TITLE_UPDATE, Placeholder} from '../const';
 import {InstanceHeadingNode, isGoogleDocsTitle} from '../heading';
 import {
   $createPlaceholderDecoratorNode,
@@ -143,10 +144,16 @@ export class InstanceTitleNode extends InstanceHeadingNode {
     if (instanceNode && instanceNode.__instance.value) {
       const text = this.getTextContent().trim();
       setInstanceAttrValue(instanceNode.__instance.value, 'insDesc', text);
-      internalLinkNameUpdateMap
-        .get(instanceNode.__instance.value.number!)
-        ?.values()
-        .forEach((update) => update());
+      const editor = $getEditor();
+      Promise.resolve().then(() => {
+        editor.read(() => {
+          editor.dispatchCommand(INSTANCE_TITLE_UPDATE, {
+            isInput: true,
+            number: instanceNode.__instance.value.number!,
+            title: text,
+          });
+        });
+      });
     }
     return super.updateDOM(prevNode, dom, config);
   }

@@ -16,7 +16,7 @@ import {makeDestructurable} from '../../base';
  * @template T
  * @param {T} initStore 接收一个对象
  */
-function useStore<T>(initStore: T | (() => T)) {
+function useStore<T extends object>(initStore: T | (() => T)) {
   const unmountRef = useRef(false);
   const latestStore = useRef({} as T);
 
@@ -81,6 +81,10 @@ function useStore<T>(initStore: T | (() => T)) {
     {
       latestStore,
       resetStore,
+      setSilenceStore(params: Partial<T>) {
+        Object.assign<T, Partial<T>>(latestStore.current, params);
+        Object.assign<T, Partial<T>>(store, params);
+      },
       setStore,
       store,
     },

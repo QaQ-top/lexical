@@ -10,59 +10,59 @@
 
 import type {InternalLinkNode} from '.';
 
-import {EditorConfig, LexicalEditor} from 'lexical';
-import {useCallback, useEffect, useState} from 'react';
+import {mergeRegister} from '@lexical/utils';
+import {COMMAND_PRIORITY_EDITOR, EditorConfig, LexicalEditor} from 'lexical';
+import {useEffect, useState} from 'react';
 
-import {internalLinkNameUpdateMap} from '../const';
+import {INSTANCE_TITLE_UPDATE} from '../const';
 import {$getInstanceNodeByNumber, $scrollTo, getLatestValue} from '../utils';
 import Styles from './styles.module.less';
 
-export default function InternalLinkComponent({
-  self,
-  editor,
-  config,
-  number,
-  nodeKey,
-}: {
+export default function InternalLinkComponent(props: {
   self: InternalLinkNode;
+  /** 链接目标的编号 */
   number: string;
+  /** 引用链接组件所在文档内自身节点 */
   nodeKey: string;
   editor: LexicalEditor;
   config: EditorConfig;
 }) {
+  const {editor, number} = props;
   const [name, setName] = useState<string>();
   const [serial, setSerial] = useState<string>();
 
-  const update = useCallback(function () {
-    editor.read(() => {
-      const node = $getInstanceNodeByNumber(number)!;
-      setName(getLatestValue(node.__instance.value, 'insDesc'));
-      setSerial(node.getSerialNumber());
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      // 需要等待节点载入富文本后才能获取到实例节点
+      editor.read(() => {
+        const node = $getInstanceNodeByNumber(number)!;
+        if (node) {
+          setName(getLatestValue(node.__instance.value, 'insDesc'));
+          setSerial(node.getSerialNumber());
+        }
+      });
     });
   }, []);
 
   useEffect(() => {
-    update();
-  }, []);
-
-  useEffect(() => {
-    let timeout = 0;
-    let map: Map<string, () => void>;
-    const debounceUpdate = () => {
-      clearTimeout(timeout);
-      timeout = window.setTimeout(() => {
-        update();
-      }, 100);
-    };
-    if (internalLinkNameUpdateMap.has(number)) {
-      map = internalLinkNameUpdateMap.get(number)!.set(nodeKey, debounceUpdate);
-    } else {
-      map = new Map([[nodeKey, debounceUpdate]]);
-      internalLinkNameUpdateMap.set(number, map);
-    }
-    return () => {
-      map.delete(number);
-    };
+    return mergeRegister(
+      editor.registerCommand(
+        INSTANCE_TITLE_UPDATE,
+        (priority) => {
+          if (priority.number === number) {
+            editor.read(() => {
+              const node = $getInstanceNodeByNumber(priority.number)!;
+              if (priority.title !== undefined && priority.title !== null) {
+                setName(priority.title);
+              }
+              setSerial(node.getSerialNumber());
+            });
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+    );
   }, []);
 
   if (name) {

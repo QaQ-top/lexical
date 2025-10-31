@@ -34,6 +34,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
 
+import {DisableSelector} from '../../hooks/useContentEditable';
 import {getThemeSelector} from '../../utils/getThemeSelector';
 import {useDebounce} from '../CodeActionMenuPlugin/utils';
 
@@ -113,6 +114,14 @@ function TableHoverActionsContainer({
       );
 
       if (tableDOMElement) {
+        const nonContentEditable = (tableDOMElement as HTMLElement).closest(
+          DisableSelector,
+        );
+        if (nonContentEditable) {
+          setShownColumn(false);
+          setShownRow(false);
+          return;
+        }
         const {
           width: tableElemWidth,
           y: tableElemY,

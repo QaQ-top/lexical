@@ -30,6 +30,7 @@ import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
 
+import useContentEditable from '../../hooks/useContentEditable';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPosition} from '../../utils/setFloatingElemPosition';
@@ -212,7 +213,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
             }}
             className={'popup-item spaced ' + (isBold ? 'active' : '')}
-            title="Bold"
+            title={translateI18n('[TODO] Bold', {placeholder: '粗体'})}
             aria-label="Format text as bold">
             <i data-root-contains="1" className="format bold" />
           </button>
@@ -222,7 +223,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
             className={'popup-item spaced ' + (isItalic ? 'active' : '')}
-            title="Italic"
+            title={translateI18n('[TODO] Italic', {placeholder: '斜体'})}
             aria-label="Format text as italics">
             <i data-root-contains="1" className="format italic" />
           </button>
@@ -232,7 +233,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
             }}
             className={'popup-item spaced ' + (isUnderline ? 'active' : '')}
-            title="Underline"
+            title={translateI18n('[TODO] Underline', {placeholder: '下划线'})}
             aria-label="Format text to underlined">
             <i data-root-contains="1" className="format underline" />
           </button>
@@ -242,7 +243,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
             }}
             className={'popup-item spaced ' + (isStrikethrough ? 'active' : '')}
-            title="Strikethrough"
+            title={translateI18n('[TODO] Strikethrough', {placeholder: ''})}
             aria-label="Format text with a strikethrough">
             <i data-root-contains="1" className="format strikethrough" />
           </button>
@@ -252,7 +253,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript');
             }}
             className={'popup-item spaced ' + (isSubscript ? 'active' : '')}
-            title="Subscript"
+            title={translateI18n('[TODO] Subscript', {placeholder: '下标'})}
             aria-label="Format Subscript">
             <i data-root-contains="1" className="format subscript" />
           </button>
@@ -262,7 +263,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript');
             }}
             className={'popup-item spaced ' + (isSuperscript ? 'active' : '')}
-            title="Superscript"
+            title={translateI18n('[TODO] Superscript', {placeholder: '上'})}
             aria-label="Format Superscript">
             <i data-root-contains="1" className="format superscript" />
           </button>
@@ -272,7 +273,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'uppercase');
             }}
             className={'popup-item spaced ' + (isUppercase ? 'active' : '')}
-            title="Uppercase"
+            title={translateI18n('[TODO] Uppercase', {placeholder: '大写'})}
             aria-label="Format text to uppercase">
             <i data-root-contains="1" className="format uppercase" />
           </button>
@@ -282,7 +283,7 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'lowercase');
             }}
             className={'popup-item spaced ' + (isLowercase ? 'active' : '')}
-            title="Lowercase"
+            title={translateI18n('[TODO] Lowercase', {placeholder: '小写'})}
             aria-label="Format text to lowercase">
             <i data-root-contains="1" className="format lowercase" />
           </button>
@@ -292,7 +293,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'capitalize');
             }}
             className={'popup-item spaced ' + (isCapitalize ? 'active' : '')}
-            title="Capitalize"
+            title={translateI18n('[TODO] Capitalize', {
+              placeholder: '首字母大写',
+            })}
             aria-label="Format text to capitalize">
             <i data-root-contains="1" className="format capitalize" />
           </button>
@@ -302,7 +305,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
             }}
             className={'popup-item spaced ' + (isCode ? 'active' : '')}
-            title="Insert code block"
+            title={translateI18n('[TODO] Insert code block', {
+              placeholder: '行内代码块',
+            })}
             aria-label="Insert code block">
             <i data-root-contains="1" className="format code" />
           </button>
@@ -310,20 +315,24 @@ function TextFormatFloatingToolbar({
             type="button"
             onClick={insertLink}
             className={'popup-item spaced ' + (isLink ? 'active' : '')}
-            title="Insert link"
+            title={translateI18n('[TODO] Insert link', {
+              placeholder: '插入链接',
+            })}
             aria-label="Insert link">
             <i data-root-contains="1" className="format link" />
           </button>
+          <button
+            type="button"
+            onClick={insertParameters}
+            className={'popup-item spaced ' + (isParameter ? 'active' : '')}
+            title={translateI18n('[TODO] Insert parameter', {
+              placeholder: '参数',
+            })}
+            aria-label="Insert comment">
+            <Icon type="icon-front-parameterpool" />
+          </button>
         </>
       )}
-      <button
-        type="button"
-        onClick={insertParameters}
-        className={'popup-item spaced ' + (isParameter ? 'active' : '')}
-        title={translateI18n('[TODO] Insert parameter', {placeholder: '参数'})}
-        aria-label="Insert comment">
-        <Icon type="icon-front-parameterpool" />
-      </button>
       {/* <button
         type="button"
         onClick={insertComment}
@@ -355,6 +364,8 @@ function useFloatingTextFormatToolbar(
   const [isSubscript, setIsSubscript] = useState(false);
   const [isSuperscript, setIsSuperscript] = useState(false);
   const [isCode, setIsCode] = useState(false);
+
+  const {contentEditable} = useContentEditable();
 
   const updatePopup = useCallback(() => {
     editor.getEditorState().read(() => {
@@ -445,25 +456,29 @@ function useFloatingTextFormatToolbar(
     return null;
   }
 
-  return createPortal(
-    <TextFormatFloatingToolbar
-      editor={editor}
-      anchorElem={anchorElem}
-      isLink={isLink}
-      isParameter={isParameter}
-      isBold={isBold}
-      isItalic={isItalic}
-      isUppercase={isUppercase}
-      isLowercase={isLowercase}
-      isCapitalize={isCapitalize}
-      isStrikethrough={isStrikethrough}
-      isSubscript={isSubscript}
-      isSuperscript={isSuperscript}
-      isUnderline={isUnderline}
-      isCode={isCode}
-      setIsLinkEditMode={setIsLinkEditMode}
-    />,
-    anchorElem,
+  return contentEditable ? (
+    createPortal(
+      <TextFormatFloatingToolbar
+        editor={editor}
+        anchorElem={anchorElem}
+        isLink={isLink}
+        isParameter={isParameter}
+        isBold={isBold}
+        isItalic={isItalic}
+        isUppercase={isUppercase}
+        isLowercase={isLowercase}
+        isCapitalize={isCapitalize}
+        isStrikethrough={isStrikethrough}
+        isSubscript={isSubscript}
+        isSuperscript={isSuperscript}
+        isUnderline={isUnderline}
+        isCode={isCode}
+        setIsLinkEditMode={setIsLinkEditMode}
+      />,
+      anchorElem,
+    )
+  ) : (
+    <></>
   );
 }
 

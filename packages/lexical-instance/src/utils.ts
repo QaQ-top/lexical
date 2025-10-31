@@ -11,6 +11,7 @@ import type {HistoryState, HistoryStateEntry} from '@lexical/history';
 
 import {$isCodeNode} from '@lexical/code';
 import {$isListNode} from '@lexical/list';
+import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {$isQuoteNode} from '@lexical/rich-text';
 import {$findMatchingParent} from '@lexical/utils';
 import {
@@ -19,21 +20,26 @@ import {
   $getSelection,
   $isElementNode,
   $isRootNode,
+  COMMAND_PRIORITY_CRITICAL,
   type EditorThemeClasses,
   ElementNode,
   LexicalEditor,
   type LexicalNode,
   scrollIntoViewIfNeeded,
+  SELECTION_CHANGE_COMMAND,
   TextNode,
 } from 'lexical';
 import {$isRootOrShadowRoot} from 'lexical';
 import {$textToRichNodes} from 'onchain-lexical-markdown';
 import {dfs, hasOwnProperty} from 'onchain-utility';
+import {useCallback, useEffect, useState} from 'react';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
 import {$isInstanceNode, InstanceNode} from './base';
 import {
+  DisableSelector,
+  INSTANCE_TITLE_UPDATE,
   internalLinkNameUpdateMap,
   numberNodeKey,
   paragraphSymbol,
@@ -253,10 +259,14 @@ export function updateRelatedInternalLink<T extends ElementNode>(nodes: T[]) {
   const insNodes = nodes.filter((node) => $isInstanceNode(node));
   if (insNodes.length) {
     insNodes.forEach((node) => {
-      internalLinkNameUpdateMap
-        .get(node.__instance.value.number!)
-        ?.values()
-        .forEach((update) => update());
+      const editor = $getEditor();
+      Promise.resolve().then(() => {
+        editor.read(() => {
+          editor.dispatchCommand(INSTANCE_TITLE_UPDATE, {
+            number: node.__instance.value.number!,
+          });
+        });
+      });
     });
   }
 }
@@ -273,7 +283,9 @@ export function nodeMoveUp<T extends ElementNode>(nodes?: T[] | null) {
         previous?.insertBefore(current);
       }
     }
-    updateRelatedInternalLink(nodes);
+    updateRelatedInternalLink(
+      $isInstanceNode(previous) ? [...nodes, previous] : nodes,
+    );
   }
 }
 
@@ -289,7 +301,7 @@ export function nodeMoveDown<T extends ElementNode>(nodes?: T[] | null) {
         next?.insertAfter(current);
       }
     }
-    updateRelatedInternalLink(nodes);
+    updateRelatedInternalLink($isInstanceNode(next) ? [...nodes, next] : nodes);
   }
 }
 
@@ -462,4 +474,37 @@ function setHSEntryMap(hs: HistoryStateEntry[], instanceNode: InstanceNode) {
     state.editorState._nodeMap = map;
     return state;
   });
+}
+
+export function useContentEditable() {
+  const [editor] = useLexicalComposerContext();
+  const [contentEditable, setContentEditable] = useState(true);
+
+  const $updateContentEditable = useCallback(() => {
+    const selection = $getSelection();
+    if (selection) {
+      setContentEditable(
+        !selection.getNodes().some((node) => {
+          return editor
+            .getElementByKey(node.getKey())
+            ?.closest(DisableSelector);
+        }),
+      );
+    }
+  }, [editor]);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      (_payload) => {
+        $updateContentEditable();
+        return false;
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor, $updateContentEditable]);
+
+  return {
+    contentEditable,
+  };
 }

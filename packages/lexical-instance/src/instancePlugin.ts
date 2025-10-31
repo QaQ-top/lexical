@@ -23,7 +23,7 @@ import {
   $createTitleOnlyInstanceNode,
   $isInstanceNode,
 } from './base';
-import {ADD_NEW_INSTANCE_NODE, PluginProps} from './const';
+import {ADD_NEW_INSTANCE_NODE, DisableSelector, PluginProps} from './const';
 import {$createFragmentNode} from './fragment';
 import {HorizontalRulePlugin} from './horizontal/horizontalPlugin';
 import {$registerInstanceListItemInsertParagraph} from './list/item';
@@ -57,7 +57,7 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
             return selection.getNodes().some((node) => {
               return editor
                 .getElementByKey(node.getKey())
-                ?.closest(`[contenteditable='false']`);
+                ?.closest(DisableSelector);
             });
           }
           return false;

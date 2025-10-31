@@ -49,6 +49,7 @@ import ImageResizer from 'onchain-lexical-ui/ImageResizer';
 import * as React from 'react';
 import {Suspense, useCallback, useEffect, useRef, useState} from 'react';
 
+import {useContentEditable} from '../utils';
 import {$isImageNode} from '.';
 import Styles from './ImageNode.module.less';
 
@@ -461,7 +462,7 @@ export default function ImageComponent({
   const onResizeStart = () => {
     setIsResizing(true);
   };
-
+  const {contentEditable} = useContentEditable();
   const {historyState} = useSharedHistoryContext();
 
   const draggable = isSelected && $isNodeSelection(selection) && !isResizing;
@@ -518,19 +519,22 @@ export default function ImageComponent({
             </LexicalNestedComposer>
           </div>
         )}
-        {resizable && $isNodeSelection(selection) && isFocused && (
-          <ImageResizer
-            showCaption={showCaption}
-            setShowCaption={setShowCaption}
-            editor={editor}
-            buttonRef={buttonRef}
-            imageRef={imageRef}
-            maxWidth={maxWidth}
-            onResizeStart={onResizeStart}
-            onResizeEnd={onResizeEnd}
-            captionsEnabled={!isLoadError && captionsEnabled}
-          />
-        )}
+        {resizable &&
+          $isNodeSelection(selection) &&
+          isFocused &&
+          contentEditable && (
+            <ImageResizer
+              showCaption={showCaption}
+              setShowCaption={setShowCaption}
+              editor={editor}
+              buttonRef={buttonRef}
+              imageRef={imageRef}
+              maxWidth={maxWidth}
+              onResizeStart={onResizeStart}
+              onResizeEnd={onResizeEnd}
+              captionsEnabled={!isLoadError && captionsEnabled}
+            />
+          )}
       </>
     </Suspense>
   );

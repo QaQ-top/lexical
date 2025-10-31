@@ -222,6 +222,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     if (className !== undefined) {
       span.className = className;
     }
+    span.setAttribute('ignorecontenteditable', '');
     return span;
   }
 

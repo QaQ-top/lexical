@@ -70,24 +70,39 @@ export const internalLinkNameUpdateMap = new Map<
   Map<string, () => void>
 >();
 
+/** 打开创建实例节点 */
 export const OPEN_CREATE_WINDOW: LexicalCommand<{
   isAddChildLevel: boolean;
   number: string;
   insNodeKey?: string;
 }> = createCommand('OPEN_CREATE_WINDOW');
 
+/** 添加新的实例节点 */
 export const ADD_NEW_INSTANCE_NODE: LexicalCommand<{
   instances: Instance[];
   isAddChildLevel: boolean;
   insNodeKey?: string;
 }> = createCommand('ADD_NEW_INSTANCE_NODE');
 
+/** 删除实例节点 */
 export const DELETE_INSTANCE_NODE = 'DELETE_INSTANCE_NODE';
 
+/** 插入参数 */
 export const INSERT_PARAMETERS: LexicalCommand<undefined> =
   createCommand('INSERT_PARAMETERS');
 
+/** 富文本 DecoratorNode 节点组件更新事件*/
 export const COMPONENT_UPDATE: LexicalCommand<{
   insNodeKey?: string;
   name: 'bar';
 }> = createCommand('COMPONENT_UPDATE');
+
+/** 标题更新事件 */
+export const INSTANCE_TITLE_UPDATE: LexicalCommand<{
+  number: string;
+  isInput?: boolean;
+  title?: string;
+}> = createCommand('INSTANCE_TITLE_UPDATE');
+
+/** 获取禁止编辑dom节点选择器 */
+export const DisableSelector = `[contenteditable='false']:not([ignorecontenteditable])`;

@@ -45,7 +45,6 @@ export * from 'onchain-lexical-context/toolBar';
 export * from 'onchain-lexical-instance';
 export * from 'onchain-lexical-markdown';
 export {default as EditorShellStyles} from 'onchain-lexical-ui/EditorShellStyles';
-export * from 'onchain-utility';
 export declare const importSerializedNode: (
   editor: LexicalEditor,
   serializedRoot: SerializedLexicalNode,

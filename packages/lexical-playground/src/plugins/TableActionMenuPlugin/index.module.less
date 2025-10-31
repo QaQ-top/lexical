@@ -40,12 +40,12 @@
   background-color: #fff;
   :global {
     .item {
-      margin: 0 8px 0 8px;
-      padding: 8px;
+      margin: 0 6px 0 6px;
+      padding: 6px;
       color: #050505;
       cursor: pointer;
       line-height: 16px;
-      font-size: 15px;
+      font-size: 14px;
       display: flex;
       align-content: center;
       flex-direction: row;
@@ -56,12 +56,23 @@
       border: 0;
       max-width: 250px;
       min-width: 202px;
+
+      input.insert-input {
+        width: 30px;
+        height: 20px;
+        padding: 0 4px;
+        outline: none;
+        margin: 0 4px;
+        border: 1px solid;
+        text-align: center;
+      }
+
       &:first-child {
-        margin-top: 8px;
+        margin-top: 6px;
       }
 
       &:last-child {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
 
       &:hover {
@@ -95,7 +106,6 @@
 
       .text {
         display: flex;
-        line-height: 20px;
         flex-grow: 1;
         min-width: 150px;
       }

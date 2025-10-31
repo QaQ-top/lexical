@@ -12,6 +12,7 @@ import type {JSX} from 'react';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import Button from 'onchain-lexical-ui/Button';
 import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import {translateI18n} from 'onchain-utility/language';
 import {useMemo, useState} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -118,7 +119,9 @@ export const TwitterEmbedConfig: PlaygroundEmbedConfig = {
 };
 
 export const FigmaEmbedConfig: PlaygroundEmbedConfig = {
-  contentName: 'Figma Document',
+  contentName: translateI18n('[TODO] Figma Document', {
+    placeholder: 'Figma 文档',
+  }),
 
   exampleUrl: 'https://www.figma.com/file/LKQ4FJ4bTnCSjedbRpk931/Sample-File',
 
