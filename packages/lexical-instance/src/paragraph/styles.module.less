@@ -1,0 +1,44 @@
+:global {
+  .instance-title {
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 68px;
+    &.title-hover {
+      white-space: initial;
+      overflow: initial;
+      & > span:nth-of-type(2) {
+        display: inline-block;
+        min-height: 100%;
+        position: relative;
+        left: -5px;
+        z-index: 1;
+        line-height: 36px;
+        background-color: #f9f9f9;
+        border: 1px solid #d8d8d8;
+        border-top-color: transparent;
+        padding: 0 4px;
+        // margin-left: -1px;
+        &::before,
+        &::after {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          top: -1px;
+          width: 5px;
+          height:37px;
+          z-index: 2;
+          background-color: #f9f9f9;
+          pointer-events: none;
+        }
+        &::before {
+          left: -4px;
+        }
+        &::after {
+          right: -4px;
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+import './styles.module.less';
+
 import {
   $isHeadingNode,
   HeadingTagType,
@@ -112,8 +114,31 @@ export class InstanceTitleNode extends InstanceHeadingNode {
   }
 
   createDOM(config: EditorConfig): HTMLElement {
-    const element = super.createDOM(config);
+    const element = super.createDOM(config) as HTMLHeadingElement;
+    element.classList.add('instance-title');
     setDisable(this, element);
+    element.onmousemove = function (event) {
+      const span = event.target as HTMLSpanElement;
+      if (span === element.querySelector(`span:nth-of-type(2)`)) {
+        const titleWidth = span.offsetWidth;
+        const headingWidth = element.offsetWidth;
+        const styles = element.computedStyleMap();
+        const paddingLeft = (styles.get('padding-left') || {value: 0}) as {
+          value: number;
+        };
+        const paddingRight = (styles.get('padding-right') || {value: 0})! as {
+          value: number;
+        };
+        const display = headingWidth - paddingRight.value - paddingLeft.value;
+        if (display <= titleWidth) {
+          element.classList.add('title-hover');
+          span.onmouseout = function (event) {
+            element.classList.remove('title-hover');
+          };
+        }
+      }
+    };
+
     return element;
   }
 

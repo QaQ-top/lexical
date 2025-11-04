@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {useEffect, useRef, useState} from 'react';
+import {useLayoutEffect, useRef, useState} from 'react';
 
 import {makeDestructurable} from '../../base';
 
@@ -39,7 +39,7 @@ function useStore<T extends object>(initStore: T | (() => T)) {
 
   const [store, set] = useState(getDefaultStore(true));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof initStore === 'function') {
       // eslint-disable-next-line @typescript-eslint/ban-types
       latestStore.current = (initStore as Function)();

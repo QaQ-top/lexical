@@ -8,7 +8,7 @@
     "markdown"
   ],
   "license": "MIT",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "OnchainLexicalMarkdown.js",
   "types": "index.d.ts",
   "files": [
@@ -27,8 +27,8 @@
     "@lexical/utils": "0.30.0",
     "@lexical/file": "0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-instance": "^0.0.9",
-    "onchain-utility": "^0.0.9"
+    "onchain-lexical-instance": "^0.0.10",
+    "onchain-utility": "^0.0.10"
   },
   "repository": {
     "type": "git",

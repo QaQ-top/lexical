@@ -8,7 +8,7 @@
     "rich-text"
   ],
   "license": "MIT",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "files": [
     "dist",
     "src"
@@ -18,9 +18,9 @@
     "@lexical/rich-text": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-instance": "^0.0.9",
-    "onchain-lexical-markdown": "^0.0.8",
-    "onchain-utility": "^0.0.9"
+    "onchain-lexical-instance": "^0.0.10",
+    "onchain-lexical-markdown": "^0.0.9",
+    "onchain-utility": "^0.0.10"
   },
   "peerDependencies": {
     "react": ">=17.x",

@@ -215,6 +215,10 @@ export function getLatestValue<
   return data[key];
 }
 
+/**
+ * 跳转到指定实例
+ * dom 属性 data-scrollTo=“false” 时可以禁止跳转
+ */
 export function $scrollTo(number: string) {
   const editor = $getEditor();
   const nodeKey = numberNodeKey.get(number);
@@ -485,9 +489,10 @@ export function useContentEditable() {
     if (selection) {
       setContentEditable(
         !selection.getNodes().some((node) => {
-          return editor
-            .getElementByKey(node.getKey())
-            ?.closest(DisableSelector);
+          return (
+            editor.getElementByKey(node.getKey())?.closest(DisableSelector) ||
+            $isInInstanceTitleNode(node)
+          );
         }),
       );
     }

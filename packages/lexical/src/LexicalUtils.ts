@@ -1283,6 +1283,10 @@ export function getDOMOwnerDocument(
     : null;
 }
 
+/**
+ * 跳转到指定dom
+ * dom 属性 data-scrollTo=“false” 时可以禁止跳转（非源代码）
+ */
 export function scrollIntoViewIfNeeded(
   editor: LexicalEditor,
   selectionRect: DOMRect,
@@ -1326,11 +1330,14 @@ export function scrollIntoViewIfNeeded(
         // Only handles scrolling of Y axis
         defaultView.scrollBy(0, diff);
       } else {
-        const scrollTop = element.scrollTop;
-        element.scrollTop += diff;
-        const yOffset = element.scrollTop - scrollTop;
-        currentTop -= yOffset;
-        currentBottom -= yOffset;
+        const scrollState = element.getAttribute('data-scrollTo');
+        if (scrollState !== 'false') {
+          const scrollTop = element.scrollTop;
+          element.scrollTop += diff;
+          const yOffset = element.scrollTop - scrollTop;
+          currentTop -= yOffset;
+          currentBottom -= yOffset;
+        }
       }
     }
     if (isBodyElement) {
