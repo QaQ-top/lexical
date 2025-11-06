@@ -1,7 +1,7 @@
 {
   "name": "onchain-lexical-ui",
   "license": "MIT",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "sideEffects": false,
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
@@ -10,7 +10,7 @@
     "@lexical/utils": "^0.30.0",
     "katex": "^0.16.22",
     "lexical": "0.30.0",
-    "onchain-lexical-context": "^0.0.9",
+    "onchain-lexical-context": "^0.0.10",
     "react-draggable": "^4.5.0"
   },
   "browser": {

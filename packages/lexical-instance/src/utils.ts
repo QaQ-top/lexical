@@ -414,14 +414,9 @@ export function $updateRichInstanceContent(
   if ($isInstanceNode(insNode)) {
     const fragment = $createFragmentNode();
     $textToRichNodes(fragment, content);
-    const nodes = fragment.getChildren();
-    const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
-    for (let index = 0; index < count; index++) {
-      const node = nodes[0];
-      if (!node /**  || !$isInstanceParagraphNode(node) */) {
-        nodes.splice(index, 0, $createInstanceParagraphNode());
-      }
-    }
+    const nodes = correctedInstanceParagraph(fragment.getChildren(), () =>
+      $createInstanceParagraphNode(),
+    );
     const oldChildren = insNode
       .getPracticalChildren()
       .filter((node) => !$isInstanceNode(node))
@@ -512,4 +507,19 @@ export function useContentEditable() {
   return {
     contentEditable,
   };
+}
+
+/** 修正实例内行条目，避免过少段落导致左边操作栏位子不够 */
+export function correctedInstanceParagraph<T>(
+  nodes: T[],
+  createParagraph: () => T,
+) {
+  const count = InstanceNode.DEFAULT_PARAGRAPHS - 1;
+  for (let index = 0; index < count; index++) {
+    const node = nodes[index];
+    if (!node /**  || !$isInstanceParagraphNode(node) */) {
+      nodes.splice(index, 0, createParagraph());
+    }
+  }
+  return nodes;
 }

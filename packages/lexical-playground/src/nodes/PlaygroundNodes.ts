@@ -41,6 +41,7 @@ import {
   KeywordNode,
   NumberDecoratorNode,
   PageBreakNode,
+  ParametersNode,
   PlaceholderDecoratorNode,
 } from 'onchain-lexical-instance';
 
@@ -108,6 +109,7 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   InstanceTableNode,
   InstanceHorizontalRuleNode,
   InternalLinkNode,
+  ParametersNode,
   Fragment,
 ];
 

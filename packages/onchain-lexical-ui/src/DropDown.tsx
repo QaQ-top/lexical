@@ -80,6 +80,7 @@ function DropDownItems({
   zIndex = 100,
   arrowX,
   onClose,
+  isItClosed,
 }: {
   children: React.ReactNode;
   dropDownRef: React.Ref<HTMLDivElement>;
@@ -87,6 +88,7 @@ function DropDownItems({
   arrow?: boolean;
   arrowX?: number;
   onClose: () => void;
+  isItClosed?: (params: {dropClose?: string; listQuantity?: string}) => boolean;
 }) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
   const [highlightedItem, setHighlightedItem] =
@@ -150,10 +152,42 @@ function DropDownItems({
   return (
     <DropDownContext.Provider value={contextValue}>
       <div
+        role="button"
+        tabIndex={0}
         className={`${Styles.dropdown} ${arrow ? Styles.arrow : ''}`}
         ref={dropDownRef}
         style={{left: arrowX, zIndex}}
-        onKeyDown={handleKeyDown}>
+        onKeyDown={handleKeyDown}
+        onClick={(e) => {
+          const target = e.target as
+            | SVGAElement
+            | HTMLDivElement
+            | HTMLElement
+            | null;
+          if (target) {
+            const close = target.closest<HTMLElement>('[data-drop-close]');
+            if (close) {
+              const key = 'xxx__X';
+              close.setAttribute(key, '');
+              if (isItClosed && isItClosed(close.dataset || {})) {
+                let div = document.querySelector<HTMLDivElement>(
+                  `.${Styles.dropdown}`,
+                );
+                const interval = setInterval(() => {
+                  if (div && !div.querySelector(`[${key}]`)) {
+                    onClose();
+                    clearInterval(interval);
+                    div = null;
+                  }
+                }, 250);
+                setTimeout(() => {
+                  clearInterval(interval);
+                  div = null;
+                }, 10000);
+              }
+            }
+          }
+        }}>
         {children}
       </div>
     </DropDownContext.Provider>
@@ -172,6 +206,7 @@ export default function DropDown({
   children,
   stopCloseOnClickSelf,
   onOpen,
+  isItClosed,
 }: {
   disabled?: boolean;
   buttonAriaLabel?: string;
@@ -184,6 +219,7 @@ export default function DropDown({
   arrow?: boolean;
   arrowX?: number;
   onOpen?: (value: boolean) => void;
+  isItClosed?: (params: {dropClose?: string; listQuantity?: string}) => boolean;
 }): JSX.Element {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -315,7 +351,8 @@ export default function DropDown({
             zIndex={zIndex}
             arrow={arrow}
             arrowX={arrowX}
-            onClose={handleClose}>
+            onClose={handleClose}
+            isItClosed={isItClosed}>
             {children}
           </DropDownItems>,
           document.body,

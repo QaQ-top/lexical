@@ -104,6 +104,12 @@ export {
   InstanceTitleNode,
 } from './paragraph/title';
 export {
+  $createParametersNode,
+  $isParametersNode,
+  type Parameters,
+  ParametersNode,
+} from './parameters';
+export {
   $createPlaceholderDecoratorNode,
   $isPlaceholderDecoratorNode,
   PlaceholderDecoratorNode,

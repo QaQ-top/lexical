@@ -97,5 +97,11 @@ export const INSTANCE_TITLE_UPDATE: LexicalCommand<{
   title?: string;
 }> = createCommand('INSTANCE_TITLE_UPDATE');
 
+/** 参数更新 */
+export const PARAMETERS_UPDATE: LexicalCommand<{
+  number: string;
+  value: string;
+}> = createCommand('PARAMETERS_UPDATE');
+
 /** 获取禁止编辑dom节点选择器 */
 export const DisableSelector = `[contenteditable='false']:not([ignorecontenteditable])`;

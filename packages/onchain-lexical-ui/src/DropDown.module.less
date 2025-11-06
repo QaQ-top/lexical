@@ -1,3 +1,5 @@
+@import './const.less';
+
 .arrow {
   position: relative;
   &::before {
@@ -58,7 +60,7 @@
       }
 
       &:disabled {
-        color: #bdc1cd; 
+        color: @disabledColor; 
         cursor: not-allowed;
       }
 

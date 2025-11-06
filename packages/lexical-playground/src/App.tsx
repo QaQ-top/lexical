@@ -16,6 +16,7 @@ import {$createHeadingNode, $createQuoteNode} from '@lexical/rich-text';
 import {
   $createParagraphNode,
   $createTextNode,
+  $getEditor,
   $getRoot,
   $isTextNode,
   DOMConversionMap,
@@ -31,6 +32,8 @@ import {
   $createInstanceNode,
   $createInstanceParagraphNode,
   $createInternalLinkNode,
+  $createParametersNode,
+  PARAMETERS_UPDATE,
 } from 'onchain-lexical-instance';
 import {parseAllowedColor} from 'onchain-lexical-ui/ColorPicker';
 import EditorShellStyles from 'onchain-lexical-ui/EditorShellStyles';
@@ -202,13 +205,18 @@ function App({namespace}: {namespace: string}): JSX.Element {
   const initialConfig = {
     editorState: () => {
       const root = $getRoot();
+      const editor = $getEditor();
       if (root.getFirstChild() == null) {
         const instance = $createInstanceNode(Instance);
         root.append(instance);
         instance.selectStart();
         const paragraph = $createInstanceParagraphNode();
         paragraph.append($createInternalLinkNode(Instance.number));
-        instance.append(paragraph);
+        const paragraph2 = $createInstanceParagraphNode();
+        paragraph2.append(
+          $createParametersNode({number: 'WER13432', value: '134/kg'}),
+        );
+        instance.append(paragraph, paragraph2);
       }
     },
     html: {import: buildImportMap()},

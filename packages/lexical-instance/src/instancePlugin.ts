@@ -31,10 +31,17 @@ import {
   $registerNumberDecoratorDomUpdate,
   $registerNumberDecoratorNodeUpdate,
 } from './number';
-import {$registerInstanceParagraphNodeTransform} from './paragraph';
+import {
+  $createInstanceParagraphNode,
+  $registerInstanceParagraphNodeTransform,
+} from './paragraph';
 import {$registerInstanceHeadingNodeTransform} from './paragraph/title';
 import {$registerTableCommand} from './table';
-import {clearCache, getTemporaryContentText} from './utils';
+import {
+  clearCache,
+  correctedInstanceParagraph,
+  getTemporaryContentText,
+} from './utils';
 
 export const InstancePlugin: React.FC<PluginProps> = (props) => {
   const {placeholder} = props;
@@ -100,7 +107,11 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
                   const node = $createTitleOnlyInstanceNode(instance);
                   const fragment = $createFragmentNode();
                   $textToRichNodes(fragment, contentText);
-                  node.append(...fragment.getChildren());
+                  const nodes = correctedInstanceParagraph(
+                    fragment.getChildren(),
+                    () => $createInstanceParagraphNode(),
+                  );
+                  node.append(...nodes);
                   return node;
                 } else {
                   return $createInstanceNode(instance);

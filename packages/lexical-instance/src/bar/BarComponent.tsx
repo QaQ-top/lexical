@@ -134,6 +134,11 @@ const Bar = (props: {
     );
   }, []);
 
+  const trackLinkCount = instance?.trackLinkCount || 0;
+
+  const isTemporarilyCreated =
+    instance?.isCustom && instance?.dataType === 'add';
+
   return (
     <>
       <div data-bar="left" className={Styles.left}>
@@ -150,19 +155,23 @@ const Bar = (props: {
               <DropDown
                 arrow={true}
                 showIcon={false}
-                disabled={!instance?.trackLinkCount}
+                disabled={!trackLinkCount}
                 stopCloseOnClickSelf={true}
                 buttonLabel={
-                  // [TODO] 显示 trackLinkCount
                   <div>
-                    <i>{instance?.trackLinkCount || ''}</i>
+                    <i>{trackLinkCount || ''}</i>
                     <StaticIcon
-                      className={`${Styles.hover}`}
+                      className={`${
+                        trackLinkCount ? Styles.hover : Styles.empty
+                      }`}
                       type="icon-front-link1"
                     />
                   </div>
                 }
-                onOpen={setOpen}>
+                onOpen={setOpen}
+                isItClosed={({listQuantity}) => {
+                  return listQuantity === '1';
+                }}>
                 {Components.TrackLinkList && instance ? (
                   <Components.TrackLinkList number={instance.number!} />
                 ) : null}
@@ -196,7 +205,9 @@ const Bar = (props: {
         ) : null}
       </div>
       <div data-bar="right" className={Styles.right}>
-        {!preview && extra.showRightToolbar !== false ? (
+        {!preview &&
+        extra.showRightToolbar !== false &&
+        !isTemporarilyCreated ? (
           <>
             {instance?.checkOut ? (
               <>
