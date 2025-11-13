@@ -85,8 +85,12 @@ export default function ShortcutsPlugin({
               ?.closest(DisableSelector);
           })
         ) {
-          event.preventDefault();
-          return true;
+          if (event.ctrlKey && event.key === 'a') {
+            return false;
+          } else {
+            event.preventDefault();
+            return true;
+          }
         }
       }
       // Short-circuit, a least one modifier must be set
