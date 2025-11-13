@@ -363,9 +363,9 @@ export function setDisable(node: ElementNode, element: HTMLElement) {
   const parent = node.getParent();
   if ($isInstanceNode(parent)) {
     if (parent.__instance.value.disable) {
-      element.setAttribute('contenteditable', 'false');
+      element.setAttribute('usable', 'false');
     } else {
-      element.setAttribute('contenteditable', 'true');
+      element.setAttribute('usable', 'true');
     }
   }
 }

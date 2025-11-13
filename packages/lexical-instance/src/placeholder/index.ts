@@ -86,7 +86,7 @@ export class PlaceholderDecoratorNode extends DecoratorNode<string> {
       pointer-events: none;
       user-select: none;
     `;
-    span.setAttribute('ignorecontenteditable', '');
+    span.setAttribute('ignoreusable', '');
     return span;
   }
 

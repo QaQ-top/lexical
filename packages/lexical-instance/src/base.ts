@@ -175,6 +175,7 @@ export class InstanceNode extends ElementNode {
     dom.style.position = 'relative';
     dom.setAttribute('instance', 'true');
     dom.setAttribute('key', this.getKey());
+
     return dom;
   }
 

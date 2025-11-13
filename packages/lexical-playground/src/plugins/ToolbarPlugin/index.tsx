@@ -158,32 +158,42 @@ const ELEMENT_FORMAT_OPTIONS: {
   center: {
     icon: 'center-align',
     iconRTL: 'center-align',
-    name: 'Center Align',
+    name: translateI18n('[TODO] 国际化 Center Align', {
+      placeholder: '居中对齐',
+    }),
   },
   end: {
     icon: 'right-align',
     iconRTL: 'left-align',
-    name: 'End Align',
+    name: translateI18n('[TODO] 国际化 End Align', {placeholder: '尾部对齐'}),
   },
   justify: {
     icon: 'justify-align',
     iconRTL: 'justify-align',
-    name: 'Justify Align',
+    name: translateI18n('[TODO] 国际化 Justify Align', {
+      placeholder: '两端对齐',
+    }),
   },
   left: {
     icon: 'left-align',
     iconRTL: 'left-align',
-    name: 'Left Align',
+    name: translateI18n('[TODO] 国际化 Left Align', {
+      placeholder: '左对齐',
+    }),
   },
   right: {
     icon: 'right-align',
     iconRTL: 'right-align',
-    name: 'Right Align',
+    name: translateI18n('[TODO] 国际化 Right Align', {
+      placeholder: '右对齐',
+    }),
   },
   start: {
     icon: 'left-align',
     iconRTL: 'right-align',
-    name: 'Start Align',
+    name: translateI18n('[TODO] 国际化 Start Align', {
+      placeholder: '头部对齐',
+    }),
   },
 };
 
@@ -1161,7 +1171,9 @@ export default React.memo(function ToolbarPlugin({
                 <DropDown
                   disabled={!isEditable}
                   buttonClassName="toolbar-item spaced"
-                  buttonLabel="Insert"
+                  buttonLabel={translateI18n('[TODO] 国际化 Insert', {
+                    placeholder: '插入',
+                  })}
                   buttonAriaLabel="Insert specialized editor node"
                   buttonIconClassName="icon plus">
                   <DropDownItem

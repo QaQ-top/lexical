@@ -9,6 +9,7 @@
 import {TOGGLE_LINK_COMMAND} from '@lexical/link';
 import {HeadingTagType} from '@lexical/rich-text';
 import {
+  $getSelection,
   COMMAND_PRIORITY_NORMAL,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
@@ -19,6 +20,7 @@ import {
   OUTDENT_CONTENT_COMMAND,
 } from 'lexical';
 import {useToolbarState} from 'onchain-lexical-context/toolBar';
+import {DisableSelector} from 'onchain-lexical-instance';
 import {Dispatch, useEffect} from 'react';
 
 import {sanitizeUrl} from '../../utils/url';
@@ -73,7 +75,20 @@ export default function ShortcutsPlugin({
   const {toolbarState} = useToolbarState();
 
   useEffect(() => {
-    const keyboardShortcutsHandler = (event: KeyboardEvent) => {
+    const $keyboardShortcutsHandler = (event: KeyboardEvent) => {
+      const selection = $getSelection();
+      if (selection) {
+        if (
+          selection.getNodes().some((node) => {
+            return editor
+              .getElementByKey(node.getKey())
+              ?.closest(DisableSelector);
+          })
+        ) {
+          event.preventDefault();
+          return true;
+        }
+      }
       // Short-circuit, a least one modifier must be set
       if (isModifierMatch(event, {})) {
         return false;
@@ -149,7 +164,7 @@ export default function ShortcutsPlugin({
 
     return editor.registerCommand(
       KEY_DOWN_COMMAND,
-      keyboardShortcutsHandler,
+      $keyboardShortcutsHandler,
       COMMAND_PRIORITY_NORMAL,
     );
   }, [

@@ -34,7 +34,12 @@ import {
 } from '../MarkdownTransformers';
 import {BLOCK_EQUATION, EQUATION} from './equation';
 import {HR} from './hr';
-import {HTML_TABLE} from './html';
+import {
+  HTML_BR,
+  HTML_PARAGRAPH_TRANSFORMER,
+  HTML_TABLE,
+  HTML_TEXT_TRANSFORMER,
+} from './html';
 import {IMAGE} from './image';
 import {InstanceHeadingTransformer, InstanceTransformer} from './instance';
 import {PAGE_BREAK} from './pageBreak';
@@ -100,6 +105,12 @@ TransFormerGather.register(EQUATION);
 TransFormerGather.register(BLOCK_EQUATION);
 TransFormerGather.register(IMAGE);
 TransFormerGather.register(PAGE_BREAK);
+TransFormerGather.register(PAGE_BREAK);
+[...HTML_PARAGRAPH_TRANSFORMER, ...HTML_TEXT_TRANSFORMER, HTML_BR].forEach(
+  (item) => {
+    TransFormerGather.register(item);
+  },
+);
 
 function getInstanceTransformers() {
   return TransFormerGather.value;

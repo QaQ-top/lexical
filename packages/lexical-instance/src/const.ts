@@ -104,4 +104,4 @@ export const PARAMETERS_UPDATE: LexicalCommand<{
 }> = createCommand('PARAMETERS_UPDATE');
 
 /** 获取禁止编辑dom节点选择器 */
-export const DisableSelector = `[contenteditable='false']:not([ignorecontenteditable])`;
+export const DisableSelector = `[usable='false']:not([ignoreusable])`;

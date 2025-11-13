@@ -18,4 +18,9 @@
   position: relative;
   resize: vertical;
   z-index: -1;
+  :global {
+    [usable="false"] {
+      caret-color: transparent !important;
+    }
+  }
 }

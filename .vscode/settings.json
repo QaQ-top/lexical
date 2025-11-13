@@ -13,5 +13,6 @@
     "onbeforematch",
     "contenteditable",
     "ignorecontenteditable",
+    "ignoreusable",
   ]
 }

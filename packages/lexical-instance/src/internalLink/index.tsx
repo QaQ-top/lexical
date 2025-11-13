@@ -54,7 +54,7 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
 
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
     const span = super.createDOM(config, editor);
-    span.setAttribute('ignorecontenteditable', '');
+    span.setAttribute('ignoreusable', '');
     return span;
   }
 

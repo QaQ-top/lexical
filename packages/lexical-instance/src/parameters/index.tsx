@@ -22,6 +22,8 @@ import ParametersComponent from './parametersComponent';
 export interface Parameters {
   value: string;
   number: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k: string]: any;
 }
 
 export type SerializedInternalNode = Spread<
@@ -31,13 +33,25 @@ export type SerializedInternalNode = Spread<
   SerializedTextDecoratorNode
 >;
 export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
+  /** 用于存储参数数据，保证每次读取能获取到最新值 */
+  static collection = new Map<string, Parameters>();
+  /** 初始化值 */
   __parameters: Parameters;
+
+  /** 最新的值 */
+  get parameters() {
+    return (
+      ParametersNode.collection.get(this.__parameters.number) ||
+      this.__parameters
+    );
+  }
+
   static getType(): string {
     return 'Parameters';
   }
 
   static clone(node: ParametersNode) {
-    return new ParametersNode(node.__parameters, node.__key);
+    return new ParametersNode(Object.assign({}, node.parameters), node.__key);
   }
 
   static importJSON(serializedNode: SerializedInternalNode): ParametersNode {
@@ -46,21 +60,21 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
     );
   }
 
-  constructor(number: Parameters, key?: string) {
+  constructor(parameters: Parameters, key?: string) {
     super(key);
-    this.__parameters = number;
+    this.__parameters = parameters;
   }
 
   exportJSON(): SerializedInternalNode {
     return {
       ...super.exportJSON(),
-      parameters: this.__parameters,
+      parameters: this.parameters,
     };
   }
 
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
     const span = super.createDOM(config, editor);
-    span.setAttribute('ignorecontenteditable', '');
+    span.setAttribute('ignoreusable', '');
     return span;
   }
 
@@ -90,3 +104,7 @@ export function $isParametersNode(
 ): node is ParametersNode {
   return node instanceof ParametersNode;
 }
+
+// export function updateParameters(parameters: Parameters) {
+//   return ParametersNode.collection.set(parameters.number, parameters);
+// }

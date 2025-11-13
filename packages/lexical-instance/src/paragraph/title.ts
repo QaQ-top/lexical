@@ -115,6 +115,7 @@ export class InstanceTitleNode extends InstanceHeadingNode {
   createDOM(config: EditorConfig): HTMLElement {
     const element = super.createDOM(config) as HTMLHeadingElement;
     element.classList.add(Styles['instance-title']);
+    element.setAttribute('instance-title', 'true');
     setDisable(this, element);
     element.onmousemove = function (event) {
       const span = event.target as HTMLSpanElement;

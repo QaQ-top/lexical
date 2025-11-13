@@ -26,7 +26,7 @@ const ParametersComponent = ({nodeKey}: {nodeKey: string}) => {
     editor.read(() => {
       const node = $getNodeByKey(nodeKey);
       if ($isParametersNode(node)) {
-        setParameters(node.__parameters);
+        setParameters(node.parameters);
       }
     });
     return mergeRegister(
@@ -40,7 +40,7 @@ const ParametersComponent = ({nodeKey}: {nodeKey: string}) => {
           const node = $getNodeByKey(nodeKey);
           if ($isParametersNode(node)) {
             setParameters({value});
-            Object.assign(node.__parameters, {value});
+            Object.assign(node.parameters, {value});
           }
           return true;
         },

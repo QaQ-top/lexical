@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+import {ElementTransformer} from '@lexical/markdown';
 import {getStyleObjectFromCSS} from '@lexical/selection';
 import {
   $createTableCellNode,
@@ -15,8 +16,18 @@ import {
   TableNode,
   TableRowNode,
 } from '@lexical/table';
-import {LexicalNode} from 'lexical';
-import {$createInstanceTableNode} from 'onchain-lexical-instance';
+import {
+  $createLineBreakNode,
+  $createTextNode,
+  $isLineBreakNode,
+  $isRootNode,
+  LexicalNode,
+} from 'lexical';
+import {
+  $createFragmentNode,
+  $createInstanceParagraphNode,
+  $createInstanceTableNode,
+} from 'onchain-lexical-instance';
 import {getHTMLTagString} from 'onchain-utility';
 
 import {$convertFromMarkdownString} from '../fromMarkdownString';
@@ -193,3 +204,105 @@ export const HTML_TABLE: MultilineElementTransformer = {
 };
 
 // $convertFromMarkdownString(textContent, TransFormerGather.value, cell);
+
+export const HTML_PARAGRAPH_TRANSFORMER: MultilineElementTransformer[] = [
+  {
+    end: /[\u0020\t]*<\/p>$/,
+    start: /[\u0020\t]*<p.*?>/,
+  },
+  {
+    end: /[\u0020\t]*<\/div>$/,
+    start: /[\u0020\t]*<div.*?>/,
+  },
+].map(({start, end}) => {
+  return {
+    dependencies: [],
+    regExpEnd: {
+      regExp: end,
+    },
+    regExpStart: start,
+    replace: (rootNode, children, startMatch, endMatch, linesInBetween) => {
+      if (linesInBetween) {
+        const context = linesInBetween.join('\n');
+        const paragraph = $createInstanceParagraphNode();
+        $convertFromMarkdownString(context, TransFormerGather.value, paragraph);
+        rootNode.append(paragraph);
+      }
+    },
+    type: 'multiline-element',
+  };
+});
+
+export const HTML_TEXT_TRANSFORMER: MultilineElementTransformer[] = [
+  {
+    end: /[\u0020\t]*<\/span>$/,
+    start: /[\u0020\t]*<span.*?>/,
+  },
+].map(({start, end}) => {
+  return {
+    dependencies: [],
+    regExpEnd: {
+      regExp: end,
+    },
+    regExpStart: start,
+    replace: (rootNode, children, startMatch, endMatch, linesInBetween) => {
+      if (linesInBetween) {
+        const context = linesInBetween.join('\n').replace(/<br.*?\/>/g, '\n');
+        if (/<([a-z]+).*?>(.*?)<\/\1>/g.test(context)) {
+          const fragment = $createFragmentNode();
+          $convertFromMarkdownString(
+            context,
+            TransFormerGather.value,
+            fragment,
+          );
+          const children = fragment.getChildren();
+          rootNode.append(...children);
+        } else {
+          const text = $createTextNode();
+          text.setTextContent(context);
+          if ($isRootNode(rootNode)) {
+            const paragraph = $createInstanceParagraphNode();
+            paragraph.append(text);
+            rootNode.append(paragraph);
+          } else {
+            rootNode.append(text);
+          }
+        }
+      }
+    },
+    type: 'multiline-element',
+  };
+});
+
+export const HTML_BR: ElementTransformer = {
+  dependencies: [],
+  export: (node: LexicalNode) => {
+    if ($isLineBreakNode(node)) {
+      return '\n';
+    }
+    return null;
+  },
+  regExp: /^<br.*?\/>$/,
+  replace: (parentNode, _1, _2, isImport) => {
+    const line = $createLineBreakNode();
+    const paragraph = $createInstanceParagraphNode();
+    paragraph.append(line);
+
+    if (isImport || parentNode.getNextSibling() != null) {
+      if ($isRootNode(parentNode.getParent())) {
+        parentNode.replace(paragraph);
+      } else {
+        parentNode.replace(line);
+      }
+    } else {
+      if ($isRootNode(parentNode.getParent())) {
+        parentNode.insertBefore(paragraph);
+      } else {
+        parentNode.insertBefore(line);
+      }
+    }
+
+    line.selectNext();
+  },
+  type: 'element',
+};
