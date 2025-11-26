@@ -196,6 +196,7 @@
     "vite": "^7.1.4"
   },
   "dependencies": {
+    "react-avatar": "^5.0.4",
     "yjs": "^13.5.42"
   }
 }

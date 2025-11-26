@@ -1,6 +1,7 @@
 import {EditorState} from 'lexical';
 import type {Instance} from 'onchain-lexical-instance';
 import React from 'react';
+import type {ReactAvatarProps} from 'react-avatar';
 
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -42,10 +43,10 @@ export interface InstanceConfigLet {
     cancelModification?: () => void;
   }>;
 }
-export interface InstanceConfig<Ins = Instance> {
+export interface InstanceConfig<Ins = Instance, Let = {}> {
   namespace: string;
-  icl: InstanceConfigLet;
-  setIcl(params: Partial<InstanceConfigLet>): void;
+  icl: InstanceConfigLet & Let;
+  setIcl(params: Partial<InstanceConfigLet & Let>): void;
   components?: {
     TrackLinkList?: (props: {number: string}) => JSX.Element;
   };

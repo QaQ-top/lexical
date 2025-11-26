@@ -38,7 +38,7 @@ export function $wrapSelectionInMarkNode(
   isBackward: boolean,
   id: string,
   createNode?: (ids: Array<string>) => MarkNode,
-): void {
+): MarkNode | void | undefined {
   // Force a forwards selection since append is used, ignore the argument.
   // A new selection is used to avoid side-effects of flipping the given
   // selection
@@ -131,6 +131,7 @@ export function $wrapSelectionInMarkNode(
       ? lastCreatedMarkNode.selectStart()
       : lastCreatedMarkNode.selectEnd();
   }
+  return lastCreatedMarkNode;
 }
 
 export function $getMarkIDs(

@@ -9,7 +9,6 @@
 import type {JSX} from 'react';
 
 import {ContentEditable} from '@lexical/react/LexicalContentEditable';
-import * as React from 'react';
 
 import Styles from './ContentEditable.module.less';
 
@@ -30,6 +29,7 @@ export default function LexicalContentEditable({
       aria-placeholder={placeholder}
       placeholder={
         <div
+          data-placeholder=""
           className={
             placeholderClassName ?? Styles.ContentEditable__placeholder
           }>

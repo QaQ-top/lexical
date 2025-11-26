@@ -34,6 +34,7 @@ import useContentEditable from '../../hooks/useContentEditable';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPosition} from '../../utils/setFloatingElemPosition';
+import {INSERT_INLINE_COMMAND} from '../CommentPlugin/const';
 // import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
 import Styles from './index.module.less';
 
@@ -82,9 +83,9 @@ function TextFormatFloatingToolbar({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
-  // const insertComment = () => {
-  //   editor.dispatchCommand(INSERT_INLINE_COMMAND, undefined);
-  // };
+  const insertComment = () => {
+    editor.dispatchCommand(INSERT_INLINE_COMMAND, undefined);
+  };
 
   const insertParameters = () => {
     editor.dispatchCommand(INSERT_PARAMETERS, undefined);
@@ -329,8 +330,26 @@ function TextFormatFloatingToolbar({
               placeholder: '参数',
             })}
             aria-label="Insert comment">
-            <Icon type="icon-front-parameterpool" />
+            <Icon
+              data-root-contains="1"
+              type="icon-front-parameterpool"
+              className="format"
+            />
           </button>
+          <button
+            type="button"
+            onClick={insertComment}
+            className={'popup-item spaced insert-comment'}
+            title="Insert comment"
+            aria-label="Insert comment"
+            tabIndex={0}>
+            <Icon
+              type="icon-front-comment"
+              data-root-contains="1"
+              className="format"
+            />
+          </button>
+          <i data-root-contains="1">{''}</i>
         </>
       )}
       {/* <button

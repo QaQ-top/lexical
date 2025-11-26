@@ -24,7 +24,7 @@ import {DisableSelector} from 'onchain-lexical-instance';
 import {Dispatch, useEffect} from 'react';
 
 import {sanitizeUrl} from '../../utils/url';
-import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
+import {INSERT_INLINE_COMMAND} from '../CommentPlugin/const';
 import {
   clearFormatting,
   formatBulletList,

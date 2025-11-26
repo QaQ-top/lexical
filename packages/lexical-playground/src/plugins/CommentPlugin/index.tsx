@@ -76,11 +76,8 @@ import {
 } from '../../commenting';
 import useModal from '../../hooks/useModal';
 import CommentEditorTheme from '../../themes/CommentEditorTheme';
+import {INSERT_INLINE_COMMAND} from './const';
 import Styles from './index.module.less';
-
-export const INSERT_INLINE_COMMAND: LexicalCommand<void> = createCommand(
-  'INSERT_INLINE_COMMAND',
-);
 
 function AddCommentBox({
   anchorKey,

@@ -182,9 +182,9 @@ export default function Editor(): JSX.Element {
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        <CommentPlugin
+        {/* <CommentPlugin
           providerFactory={isCollab ? createWebsocketProvider : undefined}
-        />
+        /> */}
         {isRichText ? (
           <>
             {isCollab ? (
@@ -294,7 +294,7 @@ export default function Editor(): JSX.Element {
           />
         )} */}
       </div>
-      {(showTreeView || VITE_IS_DEVELOPMENT) && (
+      {/* {(showTreeView || VITE_IS_DEVELOPMENT) && (
         <div
           style={{
             bottom: 0,
@@ -323,7 +323,7 @@ export default function Editor(): JSX.Element {
             {'>'}
           </button>
         </div>
-      )}
+      )} */}
     </>
   );
 }

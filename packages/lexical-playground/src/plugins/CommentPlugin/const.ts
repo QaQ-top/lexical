@@ -4,10 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- *
  */
+import {createCommand, LexicalCommand} from 'lexical';
 
-.CommentEditorTheme__paragraph {
-  margin: 0;
-  position: relative;
-}
+export const INSERT_INLINE_COMMAND: LexicalCommand<void> = createCommand(
+  'INSERT_INLINE_COMMAND',
+);

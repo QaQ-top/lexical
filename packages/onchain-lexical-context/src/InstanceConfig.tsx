@@ -14,17 +14,22 @@ import type {JSX} from 'react';
 import * as React from 'react';
 import {createContext, ReactNode, useContext} from 'react';
 
-type InstanceConfigContext<Ins = Instance> = InstanceConfig<Ins> &
-  BuiltInInstanceConfig<Ins>;
+type InstanceConfigContext<
+  Ins = Instance,
+  Let = Record<string, any>,
+> = InstanceConfig<Ins, Let> & BuiltInInstanceConfig<Ins>;
 
 const Context: React.Context<InstanceConfigContext> = createContext({} as any);
 
-export const InstanceConfigContext = <Ins = Instance,>({
+export const InstanceConfigContext = <
+  Ins = Instance,
+  Let = Record<string, any>,
+>({
   children,
   value,
 }: {
   children: ReactNode;
-  value: InstanceConfig<Ins>;
+  value: InstanceConfig<Ins, Let>;
 }): JSX.Element => {
   const [selectedInstance, setSelectedInstance] = React.useState<
     BuiltInInstanceConfig<Ins>['selectedInstance']
@@ -47,6 +52,9 @@ export const InstanceConfigContext = <Ins = Instance,>({
   );
 };
 
-export const useInstanceConfig = <Ins = Instance,>() => {
-  return useContext(Context) as unknown as InstanceConfigContext<Ins>;
+export const useInstanceConfig = <
+  Ins = Instance,
+  Let = Record<string, any>,
+>() => {
+  return useContext(Context) as unknown as InstanceConfigContext<Ins, Let>;
 };

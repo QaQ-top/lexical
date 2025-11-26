@@ -103,5 +103,15 @@ export const PARAMETERS_UPDATE: LexicalCommand<{
   value: string;
 }> = createCommand('PARAMETERS_UPDATE');
 
+/** 添加评论 */
+export const ADD_COMMENT: LexicalCommand<{
+  instance: Instance;
+  author: string;
+  content: string;
+  id: string;
+  timeStamp: number;
+  replyId?: string;
+}> = createCommand('ADD_COMMENT');
+
 /** 获取禁止编辑dom节点选择器 */
 export const DisableSelector = `[usable='false']:not([ignoreusable])`;

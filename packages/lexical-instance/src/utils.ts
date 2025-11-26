@@ -370,27 +370,6 @@ export function setDisable(node: ElementNode, element: HTMLElement) {
   }
 }
 
-export function ignoreHistory({
-  editor,
-  historyState,
-  update,
-  updated,
-}: {
-  editor: LexicalEditor;
-  historyState: HistoryState;
-  update: () => void;
-  updated?: () => void;
-}) {
-  historyState.isEntry = false;
-  editor.update(() => {
-    update();
-    setTimeout(() => {
-      historyState.isEntry = true;
-      updated?.();
-    });
-  });
-}
-
 /** 更新富文本实例名称 */
 export function $updateRichInstanceTitle(
   instance: Instance,
