@@ -23,6 +23,7 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {useSettings} from 'onchain-lexical-context/settings';
 import {INSERT_PARAMETERS} from 'onchain-lexical-instance';
 import {Icon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
@@ -71,6 +72,9 @@ function TextFormatFloatingToolbar({
   isUnderline: boolean;
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element {
+  const {
+    extra: {isCanComment},
+  } = useSettings();
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
   const insertLink = useCallback(() => {
@@ -336,19 +340,21 @@ function TextFormatFloatingToolbar({
               className="format"
             />
           </button>
-          <button
-            type="button"
-            onClick={insertComment}
-            className={'popup-item spaced insert-comment'}
-            title="Insert comment"
-            aria-label="Insert comment"
-            tabIndex={0}>
-            <Icon
-              type="icon-front-comment"
-              data-root-contains="1"
-              className="format"
-            />
-          </button>
+          {isCanComment !== false ? (
+            <button
+              type="button"
+              onClick={insertComment}
+              className={'popup-item spaced insert-comment'}
+              title="Insert comment"
+              aria-label="Insert comment"
+              tabIndex={0}>
+              <Icon
+                type="icon-front-comment"
+                data-root-contains="1"
+                className="format"
+              />
+            </button>
+          ) : null}
           <i data-root-contains="1">{''}</i>
         </>
       )}

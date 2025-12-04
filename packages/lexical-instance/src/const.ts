@@ -6,7 +6,7 @@
  *
  */
 
-import {createCommand, LexicalCommand} from 'lexical';
+import {BaseSelection, createCommand, LexicalCommand} from 'lexical';
 
 import {Instance} from './types';
 
@@ -74,6 +74,14 @@ export const OPEN_CREATE_WINDOW: LexicalCommand<{
 export const ADD_NEW_INSTANCE_NODE: LexicalCommand<{
   instances: Instance[];
   isAddChildLevel: boolean;
+  insNodeKey?: string;
+}> = createCommand('ADD_NEW_INSTANCE_NODE');
+
+/** 拆分的实例节点 */
+export const SPLIT_INSTANCE_NODE: LexicalCommand<{
+  instance: Instance;
+  isAddChildLevel: boolean;
+  selection: BaseSelection;
   insNodeKey?: string;
 }> = createCommand('ADD_NEW_INSTANCE_NODE');
 

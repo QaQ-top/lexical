@@ -36,7 +36,12 @@ import {useCallback, useEffect, useState} from 'react';
 import normalizeClassNames from 'shared/normalizeClassNames';
 
 import {$createBarDecoratorNode, $isBarDecoratorNode} from './bar';
-import {$isInstanceNode, InstanceNode} from './base';
+import {
+  $createInstanceNode,
+  $createTitleOnlyInstanceNode,
+  $isInstanceNode,
+  InstanceNode,
+} from './base';
 import {
   DisableSelector,
   INSTANCE_TITLE_UPDATE,
@@ -501,4 +506,63 @@ export function correctedInstanceParagraph<T>(
     }
   }
   return nodes;
+}
+
+/** 添加新实例节点 */
+export function $addInstancesNode({
+  isAddChildLevel,
+  instances,
+  insNodeKey,
+}: {
+  instances: Instance[];
+  isAddChildLevel: boolean;
+  insNodeKey?: string;
+}) {
+  if (insNodeKey) {
+    const insNode = $getNodeByKey(insNodeKey);
+    if ($isInstanceNode(insNode)) {
+      const newInsNodes = instances.map((instance) => {
+        const contentText = getTemporaryContentText(instance);
+        if (contentText) {
+          const node = $createTitleOnlyInstanceNode(instance);
+          const fragment = $createFragmentNode();
+          $textToRichNodes(fragment, contentText);
+          const nodes = correctedInstanceParagraph(fragment.getChildren(), () =>
+            $createInstanceParagraphNode(),
+          );
+          node.append(...nodes);
+          return node;
+        } else {
+          return $createInstanceNode(instance);
+        }
+      });
+      if (isAddChildLevel) {
+        const [insChildNode] = insNode.getSelfInstanceChildren();
+        if (insChildNode) {
+          for (let index = newInsNodes.length - 1; index > -1; index--) {
+            const current = newInsNodes[index];
+            const pre = newInsNodes[index + 1];
+            if (pre) {
+              pre.insertBefore(current);
+            } else {
+              insChildNode.insertBefore(current);
+            }
+          }
+        } else {
+          insNode.append(...newInsNodes);
+        }
+      } else {
+        for (let index = 0; index < newInsNodes.length; index++) {
+          const current = newInsNodes[index];
+          const pre = newInsNodes[index - 1];
+          if (pre) {
+            pre.insertAfter(current);
+          } else {
+            insNode.insertAfter(current);
+          }
+        }
+      }
+      newInsNodes[0].selectStart();
+    }
+  }
 }

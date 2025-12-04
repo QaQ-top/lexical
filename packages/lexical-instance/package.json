@@ -7,7 +7,7 @@
     "instance"
   ],
   "license": "MIT",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "types": "index.d.ts",
   "files": [
     "dist",
@@ -23,9 +23,9 @@
     "@lexical/table": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-context": "^0.0.11",
-    "onchain-lexical-markdown": "^0.0.11",
-    "onchain-lexical-ui": "^0.0.11",
+    "onchain-lexical-context": "^0.0.12",
+    "onchain-lexical-markdown": "^0.0.12",
+    "onchain-lexical-ui": "^0.0.12",
     "onchain-utility": "^0.0.10"
   },
   "sideEffects": false,

@@ -199,6 +199,10 @@ export class InstanceListItemNode extends ListItemNode {
     }
   }
 
+  defaultRemove(preserveEmptyParent?: boolean): void {
+    super.remove(preserveEmptyParent);
+  }
+
   insertNewAfter(
     selection: RangeSelection,
     restoreSelection = true,

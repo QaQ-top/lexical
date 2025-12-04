@@ -18,6 +18,7 @@ export interface ExtraSettings {
   showHeaderToolbar?: boolean;
   showLeftToolbar?: boolean;
   showRightToolbar?: boolean;
+  isCanComment?: boolean;
   getZIndex?: () => number;
   reduceZIndex?: () => void;
 }
