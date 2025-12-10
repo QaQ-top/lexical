@@ -15,12 +15,16 @@ import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {$isQuoteNode} from '@lexical/rich-text';
 import {$findMatchingParent} from '@lexical/utils';
 import {
+  $createRangeSelection,
   $getEditor,
   $getNodeByKey,
   $getSelection,
   $isElementNode,
   $isRootNode,
+  $isTextNode,
+  $setSelection,
   COMMAND_PRIORITY_CRITICAL,
+  DecoratorNode,
   type EditorThemeClasses,
   ElementNode,
   LexicalEditor,
@@ -564,5 +568,40 @@ export function $addInstancesNode({
       }
       newInsNodes[0].selectStart();
     }
+  }
+}
+
+export function $selectDecoratorNode<T>(node?: DecoratorNode<T> | null) {
+  if (node) {
+    const [previous, next] = [node.getPreviousSibling(), node.getNextSibling()];
+    const rangeSelection = $createRangeSelection();
+    if (previous) {
+      const isText = $isTextNode(previous);
+      rangeSelection.anchor.set(
+        isText ? previous.getKey() : node.getParent()!.getKey(),
+        isText
+          ? previous.getTextContentSize()
+          : node.getPreviousSiblings().length,
+        isText ? 'text' : 'element',
+      );
+    } else {
+      const parent = node.getParent()!;
+      rangeSelection.anchor.set(parent.getKey(), 0, 'element');
+    }
+    if (next) {
+      rangeSelection.focus.set(
+        next.getKey(),
+        0,
+        $isTextNode(next) ? 'text' : 'element',
+      );
+    } else {
+      const parent = node.getParent()!;
+      rangeSelection.focus.set(
+        parent.getKey(),
+        node.getPreviousSiblings().length + 1,
+        'element',
+      );
+    }
+    $setSelection(rangeSelection);
   }
 }

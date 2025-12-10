@@ -25,6 +25,10 @@ export interface DecoratorNode<T> {
 export class DecoratorNode<T> extends LexicalNode {
   ['constructor']!: KlassConstructor<typeof DecoratorNode<T>>;
 
+  get contentEditable() {
+    return 'false';
+  }
+
   /**
    * The returned value is added to the LexicalEditor._decorators
    */

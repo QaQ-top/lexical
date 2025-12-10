@@ -217,7 +217,7 @@ function $createNode(key: NodeKey, slot: ElementDOMSlot | null): HTMLElement {
         reconcileDecorator(key, decorator);
       }
       // Decorators are always non editable
-      dom.contentEditable = 'false';
+      dom.contentEditable = node.contentEditable;
     } else if ($isTextNode(node)) {
       if (!node.isDirectionless()) {
         subTreeDirectionedTextContent += text;

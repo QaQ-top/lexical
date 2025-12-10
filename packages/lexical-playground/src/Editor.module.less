@@ -1,3 +1,11 @@
+@keyframes focus {
+  from {
+    text-decoration: none;
+  }
+  to {
+    text-decoration: underline;
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -22,5 +30,12 @@
     [usable="false"] {
       caret-color: transparent !important;
     }
+    [decorator="text"] {
+      caret-color: #999 !important;
+    }
+  }
+  :global(.node-selected) {
+    animation: focus 1s linear infinite; 
   }
 }
+

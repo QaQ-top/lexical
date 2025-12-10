@@ -10,46 +10,66 @@ import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
 import {$getNodeByKey, COMMAND_PRIORITY_EDITOR} from 'lexical';
 import {useStore} from 'onchain-utility/hooks';
-import {useEffect} from 'react';
+import React, {useEffect, useImperativeHandle, useRef} from 'react';
 
 import {PARAMETERS_UPDATE} from '../const';
 import {$isParametersNode} from '.';
+import {ParametersRef} from './types';
 
-const ParametersComponent = ({nodeKey}: {nodeKey: string}) => {
-  const [editor] = useLexicalComposerContext();
-  const [parameters, setParameters, , latestParameters] = useStore({
-    number: '',
-    value: '',
-  });
-
-  useEffect(() => {
-    editor.read(() => {
-      const node = $getNodeByKey(nodeKey);
-      if ($isParametersNode(node)) {
-        setParameters(node.parameters);
-      }
+const ParametersComponent = React.forwardRef<ParametersRef, {nodeKey: string}>(
+  ({nodeKey}, ref) => {
+    const [editor] = useLexicalComposerContext();
+    const spanRef = useRef<HTMLSpanElement>(null);
+    const [parameters, setParameters, , latestParameters] = useStore({
+      number: '',
+      value: '',
     });
-    return mergeRegister(
-      editor.registerCommand(
-        PARAMETERS_UPDATE,
-        ({number, value}) => {
-          const latest = latestParameters.current;
-          if (number !== latest.number) {
-            return false;
-          }
-          const node = $getNodeByKey(nodeKey);
-          if ($isParametersNode(node)) {
-            setParameters({value});
-            Object.assign(node.parameters, {value});
-          }
-          return true;
-        },
-        COMMAND_PRIORITY_EDITOR,
-      ),
-    );
-  }, []);
 
-  return <span>{parameters.value}</span>;
-};
+    useEffect(() => {
+      editor.read(() => {
+        const node = $getNodeByKey(nodeKey);
+        if ($isParametersNode(node)) {
+          setParameters(node.parameters);
+        }
+      });
+      return mergeRegister(
+        editor.registerCommand(
+          PARAMETERS_UPDATE,
+          ({number, value}) => {
+            const latest = latestParameters.current;
+            if (number !== latest.number) {
+              return false;
+            }
+            const node = $getNodeByKey(nodeKey);
+            if ($isParametersNode(node)) {
+              setParameters({value});
+              Object.assign(node.parameters, {value});
+            }
+            return true;
+          },
+          COMMAND_PRIORITY_EDITOR,
+        ),
+      );
+    }, []);
+
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          getValue() {
+            return latestParameters.current.value;
+          },
+        };
+      },
+      [],
+    );
+
+    return (
+      <span ref={spanRef} role="button" tabIndex={0}>
+        {parameters.value}
+      </span>
+    );
+  },
+);
 
 export default ParametersComponent;

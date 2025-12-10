@@ -8,16 +8,20 @@
 
 import {
   $applyNodeReplacement,
+  DOMConversionMap,
   EditorConfig,
   LexicalEditor,
   LexicalNode,
   SerializedTextDecoratorNode,
+  SerializedTextNode,
   Spread,
   TextDecoratorNode,
+  TextNode,
 } from 'lexical';
 import React from 'react';
 
 import ParametersComponent from './parametersComponent';
+import {ParametersRef} from './types';
 
 export interface Parameters {
   value: string;
@@ -37,6 +41,8 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
   static collection = new Map<string, Parameters>();
   /** 初始化值 */
   __parameters: Parameters;
+
+  __ref = React.createRef<ParametersRef>();
 
   /** 最新的值 */
   get parameters() {
@@ -75,6 +81,7 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
     const span = super.createDOM(config, editor);
     span.setAttribute('ignoreusable', '');
+    span.setAttribute('key', this.getKey());
     return span;
   }
 
@@ -90,8 +97,12 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
     return true;
   }
 
+  getTextContent(): string {
+    return this.__ref.current?.getValue() || '';
+  }
+
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
-    return <ParametersComponent nodeKey={this.getKey()} />;
+    return <ParametersComponent ref={this.__ref} nodeKey={this.getKey()} />;
   }
 }
 
@@ -108,3 +119,30 @@ export function $isParametersNode(
 // export function updateParameters(parameters: Parameters) {
 //   return ParametersNode.collection.set(parameters.number, parameters);
 // }
+
+class TestNode extends TextNode {
+  static getType(): string {
+    return 'Parameters';
+  }
+  static clone(node: TestNode): TestNode {
+    return new TestNode(node.__text, node.__key);
+  }
+
+  static importDOM(): DOMConversionMap | null {
+    return TextNode.importDOM();
+  }
+
+  static importJSON(serializedNode: SerializedTextNode): TextNode {
+    return $createTestNode().updateFromJSON(serializedNode);
+  }
+}
+
+export function $createTestNode(text = ''): TestNode {
+  return $applyNodeReplacement(new TestNode(text));
+}
+
+export function $isTestNode(
+  node: LexicalNode | null | undefined,
+): node is TestNode {
+  return node instanceof TestNode;
+}

@@ -18,8 +18,8 @@
     "@lexical/rich-text": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-instance": "^0.0.13",
-    "onchain-lexical-markdown": "^0.0.12",
+    "onchain-lexical-instance": "^0.0.14",
+    "onchain-lexical-markdown": "^0.0.13",
     "onchain-utility": "^0.0.10"
   },
   "peerDependencies": {

@@ -24,7 +24,11 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import {useSettings} from 'onchain-lexical-context/settings';
-import {INSERT_PARAMETERS} from 'onchain-lexical-instance';
+import {
+  $isInternalLinkNode,
+  $isParametersNode,
+  INSERT_PARAMETERS,
+} from 'onchain-lexical-instance';
 import {Icon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
 import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
@@ -43,7 +47,6 @@ function TextFormatFloatingToolbar({
   editor,
   anchorElem,
   isLink,
-  isParameter,
   isBold,
   isItalic,
   isUnderline,
@@ -62,7 +65,6 @@ function TextFormatFloatingToolbar({
   isCode: boolean;
   isItalic: boolean;
   isLink: boolean;
-  isParameter: boolean;
   isUppercase: boolean;
   isLowercase: boolean;
   isCapitalize: boolean;
@@ -329,7 +331,7 @@ function TextFormatFloatingToolbar({
           <button
             type="button"
             onClick={insertParameters}
-            className={'popup-item spaced ' + (isParameter ? 'active' : '')}
+            className={'popup-item spaced '}
             title={translateI18n('[TODO] Insert parameter', {
               placeholder: '参数',
             })}
@@ -377,8 +379,6 @@ function useFloatingTextFormatToolbar(
 ): JSX.Element | null {
   const [isText, setIsText] = useState(false);
   const [isLink, setIsLink] = useState(false);
-  // [TODO] 开发参数相关功能
-  const [isParameter, setIsParameter] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -437,14 +437,18 @@ function useFloatingTextFormatToolbar(
         setIsLink(true);
       } else {
         setIsLink(false);
-        setIsParameter(false);
       }
 
       if (
         !$isCodeHighlightNode(selection.anchor.getNode()) &&
         selection.getTextContent() !== ''
       ) {
-        setIsText($isTextNode(node) || $isParagraphNode(node));
+        setIsText(
+          $isTextNode(node) ||
+            $isParagraphNode(node) ||
+            $isParametersNode(node) ||
+            $isInternalLinkNode(node),
+        );
       } else {
         setIsText(false);
       }
@@ -480,14 +484,12 @@ function useFloatingTextFormatToolbar(
   if (!isText) {
     return null;
   }
-
   return contentEditable ? (
     createPortal(
       <TextFormatFloatingToolbar
         editor={editor}
         anchorElem={anchorElem}
         isLink={isLink}
-        isParameter={isParameter}
         isBold={isBold}
         isItalic={isItalic}
         isUppercase={isUppercase}

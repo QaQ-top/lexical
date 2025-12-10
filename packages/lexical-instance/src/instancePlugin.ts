@@ -21,9 +21,12 @@ import {
   $createTextNode,
   $getNodeByKey,
   $getSelection,
+  $isDecoratorNode,
   $isElementNode,
+  $isNodeSelection,
   $isRangeSelection,
   $setSelection,
+  CLICK_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_LOW,
   DELETE_CHARACTER_COMMAND,
@@ -31,6 +34,7 @@ import {
   exportNodeToJSON,
   INSERT_PARAGRAPH_COMMAND,
   LexicalNode,
+  SELECTION_CHANGE_COMMAND,
   SerializedLexicalNode,
 } from 'lexical';
 import {getStorageSerializedString} from 'onchain-lexical-markdown';
@@ -59,12 +63,18 @@ import {
   $registerInstanceParagraphNodeTransform,
 } from './paragraph';
 import {$registerInstanceHeadingNodeTransform} from './paragraph/title';
+import {ParametersNode} from './parameters';
 import {
   $createInstanceTableNode,
   $isInstanceTableNode,
   $registerTableCommand,
 } from './table';
-import {$addInstancesNode, clearCache, setTemporaryContentText} from './utils';
+import {
+  $addInstancesNode,
+  $selectDecoratorNode,
+  clearCache,
+  setTemporaryContentText,
+} from './utils';
 
 export const InstancePlugin: React.FC<PluginProps> = (props) => {
   const {placeholder} = props;
@@ -79,6 +89,39 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
       $registerNumberDecoratorDomUpdate(editor),
       $registerTableCommand(editor),
       // $selectionChange(editor, setSelectedInstance),
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () => {
+          const selection = $getSelection();
+          if ($isNodeSelection(selection)) {
+            const [node] = selection.getNodes();
+            if ($isDecoratorNode(node)) {
+              $selectDecoratorNode(node);
+            }
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
+      editor.registerCommand(
+        CLICK_COMMAND,
+        (event: MouseEvent) => {
+          if (event.target instanceof HTMLElement) {
+            const decoratorRootEle = event.target.closest(
+              '[data-lexical-decorator="true"]',
+            );
+            if (decoratorRootEle) {
+              const key = decoratorRootEle.getAttribute('key');
+              if (key) {
+                const node = $getNodeByKey<ParametersNode>(key);
+                $selectDecoratorNode(node);
+              }
+            }
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_LOW,
+      ),
       editor.registerCommand(
         DELETE_CHARACTER_COMMAND,
         (event) => {

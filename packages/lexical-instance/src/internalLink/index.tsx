@@ -8,14 +8,17 @@
 
 import {
   $applyNodeReplacement,
+  BaseSelection,
   EditorConfig,
   LexicalEditor,
+  LexicalNode,
   SerializedTextDecoratorNode,
   Spread,
   TextDecoratorNode,
 } from 'lexical';
 import React from 'react';
 
+import {$getInstanceNodeByNumber, getLatestValue} from '../utils';
 import InternalLinkComponent from './internalLinkComponent';
 
 export type SerializedInternalNode = Spread<
@@ -45,6 +48,10 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
     this.__number = number;
   }
 
+  // get contentEditable() {
+  //   return 'true'
+  // }
+
   exportJSON(): SerializedInternalNode {
     return {
       ...super.exportJSON(),
@@ -55,6 +62,7 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
     const span = super.createDOM(config, editor);
     span.setAttribute('ignoreusable', '');
+    span.setAttribute('decorator', 'text');
     return span;
   }
 
@@ -68,6 +76,18 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
 
   isInline(): boolean {
     return true;
+  }
+
+  isSelected(selection?: null | BaseSelection): boolean {
+    return true;
+  }
+
+  getTextContent(): string {
+    const insNode = $getInstanceNodeByNumber(this.__number);
+    if (insNode) {
+      return getLatestValue(insNode.__instance.value, 'insDesc') || '';
+    }
+    return '';
   }
 
   decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
@@ -88,7 +108,7 @@ export function $createInternalLinkNode(number: string): InternalLinkNode {
 }
 
 export function $isInternalLinkNode(
-  node: InternalLinkNode | null | undefined,
+  node: LexicalNode | null | undefined,
 ): node is InternalLinkNode {
   return node instanceof InternalLinkNode;
 }
