@@ -59,3 +59,17 @@ export function base64ToFile({
     type: mimeType,
   });
 }
+
+export function toBase64UTF8<T>(str: T): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(str));
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join(
+    '',
+  );
+  return btoa(binString);
+}
+
+export function fromBase64UTF8<T>(base64: string): T {
+  const binString = atob(base64);
+  const bytes = Uint8Array.from(binString, (char) => char.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}

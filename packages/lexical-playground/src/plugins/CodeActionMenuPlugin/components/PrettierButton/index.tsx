@@ -6,7 +6,11 @@
  *
  */
 import {$getNearestNodeFromDOMNode, LexicalEditor} from 'lexical';
-import {$isInstanceCodeNode} from 'onchain-lexical-instance';
+import {
+  $isInstanceCodeNode,
+  codeNodeTransform,
+  PrismTokenizer,
+} from 'onchain-lexical-instance';
 import {Options} from 'prettier';
 import {useState} from 'react';
 
@@ -109,6 +113,7 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
           selection.insertText(formattedCode);
           setSyntaxError('');
           setTipsVisible(false);
+          codeNodeTransform(codeNode, editor, PrismTokenizer, true);
         }
       });
     } catch (error: unknown) {

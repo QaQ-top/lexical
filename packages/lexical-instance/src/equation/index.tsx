@@ -19,6 +19,7 @@ import type {JSX} from 'react';
 
 import katex from 'katex';
 import {$applyNodeReplacement, DecoratorNode, DOMExportOutput} from 'lexical';
+import {toBase64UTF8} from 'onchain-utility/base64';
 import * as React from 'react';
 
 const EquationComponent = React.lazy(() => import('./EquationComponent'));
@@ -89,9 +90,9 @@ export class InstanceEquationNode extends DecoratorNode<JSX.Element> {
   }
 
   exportDOM(): DOMExportOutput {
-    const element = document.createElement('span');
+    const element = document.createElement('equation');
     // Encode the equation as base64 to avoid issues with special characters
-    const equation = btoa(this.__equation);
+    const equation = toBase64UTF8(this.__equation);
     element.setAttribute('data-lexical-equation', equation);
     element.setAttribute('data-lexical-inline', `${this.__inline}`);
     katex.render(this.__equation, element, {

@@ -9,6 +9,7 @@
 
 import type {JSX} from 'react';
 
+import {$appendNodesToHTML} from '@lexical/html';
 import {$createLinkNode} from '@lexical/link';
 import {$createListItemNode, $createListNode} from '@lexical/list';
 import {LexicalComposer} from '@lexical/react/LexicalComposer';
@@ -20,6 +21,7 @@ import {
   $getRoot,
   $isTextNode,
   DOMConversionMap,
+  exportNodeToJSON,
   TextNode,
 } from 'lexical';
 import {ExtraSettings, InstanceConfig} from 'onchain-lexical-context';
@@ -29,12 +31,16 @@ import {SettingsContext, useSettings} from 'onchain-lexical-context/settings';
 import {SharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
 import {ToolbarContext} from 'onchain-lexical-context/toolBar';
 import {
+  $createFragmentNode,
   $createInstanceNode,
   $createInstanceParagraphNode,
   $createInternalLinkNode,
   $createParametersNode,
+  correctedInstanceParagraph,
+  getTemporaryContentText,
   PARAMETERS_UPDATE,
 } from 'onchain-lexical-instance';
+import {$textToRichNodes} from 'onchain-lexical-markdown';
 import {parseAllowedColor} from 'onchain-lexical-ui/ColorPicker';
 import EditorShellStyles from 'onchain-lexical-ui/EditorShellStyles';
 
@@ -217,6 +223,33 @@ function App({namespace}: {namespace: string}): JSX.Element {
           $createParametersNode({number: 'WER13432', value: '134/kg'}),
         );
         instance.append(paragraph, paragraph2);
+        const content = `JSON<${JSON.stringify([
+          exportNodeToJSON(paragraph),
+          exportNodeToJSON(paragraph2),
+        ])}>`;
+        const contentText = content;
+        if (contentText) {
+          const fragment = $createFragmentNode();
+          $textToRichNodes(fragment, contentText);
+          const nodes = correctedInstanceParagraph(fragment.getChildren(), () =>
+            $createInstanceParagraphNode(),
+          );
+          const str = nodes
+            .map((n) => {
+              const div = document.createElement('div');
+              $appendNodesToHTML(editor, n, div);
+              return div.innerHTML;
+            })
+            .join('\n');
+          instance.append(...nodes);
+          // console.log('STR', str);
+          $textToRichNodes(fragment, str);
+          const tagNodes = correctedInstanceParagraph(
+            fragment.getChildren(),
+            () => $createInstanceParagraphNode(),
+          );
+          instance.append(...tagNodes);
+        }
       }
     },
     html: {import: buildImportMap()},

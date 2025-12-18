@@ -21,7 +21,11 @@ export {
   $isInstanceCodeNode,
   InstanceCodeNode,
 } from './code';
-export {registerCodeHighlighting} from './code/codeHighlighter';
+export {
+  codeNodeTransform,
+  PrismTokenizer,
+  registerCodeHighlighting,
+} from './code/codeHighlighter';
 export {
   $createInstanceCodeHighlightNode,
   $isInstanceCodeHighlightNode,

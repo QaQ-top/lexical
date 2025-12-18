@@ -9,6 +9,7 @@
 import {
   $applyNodeReplacement,
   BaseSelection,
+  DOMExportOutput,
   EditorConfig,
   LexicalEditor,
   LexicalNode,
@@ -57,6 +58,14 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
       ...super.exportJSON(),
       number: this.__number,
     };
+  }
+
+  exportDOM(editor: LexicalEditor): DOMExportOutput {
+    const element = document.createElement('section');
+    element.setAttribute('internal-link', '');
+    element.setAttribute('data-internal-link-number', this.__number);
+    element.textContent = this.getTextContent();
+    return {element};
   }
 
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {

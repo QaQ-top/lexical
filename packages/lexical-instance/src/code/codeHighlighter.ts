@@ -212,7 +212,7 @@ function $textNodeTransform(
   // if node's parent is a code node and run highlighting if so
   const parentNode = node.getParent();
   if ($isInstanceCodeNode(parentNode)) {
-    codeNodeTransform(parentNode, editor, tokenizer);
+    codeNodeTransform(parentNode, null, tokenizer);
   } else if ($isInstanceCodeHighlightNode(node)) {
     // When code block converted into paragraph or other element
     // code highlight nodes converted back to normal text
@@ -254,14 +254,14 @@ function updateCodeGutter(node: InstanceCodeNode, editor: LexicalEditor): void {
 
 const nodesCurrentlyHighlighting = new Set();
 
-function codeNodeTransform(
+export function codeNodeTransform(
   node: InstanceCodeNode,
-  editor: LexicalEditor,
+  editor: LexicalEditor | null,
   tokenizer: Tokenizer,
+  isEnforcement?: boolean,
 ) {
   const nodeKey = node.getKey();
-
-  if (nodesCurrentlyHighlighting.has(nodeKey)) {
+  if (nodesCurrentlyHighlighting.has(nodeKey) && !isEnforcement) {
     return;
   }
 
@@ -275,42 +275,42 @@ function codeNodeTransform(
   // Using nested update call to pass `skipTransforms` since we don't want
   // each individual InstanceCodeHighlightNode to be transformed again as it's already
   // in its final state
-  editor.update(
-    () => {
-      $updateAndRetainSelection(nodeKey, () => {
-        const currentNode = $getNodeByKey(nodeKey);
+  // eslint-disable-next-line @lexical/rules-of-lexical
+  const transform = () => {
+    $updateAndRetainSelection(nodeKey, () => {
+      const currentNode = $getNodeByKey(nodeKey);
 
-        if (!$isInstanceCodeNode(currentNode) || !currentNode.isAttached()) {
-          return false;
-        }
-
-        const code = currentNode.getTextContent();
-        const tokens = tokenizer.tokenize(
-          code,
-          currentNode.getLanguage() || tokenizer.defaultLanguage,
-        );
-        const highlightNodes = $getHighlightNodes(tokens);
-        const diffRange = getDiffRange(
-          currentNode.getChildren(),
-          highlightNodes,
-        );
-        const {from, to, nodesForReplacement} = diffRange;
-
-        if (from !== to || nodesForReplacement.length) {
-          node.splice(from, to - from, nodesForReplacement);
-          return true;
-        }
-
+      if (!$isInstanceCodeNode(currentNode) || !currentNode.isAttached()) {
         return false;
-      });
-    },
-    {
+      }
+
+      const code = currentNode.getTextContent();
+      const tokens = tokenizer.tokenize(
+        code,
+        currentNode.getLanguage() || tokenizer.defaultLanguage,
+      );
+      const highlightNodes = $getHighlightNodes(tokens);
+      const diffRange = getDiffRange(currentNode.getChildren(), highlightNodes);
+      const {from, to, nodesForReplacement} = diffRange;
+
+      if (from !== to || nodesForReplacement.length) {
+        node.splice(from, to - from, nodesForReplacement);
+        return true;
+      }
+
+      return false;
+    });
+  };
+  if (editor) {
+    editor.update(transform, {
       onUpdate: () => {
         nodesCurrentlyHighlighting.delete(nodeKey);
       },
       skipTransforms: true,
-    },
-  );
+    });
+  } else {
+    transform();
+  }
 }
 
 function $getHighlightNodes(
@@ -842,7 +842,7 @@ export function registerCodeHighlighting(
       {skipInitialization: false},
     ),
     editor.registerNodeTransform(InstanceCodeNode, (node) =>
-      codeNodeTransform(node, editor, tokenizer as Tokenizer),
+      codeNodeTransform(node, null, tokenizer as Tokenizer),
     ),
     editor.registerNodeTransform(TextNode, (node) =>
       $textNodeTransform(node, editor, tokenizer as Tokenizer),

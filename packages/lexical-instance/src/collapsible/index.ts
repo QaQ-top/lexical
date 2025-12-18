@@ -22,7 +22,7 @@ import {
   $createCollapsibleTitleNode,
   $isCollapsibleTitleNode,
   CollapsibleTitleNode,
-} from './titleNode';
+} from './title';
 
 const INSERT_COLLAPSIBLE_COMMAND = createCommand<void>(
   'INSERT_COLLAPSIBLE_COMMAND',

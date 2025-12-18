@@ -9,20 +9,33 @@
 
 import {$advanceParseSerializedNode} from '@lexical/file';
 import {
-  $getRoot,
   createEditor,
   CreateEditorArgs,
   ElementNode,
   exportNodeToJSON,
   SerializedLexicalNode,
 } from 'lexical';
-import {Instance, InstanceNode} from 'onchain-lexical-instance';
+import {
+  $createFragmentNode,
+  Instance,
+  InstanceNode,
+} from 'onchain-lexical-instance';
 
 import {$convertFromMarkdownString} from './fromMarkdownString';
 import {getInstanceTransformers} from './transformer';
+import {htmlTagSingleLine} from './transformer/utils';
 
 export interface SerializedNode extends SerializedLexicalNode {
   children?: SerializedNode[];
+}
+
+/** reqIf xmlns 子标签单行排列 */
+function xmlnsSingleLine(markdown: string) {
+  if (/^<div xmlns(?:[^>]*?)>/.test(markdown)) {
+    const mks = markdown.split('\n');
+    markdown = htmlTagSingleLine(mks.slice(1, mks.length - 1).join('\n'));
+  }
+  return markdown;
 }
 
 const markdownToSerializedNode = async ({
@@ -38,8 +51,14 @@ const markdownToSerializedNode = async ({
         namespace: 'temporary',
         nodes,
       }).update(() => {
-        $convertFromMarkdownString(markdown, getInstanceTransformers());
-        resolve(exportNodeToJSON<SerializedNode>($getRoot()).children || []);
+        const fragment = $createFragmentNode();
+        markdown = xmlnsSingleLine(markdown);
+        $convertFromMarkdownString(
+          markdown,
+          getInstanceTransformers(),
+          fragment,
+        );
+        resolve(exportNodeToJSON<SerializedNode>(fragment).children || []);
       });
     } catch (e) {
       const _console = console;
@@ -162,6 +181,7 @@ export async function _textToSerializedNode(
     if (jsonRegExp.test(childrenText)) {
       return JSON.parse(childrenText.replace(jsonRegExp, '$1'));
     } else {
+      childrenText = xmlnsSingleLine(childrenText);
       return await markdownToSerializedNode({
         markdown: childrenText,
         nodes,
@@ -184,6 +204,7 @@ export function $textToRichNodes(node: ElementNode, childrenText?: string) {
           .map((serializedNode) => $advanceParseSerializedNode(serializedNode)),
       );
     } else {
+      childrenText = xmlnsSingleLine(childrenText);
       return $convertFromMarkdownString(
         childrenText,
         getInstanceTransformers(),

@@ -82,6 +82,7 @@ export class InstanceListNode extends ListNode {
   createDOM(config: EditorConfig): HTMLElement {
     const element = super.createDOM(config);
     setDisable(this, element);
+    element.setAttribute('list-type', this.getListType());
     return element;
   }
 

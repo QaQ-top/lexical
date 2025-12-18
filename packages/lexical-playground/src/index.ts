@@ -9,6 +9,7 @@
 import type {SerializedDocument} from '@lexical/file';
 import type {MarkNode} from '@lexical/mark';
 import type {
+  BaseSelection,
   InternalSerializedNode,
   LexicalCommand,
   LexicalEditor,
@@ -56,6 +57,12 @@ export declare const $wrapSelectionInMarkNode: (
   id: string,
   createNode?: (ids: Array<string>) => MarkNode,
 ) => MarkNode | undefined;
+export declare const $appendNodesToHTML: (
+  editor: LexicalEditor,
+  currentNode: LexicalNode,
+  parentElement: HTMLElement | DocumentFragment,
+  selection?: BaseSelection | null,
+) => boolean;
 /** -------------------------------------------------------------------------- */
 export {buildImportMap, default as RichTextEditor} from './App';
 export * from './commenting';
@@ -69,6 +76,7 @@ export {default as RichTextEditorTheme} from './themes/PlaygroundEditorTheme';
 export {Enhanced} from './utils/enhanced';
 export * from '@lexical/file';
 export * from '@lexical/history';
+export * from '@lexical/html';
 export * from '@lexical/mark';
 export * from '@lexical/react/LexicalAutoFocusPlugin';
 export * from '@lexical/react/LexicalClearEditorPlugin';

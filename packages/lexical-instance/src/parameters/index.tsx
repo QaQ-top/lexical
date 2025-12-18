@@ -9,6 +9,7 @@
 import {
   $applyNodeReplacement,
   DOMConversionMap,
+  DOMExportOutput,
   EditorConfig,
   LexicalEditor,
   LexicalNode,
@@ -18,6 +19,7 @@ import {
   TextDecoratorNode,
   TextNode,
 } from 'lexical';
+import {toBase64UTF8} from 'onchain-utility/base64';
 import React from 'react';
 
 import ParametersComponent from './parametersComponent';
@@ -76,6 +78,16 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
       ...super.exportJSON(),
       parameters: this.parameters,
     };
+  }
+  exportDOM(editor: LexicalEditor): DOMExportOutput {
+    const element = document.createElement('section');
+    element.setAttribute('parameter', '');
+    element.setAttribute(
+      'data-parameter',
+      toBase64UTF8(JSON.stringify(this.parameters)),
+    );
+    element.textContent = this.parameters.value;
+    return {element};
   }
 
   createDOM(config: EditorConfig, editor?: LexicalEditor): HTMLElement {
