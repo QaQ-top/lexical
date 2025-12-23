@@ -21,7 +21,6 @@ import {
   $createTextNode,
   $getNodeByKey,
   $getSelection,
-  $isDecoratorNode,
   $isElementNode,
   $isNodeSelection,
   $isRangeSelection,
@@ -71,7 +70,7 @@ import {
 } from './table';
 import {
   $addInstancesNode,
-  $selectDecoratorNode,
+  $selectTextDecoratorNode,
   clearCache,
   setTemporaryContentText,
 } from './utils';
@@ -95,9 +94,7 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
           const selection = $getSelection();
           if ($isNodeSelection(selection)) {
             const [node] = selection.getNodes();
-            if ($isDecoratorNode(node)) {
-              $selectDecoratorNode(node);
-            }
+            $selectTextDecoratorNode(node);
           }
           return false;
         },
@@ -114,7 +111,7 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
               const key = decoratorRootEle.getAttribute('key');
               if (key) {
                 const node = $getNodeByKey<ParametersNode>(key);
-                $selectDecoratorNode(node);
+                $selectTextDecoratorNode(node);
               }
             }
           }

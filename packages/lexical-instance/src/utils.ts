@@ -21,10 +21,10 @@ import {
   $getSelection,
   $isElementNode,
   $isRootNode,
+  $isTextDecoratorNode,
   $isTextNode,
   $setSelection,
   COMMAND_PRIORITY_CRITICAL,
-  DecoratorNode,
   type EditorThemeClasses,
   ElementNode,
   LexicalEditor,
@@ -571,8 +571,8 @@ export function $addInstancesNode({
   }
 }
 
-export function $selectDecoratorNode<T>(node?: DecoratorNode<T> | null) {
-  if (node) {
+export function $selectTextDecoratorNode(node?: LexicalNode | null) {
+  if ($isTextDecoratorNode(node)) {
     const [previous, next] = [node.getPreviousSibling(), node.getNextSibling()];
     const rangeSelection = $createRangeSelection();
     if (previous) {
