@@ -463,21 +463,33 @@ function setHSEntryMap(hs: HistoryStateEntry[], instanceNode: InstanceNode) {
   });
 }
 
+export function isTemporaryInsId(insId?: string) {
+  return insId?.startsWith('_temporary_');
+}
+
 export function useContentEditable() {
   const [editor] = useLexicalComposerContext();
   const [contentEditable, setContentEditable] = useState(true);
+  const [isTemporaryInstance, setIsTemporaryInstance] = useState(true);
 
   const $updateContentEditable = useCallback(() => {
     const selection = $getSelection();
     if (selection) {
+      const nodes = selection.getNodes();
       setContentEditable(
-        !selection.getNodes().some((node) => {
+        !nodes.some((node) => {
           return (
             editor.getElementByKey(node.getKey())?.closest(DisableSelector) ||
             $isInInstanceTitleNode(node)
           );
         }),
       );
+      const ids = Array.from(
+        new Set(
+          nodes.map((n) => $getInstanceNodeByChild(n)?.__instance.value.insId),
+        ),
+      );
+      setIsTemporaryInstance(ids.some((id) => isTemporaryInsId(id)));
     }
   }, [editor]);
 
@@ -494,6 +506,50 @@ export function useContentEditable() {
 
   return {
     contentEditable,
+    isTemporaryInstance,
+  };
+}
+
+export function useSelectedIds() {
+  const [editor] = useLexicalComposerContext();
+  const [selectedIds, setSelectedId] = useState<(string | undefined)[]>([]);
+  const [isTemporaryInstance, setIsTemporaryInstance] = useState(true);
+
+  const $updateContentEditable = useCallback(() => {
+    editor.read(() => {
+      const selection = $getSelection();
+      if (selection) {
+        const nodes = selection.getNodes();
+        const ids = Array.from(
+          new Set(
+            nodes.map(
+              (n) => $getInstanceNodeByChild(n)?.__instance.value.insId,
+            ),
+          ),
+        );
+        setSelectedId(ids);
+        setIsTemporaryInstance(ids.some((id) => isTemporaryInsId(id)));
+      }
+    });
+  }, [editor]);
+
+  useEffect(() => {
+    editor.read(() => {
+      $updateContentEditable();
+    });
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      (_payload) => {
+        $updateContentEditable();
+        return false;
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor, $updateContentEditable]);
+
+  return {
+    isTemporaryInstance,
+    selectedIds,
   };
 }
 

@@ -11,9 +11,12 @@ export {
   BarDecoratorNode,
 } from './bar';
 export {
+  $createInstanceContentNode,
   $createInstanceNode,
   $createTitleOnlyInstanceNode,
+  $isInstanceContentNode,
   $isInstanceNode,
+  InstanceContentNode,
   InstanceNode,
 } from './base';
 export {

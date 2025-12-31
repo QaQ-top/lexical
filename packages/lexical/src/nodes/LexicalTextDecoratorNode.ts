@@ -13,7 +13,6 @@ import type {
 } from '../LexicalEditor';
 import type {ElementNode} from './LexicalElementNode';
 import type {
-  BaseSelection,
   EditorConfig,
   ElementFormatType,
   LexicalUpdateJSON,
@@ -89,10 +88,6 @@ export class TextDecoratorNode<T> extends DecoratorNode<T> {
   }
 
   isKeyboardSelectable(): boolean {
-    return true;
-  }
-
-  isSelected(selection?: null | BaseSelection): boolean {
     return true;
   }
 

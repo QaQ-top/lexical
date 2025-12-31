@@ -8,7 +8,6 @@
 
 import {
   $applyNodeReplacement,
-  BaseSelection,
   DOMExportOutput,
   EditorConfig,
   LexicalEditor,
@@ -84,10 +83,6 @@ export class InternalLinkNode extends TextDecoratorNode<React.ReactNode> {
   }
 
   isInline(): boolean {
-    return true;
-  }
-
-  isSelected(selection?: null | BaseSelection): boolean {
     return true;
   }
 

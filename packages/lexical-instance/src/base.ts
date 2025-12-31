@@ -459,3 +459,51 @@ function isFixedAddress(
     typeof instance.value === 'object'
   );
 }
+
+export class InstanceContentNode extends ElementNode {
+  static getType(): string {
+    return 'Content';
+  }
+
+  static clone(node: InstanceContentNode): InstanceContentNode {
+    return new InstanceContentNode(node.__key);
+  }
+
+  static importJSON(
+    serializedNode: SerializedElementNode,
+  ): InstanceContentNode {
+    return new InstanceContentNode().updateFromJSON(serializedNode);
+  }
+
+  exportJSON(): SerializedElementNode {
+    return {
+      ...super.exportJSON(),
+    };
+  }
+
+  createDOM(config: EditorConfig): HTMLElement {
+    const element = document.createElement('div');
+    element.setAttribute('content', 'true');
+    element.setAttribute('key', this.getKey());
+    setDisable(this, element);
+    return element;
+  }
+
+  updateDOM(
+    prevNode: InstanceContentNode,
+    dom: HTMLElement,
+    config: EditorConfig,
+  ): boolean {
+    return false;
+  }
+}
+
+export function $createInstanceContentNode(): InstanceContentNode {
+  return $applyNodeReplacement(new InstanceContentNode());
+}
+
+export function $isInstanceContentNode(
+  node: LexicalNode | null | undefined,
+): node is InstanceNode {
+  return node instanceof InstanceNode;
+}

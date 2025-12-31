@@ -24,7 +24,6 @@ import {
 } from 'lexical';
 import EquationEditor from 'onchain-lexical-ui/EquationEditor';
 import KatexRenderer from 'onchain-lexical-ui/KatexRenderer';
-import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
 
@@ -63,9 +62,12 @@ export default function EquationComponent({
       editor.update(() => {
         const node = $getNodeByKey(nodeKey);
         if ($isInstanceEquationNode(node)) {
-          node.setEquation(equationValue);
-          if (restoreSelection) {
-            node.selectNext(0, 0);
+          const oldValue = node.getEquation();
+          if (oldValue !== equationValue) {
+            node.setEquation(equationValue);
+            if (restoreSelection) {
+              node.selectNext(0, 0);
+            }
           }
         }
       });
@@ -118,19 +120,24 @@ export default function EquationComponent({
         ),
       );
     } else {
-      return editor.registerUpdateListener(({editorState}) => {
-        const isSelected = editorState.read(() => {
-          const selection = $getSelection();
-          return (
-            $isNodeSelection(selection) &&
-            selection.has(nodeKey) &&
-            selection.getNodes().length === 1
-          );
-        });
-        if (isSelected) {
-          setShowEquationEditor(true);
-        }
-      });
+      return mergeRegister(
+        editor.registerUpdateListener((listener) => {
+          const {editorState, tags} = listener;
+          if (!tags.has('historic')) {
+            const isSelected = editorState.read(() => {
+              const selection = $getSelection();
+              return (
+                $isNodeSelection(selection) &&
+                selection.has(nodeKey) &&
+                selection.getNodes().length === 1
+              );
+            });
+            if (isSelected) {
+              setShowEquationEditor(true);
+            }
+          }
+        }),
+      );
     }
   }, [editor, nodeKey, onHide, showEquationEditor, isEditable]);
 

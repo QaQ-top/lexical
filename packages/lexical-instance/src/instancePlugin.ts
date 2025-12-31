@@ -59,6 +59,7 @@ import {
 } from './number';
 import {
   $createInstanceParagraphNode,
+  $isInstanceParagraphNode,
   $registerInstanceParagraphNodeTransform,
 } from './paragraph';
 import {$registerInstanceHeadingNodeTransform} from './paragraph/title';
@@ -88,6 +89,31 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
       $registerNumberDecoratorDomUpdate(editor),
       $registerTableCommand(editor),
       // $selectionChange(editor, setSelectedInstance),
+      editor.registerRootListener((rootElement, prevRootElement) => {
+        if (rootElement) {
+          const handle = (e: Event) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const isDisable = editor.read(() => {
+              const selection = $getSelection();
+              if (selection) {
+                const nodes = selection.getNodes();
+                return nodes.some((node) => {
+                  return editor
+                    .getElementByKey(node.getKey())
+                    ?.closest(DisableSelector);
+                });
+              }
+            });
+            if (isDisable) {
+              rootElement.blur();
+              window.focus();
+            }
+          };
+          rootElement.addEventListener('compositionstart', handle, true);
+          rootElement.addEventListener('compositionend', handle, true);
+        }
+      }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
         () => {
@@ -274,21 +300,44 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
 
                 const next = $getFollowUpNode({
                   node: startNode,
+                  siblingTerminates: [endNode, ...endAncestors],
                   terminate: sameLevel.get('start'),
                   type: 'getNextSiblings',
                 });
                 const previous = $getFollowUpNode({
                   node: endNode.getNextSibling() || endNode,
+                  siblingTerminates: [startNode, ...startAncestors],
                   terminate: sameLevel.get('end'),
                   type: 'getPreviousSiblings',
                 });
+
+                const terminates = Array.from(sameLevel.values()).filter(
+                  Boolean,
+                );
                 let node = next.original.getNextSibling();
-                while (node && node.getKey() !== previous.original.getKey()) {
+                while (
+                  node &&
+                  node.getKey() !== previous.original.getKey() &&
+                  terminates.length === 2
+                ) {
                   elementNodes.push(node);
                   node = node.getNextSibling();
                 }
-                elementNodes.unshift(...next.nodes);
-                elementNodes.push(...previous.nodes);
+                if (terminates.length !== 2) {
+                  const nodes = [...next.nodes, ...previous.nodes];
+                  const p = $createInstanceParagraphNode();
+                  p.append(
+                    ...nodes
+                      .map((n) =>
+                        $isInstanceParagraphNode(n) ? n.getChildren() : n,
+                      )
+                      .flat(),
+                  );
+                  elementNodes.push(p);
+                } else {
+                  elementNodes.unshift(...next.nodes);
+                  elementNodes.push(...previous.nodes);
+                }
                 // 添加嵌套Item父List
                 if (elementNodes.every((node) => $isListItemNode(node))) {
                   const originalListNode = $findMatchingParent(
@@ -375,10 +424,12 @@ function $getFollowUpNode({
   node,
   terminate,
   type,
+  siblingTerminates = [],
 }: {
   node: LexicalNode;
   terminate?: LexicalNode;
   type: 'getNextSiblings' | 'getPreviousSiblings';
+  siblingTerminates?: LexicalNode[];
 }) {
   const isTableCellNode = $isTableCellNode(node);
   if (isTableCellNode) {
@@ -414,6 +465,18 @@ function $getFollowUpNode({
     const parentKey = parent?.getKey();
     const isStop = parentKey === termKey;
     const siblings = node[type]();
+    const siblingTerminateKeys = new Set<string>(
+      siblingTerminates.map((st) => st.getKey()),
+    );
+    const idx = siblings.findIndex((sibling) =>
+      siblingTerminateKeys.has(sibling.getKey()),
+    );
+    if (idx > -1) {
+      siblings.splice(
+        type === 'getNextSiblings' ? idx : 0,
+        type === 'getNextSiblings' ? Infinity : idx + 1,
+      );
+    }
     siblings.forEach((sibling) => {
       if ($isInstanceListItemNode(sibling)) {
         sibling.defaultRemove();

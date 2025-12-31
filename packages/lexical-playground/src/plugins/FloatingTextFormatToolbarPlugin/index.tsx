@@ -32,10 +32,10 @@ import {
 import {Icon} from 'onchain-lexical-ui/Icon';
 import {translateI18n} from 'onchain-utility';
 import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
-import * as React from 'react';
 import {createPortal} from 'react-dom';
 
 import useContentEditable from '../../hooks/useContentEditable';
+import {useSelectedIds} from '../../hooks/useSelectedIds';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPosition} from '../../utils/setFloatingElemPosition';
@@ -78,6 +78,8 @@ function TextFormatFloatingToolbar({
     extra: {isCanComment},
   } = useSettings();
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
+
+  const {isTemporaryInstance} = useSelectedIds();
 
   const insertLink = useCallback(() => {
     if (!isLink) {
@@ -346,8 +348,11 @@ function TextFormatFloatingToolbar({
             <button
               type="button"
               onClick={insertComment}
+              disabled={isTemporaryInstance}
               className={'popup-item spaced insert-comment'}
-              title="Insert comment"
+              title={translateI18n('[TODO] Insert comment', {
+                placeholder: '评论',
+              })}
               aria-label="Insert comment"
               tabIndex={0}>
               <Icon
