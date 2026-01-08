@@ -739,7 +739,7 @@ export const HTML_IMAGE: ElementTransformer = {
   regExp: /^<img(?:[^>]*?)\/{0,1}>/,
   replace: (parentNode, _1, match, isImport) => {
     const input = (match as RegExpMatchArray).input || '';
-    const url = getHtmlTagAttrValue(input, 'href') || '';
+    const url = getHtmlTagAttrValue(input, 'src') || '';
     const alt = getHtmlTagAttrValue(input, 'alt') || '';
     const image = $createImageNode({altText: alt, src: url});
     if (isImport || parentNode.getNextSibling() != null) {
