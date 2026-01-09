@@ -39,7 +39,7 @@
     "onchain-lexical-instance": "^0.0.15",
     "onchain-lexical-markdown": "^0.0.14",
     "onchain-lexical-ui": "^0.0.13",
-    "onchain-utility": "^0.0.11",
+    "onchain-utility": "^0.0.14",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

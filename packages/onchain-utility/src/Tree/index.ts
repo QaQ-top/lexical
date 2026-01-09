@@ -395,6 +395,24 @@ export function generatedAcrossHierarchySort<T extends Item>({
   };
 }
 
+function optimizeStructure<T>({
+  data,
+  childrenKey = 'children',
+  signKey = 'id',
+}: Params<T>): T[] {
+  if (data.length > 1) {
+    return [
+      {
+        [childrenKey]: data,
+        isCustom: true,
+        [signKey]: 'custom-root',
+      } as T,
+    ];
+  } else {
+    return data;
+  }
+}
+
 function _simpleGetRel<T extends Item>({
   data,
   key,
@@ -431,6 +449,7 @@ export function move<T extends Item>({
 }: MoveParams<T> & {
   isMoveUp?: boolean;
 }) {
+  data = optimizeStructure({childrenKey, data, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
   for (const comb of layers) {
     for (const keys of comb) {
@@ -454,9 +473,10 @@ export function move<T extends Item>({
         // 锚点的父级
         const anchorParent = isMoveUp ? start.parent : end.parent;
         // 删除选中
-        anchorParent!.children!.splice(start.index!, len);
+        anchorParent![childrenKey]!.splice(start.index!, len);
         // 锚点
-        const anchorIndex = anchorParent?.children?.indexOf(changePosition);
+        const anchorIndex =
+          anchorParent?.[childrenKey]?.indexOf(changePosition);
 
         const arr = [[selected]!, changePosition];
 
@@ -464,7 +484,7 @@ export function move<T extends Item>({
         if (!isMoveUp) {
           arr.reverse();
         }
-        anchorParent!.children!.splice(anchorIndex, 1, ...arr.flat(2));
+        anchorParent![childrenKey]!.splice(anchorIndex, 1, ...arr.flat(2));
         onMoved?.(selected);
       } else {
         if (onError?.({isMoveUp: Boolean(isMoveUp), selected}) === false) {
@@ -510,6 +530,7 @@ export async function upgrade<T extends Item>({
   }) => Promise<boolean> | boolean;
   onUpgraded?: (upgrades: T[]) => void;
 }) {
+  data = optimizeStructure({childrenKey, data, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
   const {crossLayerSort, getInsertIdx} = generatedAcrossHierarchySort({
     signKey,
@@ -528,14 +549,14 @@ export async function upgrade<T extends Item>({
         const parentRel = _simpleGetRel({
           childrenKey,
           data,
-          key: parent!.id,
+          key: parent![signKey],
           signKey,
         });
         const {parent: grandpa, index: parentIndex} = parentRel;
         if (onUpgrade && !(await onUpgrade({grandpa, parent, selected}))) {
           continue;
         }
-        // const originalOldPrtCdr = parent.children?.slice(0, Infinity) || [];
+        // const originalOldPrtCdr = parent[childrenKey]?.slice(0, Infinity) || [];
         let followChildren: T[];
         /** 无法跟随的节点 */
         const unableToFollow: T[] = [];
@@ -547,18 +568,18 @@ export async function upgrade<T extends Item>({
           // 获取需要跟随 self 的节点所在的范围
           const startIndex = anchor.index! + 1;
           /** 跟随节点 */
-          followChildren = parent.children!.slice(startIndex);
+          followChildren = parent[childrenKey]!.slice(startIndex);
           /** 中断处的索引 */
           const breakOffIndex = followChildren.findIndex((i) => {
-            const selected = selectKeys.includes(i.id);
+            const selected = selectKeys.includes(i[signKey]);
             // 后续被选中的 || 不满足被跟随节点需要的节点类型
             return selected || onStopFollow?.(i);
           });
           /** 跟随数量 */
           const followCount =
-            breakOffIndex >= 0 ? breakOffIndex : parent.children!.length;
+            breakOffIndex >= 0 ? breakOffIndex : parent[childrenKey]!.length;
           // 删除选中后的兄弟
-          followChildren = parent.children!.splice(
+          followChildren = parent[childrenKey]!.splice(
             start.index! + len,
             followCount,
           );
@@ -571,12 +592,12 @@ export async function upgrade<T extends Item>({
           followChildren = [];
         }
         const self = anchor.self as Item;
-        self.children = [...(self.children || []), ...followChildren];
-        parent.children!.splice(start.index!, len, ...unableToFollow);
+        self[childrenKey] = [...(self[childrenKey] || []), ...followChildren];
+        parent[childrenKey]!.splice(start.index!, len, ...unableToFollow);
 
         const list = crossLayerSort({
           leader: start,
-          oldParentId: parent.id,
+          oldParentId: parent[signKey],
           selectSize: len,
         });
 
@@ -589,7 +610,7 @@ export async function upgrade<T extends Item>({
           list,
           oldParentIndex: parentIndex!,
         });
-        insert(grandpa!.children!, insertIndex);
+        insert(grandpa![childrenKey]!, insertIndex);
       }
     }
   }
@@ -611,6 +632,7 @@ export async function downgrade<T extends Item>({
   }) => Promise<boolean> | boolean;
   onDowngraded?: (downgrades: T[]) => void;
 }) {
+  data = optimizeStructure({childrenKey, data, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
   for (const comb of layers) {
     for (const keys of comb) {
