@@ -18,6 +18,8 @@
   flex-direction: column;
   justify-content: right;
   button {
-    margin-bottom: 20px;
+    &:not(:nth-last-child(1)) {
+      margin-bottom: 20px;
+    }
   }
 }

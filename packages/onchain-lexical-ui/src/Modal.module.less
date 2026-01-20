@@ -39,13 +39,18 @@
   align-items: center;
   height: 40px;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   cursor: all-scroll;
   border-bottom: 1px solid #ccc;
   background-color: @themeColor;
 }
 .Modal__contentBox {
-  padding: 24px 20px;
+  padding: 16px 16px;
+  :global {
+    .color-picker-wrapper {
+      padding: 0;
+    }
+  }
 }
 .Modal__title {
   color: #fff;
@@ -62,4 +67,5 @@
   text-align: center;
   cursor: pointer;
   background-color: transparent;
+  padding: 0;
 }

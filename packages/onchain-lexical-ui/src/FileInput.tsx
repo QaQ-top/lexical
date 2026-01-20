@@ -6,15 +6,15 @@
  *
  */
 
-import type {JSX} from 'react';
-
-import * as React from 'react';
+import {DeleteOutlined, UploadOutlined} from '@ant-design/icons';
+import {type JSX, useState} from 'react';
 
 import Styles from './Input.module.less';
 
 type Props = Readonly<{
   'data-test-id'?: string;
   accept?: string;
+  placeholder?: string;
   label: string;
   onChange: (files: FileList | null) => void;
 }>;
@@ -22,19 +22,46 @@ type Props = Readonly<{
 export default function FileInput({
   accept,
   label,
+  placeholder = '选择文件',
   onChange,
   'data-test-id': dataTestId,
 }: Props): JSX.Element {
+  const [files, setFiles] = useState<File[]>([]);
   return (
     <div className={Styles.Input__wrapper}>
       <label className={Styles.Input__label}>{label}</label>
-      <input
-        type="file"
-        accept={accept}
-        className={Styles.Input__input}
-        onChange={(e) => onChange(e.target.files)}
-        data-test-id={dataTestId}
-      />
+      <div className={`${Styles.Input__input} ${Styles.file}`}>
+        {!files.length ? (
+          <label htmlFor="file-upload">
+            <UploadOutlined />
+            {placeholder}
+          </label>
+        ) : (
+          <span className={Styles.content}>
+            <span className={Styles.name}>
+              {files.map((file) => file.name)}
+            </span>
+            <span className={Styles.delete}>
+              <DeleteOutlined
+                onClick={() => {
+                  onChange(null);
+                  setFiles([]);
+                }}
+              />
+            </span>
+          </span>
+        )}
+        <input
+          id="file-upload"
+          type="file"
+          accept={accept}
+          onChange={(e) => {
+            setFiles(Array.from(e.target.files || []));
+            onChange(e.target.files);
+          }}
+          data-test-id={dataTestId}
+        />
+      </div>
     </div>
   );
 }

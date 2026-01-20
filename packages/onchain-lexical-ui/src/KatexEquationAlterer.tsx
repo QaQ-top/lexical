@@ -9,7 +9,7 @@
 import type {JSX} from 'react';
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import * as React from 'react';
+import {translateI18n} from 'onchain-utility/language';
 import {useCallback, useState} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
 
@@ -38,46 +38,61 @@ export default function KatexEquationAlterer({
     setInline(!inline);
   }, [setInline, inline]);
 
+  const placeholder = translateI18n('[TODO] Please enter a equation', {
+    placeholder: '请输入方程式',
+  });
+
   return (
     <>
       <div className={Styles.KatexEquationAlterer_defaultRow}>
-        Inline
+        <span>
+          {translateI18n('[TODO] Inline', {
+            placeholder: '行内方程式',
+          })}
+          :
+        </span>
         <input type="checkbox" checked={inline} onChange={onCheckboxChange} />
       </div>
-      <div className={Styles.KatexEquationAlterer_defaultRow}>Equation </div>
+      <div className={Styles.KatexEquationAlterer_defaultRow}>
+        {translateI18n('[TODO] Equation', {
+          placeholder: '方程式',
+        })}
+        :
+      </div>
       <div className={Styles.KatexEquationAlterer_centerRow}>
-        {inline ? (
-          <input
-            onChange={(event) => {
-              setEquation(event.target.value);
-            }}
-            value={equation}
-            className={Styles.KatexEquationAlterer_textArea}
-          />
-        ) : (
-          <textarea
-            onChange={(event) => {
-              setEquation(event.target.value);
-            }}
-            value={equation}
-            className={Styles.KatexEquationAlterer_textArea}
-          />
-        )}
+        <textarea
+          onChange={(event) => {
+            setEquation(event.target.value);
+          }}
+          value={equation}
+          placeholder={placeholder}
+          className={Styles.KatexEquationAlterer_textArea}
+        />
       </div>
       <div className={Styles.KatexEquationAlterer_defaultRow}>
-        Visualization{' '}
+        {translateI18n('[TODO] Visualization', {
+          placeholder: '预览',
+        })}
+        :
       </div>
-      <div className={Styles.KatexEquationAlterer_centerRow}>
+      <div
+        className={`${Styles.KatexEquationAlterer_centerRow} ${
+          Styles.preview
+        } ${equation ? '' : Styles.empty}`}>
         <ErrorBoundary onError={(e) => editor._onError(e)} fallback={null}>
           <KatexRenderer
-            equation={equation}
+            equation={equation || placeholder}
             inline={false}
             onDoubleClick={() => null}
           />
         </ErrorBoundary>
       </div>
       <div className={Styles.KatexEquationAlterer_dialogActions}>
-        <Button onClick={onClick}>Confirm</Button>
+        <Button type="primary" onClick={onClick}>
+          {translateI18n('[TODO] Confirm', {
+            placeholder: '确认',
+          })}
+        </Button>
       </div>
     </>
   );

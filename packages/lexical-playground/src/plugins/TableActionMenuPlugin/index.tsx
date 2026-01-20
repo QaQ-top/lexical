@@ -534,12 +534,17 @@ function TableActionMenu({
         type="button"
         className="item"
         onClick={() =>
-          showColorPickerModal('Cell background color', () => (
-            <ColorPicker
-              color={backgroundColor}
-              onChange={handleCellBackgroundColor}
-            />
-          ))
+          showColorPickerModal(
+            translateI18n('[TODO] 国际化 Cell background color', {
+              placeholder: '单元格背景颜色',
+            }),
+            () => (
+              <ColorPicker
+                color={backgroundColor}
+                onChange={handleCellBackgroundColor}
+              />
+            ),
+          )
         }
         data-test-id="table-background-color">
         <span className="text">

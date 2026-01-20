@@ -44,7 +44,7 @@ const basicColors = [
   '#ffffff',
 ];
 
-const WIDTH = 214;
+const WIDTH = 267;
 const HEIGHT = 150;
 
 export default function ColorPicker({
@@ -116,7 +116,7 @@ export default function ColorPicker({
 
   return (
     <div
-      className={Styles['color-picker-wrapper']}
+      className={`${Styles['color-picker-wrapper']} color-picker-wrapper`}
       style={{width: WIDTH}}
       ref={innerDivRef}>
       <TextInput label="Hex" onChange={onSetHex} value={inputColor} />

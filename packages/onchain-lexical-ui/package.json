@@ -11,6 +11,7 @@
     "katex": "^0.16.22",
     "lexical": "0.30.0",
     "onchain-lexical-context": "^0.0.13",
+    "onchain-utility": "^0.0.14",
     "react-draggable": "^4.5.0"
   },
   "browser": {

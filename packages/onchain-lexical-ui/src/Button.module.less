@@ -6,20 +6,40 @@
  *
  *
  */
+@import './const.less';
 
 .Button__root {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
+  color: #333;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
   border: 0px;
-  background-color: #eee;
   border-radius: 2px;
   cursor: pointer;
-  font-size: 14px;
-}
-.Button__root:hover {
-  background-color: #ddd;
+  font-size: 12px;
+  height: 30px;
+  min-width: 72px;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #ddd;
+  }
+  &[data-type='primary'] {
+    color: #fff;
+    background-color: @themeColor;
+    &:hover {
+      background-color: @themeColorHover;
+    }
+  }
+
+  &.Button__disabled {
+    color: #999;
+    cursor: not-allowed;
+    &[data-type='primary'],
+    &:hover {
+      background-color: #eee;
+    }
+  }
 }
 .Button__small {
   padding-top: 5px;
@@ -27,10 +47,4 @@
   padding-left: 10px;
   padding-right: 10px;
   font-size: 13px;
-}
-.Button__disabled {
-  cursor: not-allowed;
-}
-.Button__disabled:hover {
-  background-color: #eee;
 }

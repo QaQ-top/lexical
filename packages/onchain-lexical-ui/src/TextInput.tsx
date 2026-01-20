@@ -16,6 +16,7 @@ import Styles from './Input.module.less';
 type Props = Readonly<{
   'data-test-id'?: string;
   label: string;
+  labelWidth?: number;
   onChange: (val: string) => void;
   placeholder?: string;
   value: string;
@@ -24,6 +25,7 @@ type Props = Readonly<{
 
 export default function TextInput({
   label,
+  labelWidth,
   value,
   onChange,
   placeholder = '',
@@ -32,7 +34,9 @@ export default function TextInput({
 }: Props): JSX.Element {
   return (
     <div className={Styles.Input__wrapper}>
-      <label className={Styles.Input__label}>{label}</label>
+      <label style={{width: labelWidth}} className={Styles.Input__label}>
+        {label}
+      </label>
       <input
         type={type}
         className={Styles.Input__input}

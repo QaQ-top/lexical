@@ -34,6 +34,7 @@ import {
   $insertInstanceList,
   $isInInstanceTitleNode,
 } from 'onchain-lexical-instance';
+import {translateI18n} from 'onchain-utility/language';
 import {useCallback, useMemo, useState} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -284,9 +285,14 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
       icon: <i className="icon equation" />,
       keywords: ['equation', 'latex', 'math'],
       onSelect: () =>
-        showModal('Insert Equation', (onClose) => (
-          <InsertEquationDialog activeEditor={editor} onClose={onClose} />
-        )),
+        showModal(
+          translateI18n('[TODO] Insert Equation', {
+            placeholder: '插入公式',
+          }),
+          (onClose) => (
+            <InsertEquationDialog activeEditor={editor} onClose={onClose} />
+          ),
+        ),
     }),
     // new ComponentPickerOption('GIF', {
     //   icon: <i className="icon gif" />,
@@ -301,9 +307,14 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
       icon: <i className="icon image" />,
       keywords: ['image', 'photo', 'picture', 'file'],
       onSelect: () =>
-        showModal('Insert Image', (onClose) => (
-          <InsertImageDialog activeEditor={editor} onClose={onClose} />
-        )),
+        showModal(
+          translateI18n('[TODO] Insert Image', {
+            placeholder: '插入图片',
+          }),
+          (onClose) => (
+            <InsertImageDialog activeEditor={editor} onClose={onClose} />
+          ),
+        ),
     }),
     new ComponentPickerOption('Collapsible', {
       icon: <i className="icon caret-right" />,

@@ -6,7 +6,7 @@
  *
  *
  */
- @import './const.less';
+@import './const.less';
 
 .Input__wrapper {
   display: flex;
@@ -16,23 +16,72 @@
 }
 .Input__label {
   display: flex;
-  flex: 1;
+  width: 80px;
+  flex-shrink: 0;
   color: #666;
+  font-size: 14px;
+  &::after {
+    content: ':';
+  }
 }
 .Input__input {
   display: flex;
-  flex: 2;
+  width: 100%;
+  color: #333;
   border: 1px solid #999;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 16px;
-  border-radius: 0px;
+  padding: 7px 10px;
+  font-size: 12px;
+  border-radius: 2px;
   min-width: 0;
   height: @inputHeight;
+  &.file {
+    border: none;
+    padding: 0;
+    align-items: center;
+    justify-content: flex-start;
+    > input[type='file'] {
+      display: none;
+    }
+    > label {
+      display: inline-block;
+      border: none;
+      height: 30px;
+      line-height: 20px;
+      padding: 5px 0px;
+      cursor: pointer;
+      color: #333;
+      border-radius: 2px;
+      transition: background-color 0.3s;
+      &:hover {
+        color: @themeColor;
+      }
+      > span:nth-of-type(1) {
+        margin-right: 2px;
+      }
+    }
+    > .content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      >.name {
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .delete {
+        &:hover {
+          color: @themeColor;
+        }
+      }
+    }
+  }
   &:focus-visible {
     outline: none;
     border-color: @themeColor;
-  };
+  }
+  &[type='file'] {
+    padding-top: 5px !important;
+  }
 }

@@ -22,6 +22,7 @@ export default function Button({
   disabled,
   small,
   title,
+  type,
 }: {
   'data-test-id'?: string;
   children: ReactNode;
@@ -30,6 +31,7 @@ export default function Button({
   onClick: () => void;
   small?: boolean;
   title?: string;
+  type?: 'primary';
 }): JSX.Element {
   return (
     <button
@@ -43,6 +45,7 @@ export default function Button({
       onClick={onClick}
       title={title}
       aria-label={title}
+      data-type={type}
       {...(dataTestId && {'data-test-id': dataTestId})}>
       {children}
     </button>

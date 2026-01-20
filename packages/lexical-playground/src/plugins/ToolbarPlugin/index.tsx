@@ -1208,12 +1208,17 @@ export default React.memo(function ToolbarPlugin({
                   </DropDownItem>
                   <DropDownItem
                     onClick={() => {
-                      showModal('Insert Image', (onClose) => (
-                        <InsertImageDialog
-                          activeEditor={activeEditor}
-                          onClose={onClose}
-                        />
-                      ));
+                      showModal(
+                        translateI18n('[TODO] Insert Image', {
+                          placeholder: '插入图片',
+                        }),
+                        (onClose) => (
+                          <InsertImageDialog
+                            activeEditor={activeEditor}
+                            onClose={onClose}
+                          />
+                        ),
+                      );
                     }}
                     className="item">
                     <i className="icon image" />
@@ -1304,12 +1309,17 @@ export default React.memo(function ToolbarPlugin({
 
                   <DropDownItem
                     onClick={() => {
-                      showModal('Insert Equation', (onClose) => (
-                        <InsertEquationDialog
-                          activeEditor={activeEditor}
-                          onClose={onClose}
-                        />
-                      ));
+                      showModal(
+                        translateI18n('[TODO] Insert Equation', {
+                          placeholder: '插入公式',
+                        }),
+                        (onClose) => (
+                          <InsertEquationDialog
+                            activeEditor={activeEditor}
+                            onClose={onClose}
+                          />
+                        ),
+                      );
                     }}
                     className="item">
                     <i className="icon equation" />

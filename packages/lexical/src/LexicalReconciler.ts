@@ -140,7 +140,7 @@ function setElementIndent(dom: HTMLElement, indent: number): void {
     DEFAULT_INDENT_VALUE;
 
   dom.style.setProperty(
-    'padding-inline-start',
+    'padding-left',
     indent === 0 ? '' : `calc(${indent} * ${indentationBaseValue})`,
   );
 }
