@@ -29,6 +29,7 @@ import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {CAN_USE_DOM} from '@lexical/utils';
 import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
 import {InstancePlugin} from 'onchain-lexical-instance';
@@ -105,6 +106,7 @@ export default function Editor(): JSX.Element {
     },
     extra: {placeholder: phr, showTreeView, showHeaderToolbar},
   } = useSettings();
+  const {preview} = useInstanceConfig();
   const isEditable = useLexicalEditable();
   const placeholder =
     phr ??
@@ -260,10 +262,12 @@ export default function Editor(): JSX.Element {
                   targetLineIndent={46}
                   dragIcon={'='}
                 /> */}
-                <FloatingTextFormatToolbarPlugin
-                  anchorElem={floatingAnchorElem}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
+                {!preview ? (
+                  <FloatingTextFormatToolbarPlugin
+                    anchorElem={floatingAnchorElem}
+                    setIsLinkEditMode={setIsLinkEditMode}
+                  />
+                ) : null}
                 <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
                 <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
               </>

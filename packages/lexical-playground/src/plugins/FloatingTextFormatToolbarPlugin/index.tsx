@@ -23,7 +23,6 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
-import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import {
   $isInternalLinkNode,
@@ -76,12 +75,11 @@ function TextFormatFloatingToolbar({
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element {
   const {
-    extra: {isCanComment},
+    extra: {isCanComment, isCanParameter},
   } = useSettings();
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
   const {isTemporaryInstance} = useSelectedIds();
-  const {preview} = useInstanceConfig();
   const insertLink = useCallback(() => {
     if (!isLink) {
       setIsLinkEditMode(true);
@@ -331,7 +329,7 @@ function TextFormatFloatingToolbar({
             aria-label="Insert link">
             <i data-root-contains="1" className="format link" />
           </button>
-          {!preview ? (
+          {isCanParameter !== false ? (
             <button
               type="button"
               onClick={insertParameters}
@@ -339,7 +337,7 @@ function TextFormatFloatingToolbar({
               title={translateI18n('[TODO] Insert parameter', {
                 placeholder: '插入参数',
               })}
-              aria-label="Insert comment">
+              aria-label="Insert parameter">
               <Icon
                 data-root-contains="1"
                 type="icon-front-parameterpool"

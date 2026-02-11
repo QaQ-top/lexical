@@ -20,6 +20,7 @@ export interface ExtraSettings {
   showLeftToolbar?: boolean;
   showRightToolbar?: boolean;
   isCanComment?: boolean;
+  isCanParameter?: boolean;
   getZIndex?: () => number;
   reduceZIndex?: () => void;
 }
