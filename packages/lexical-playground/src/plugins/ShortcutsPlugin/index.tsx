@@ -85,7 +85,7 @@ export default function ShortcutsPlugin({
               ?.closest(DisableSelector);
           })
         ) {
-          if (event.ctrlKey && event.key === 'a') {
+          if (event.ctrlKey && ['a', 'c'].includes(event.key)) {
             return false;
           } else {
             event.preventDefault();
