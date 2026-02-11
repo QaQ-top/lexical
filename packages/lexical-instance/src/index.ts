@@ -113,7 +113,7 @@ export {
 export {
   $createParametersNode,
   $isParametersNode,
-  type Parameters,
+  $unifiedCreateParametersNode,
   ParametersNode,
 } from './parameters';
 export {

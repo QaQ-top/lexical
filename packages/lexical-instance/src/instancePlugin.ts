@@ -5,8 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import {$insertDataTransferForRichText} from '@lexical/clipboard';
 import {$isListItemNode} from '@lexical/list';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import {DRAG_DROP_PASTE, eventFiles} from '@lexical/rich-text';
 import {
   $createTableCellNode,
   $createTableRowNode,
@@ -15,7 +19,11 @@ import {
   TableCellNode,
   TableRowNode,
 } from '@lexical/table';
-import {$findMatchingParent, mergeRegister} from '@lexical/utils';
+import {
+  $findMatchingParent,
+  mergeRegister,
+  objectKlassEquals,
+} from '@lexical/utils';
 import {
   $createRangeSelection,
   $createTextNode,
@@ -32,7 +40,13 @@ import {
   ElementNode,
   exportNodeToJSON,
   INSERT_PARAGRAPH_COMMAND,
+  isDOMNode,
+  isSelectionCapturedInDecoratorInput,
+  LexicalEditor,
   LexicalNode,
+  PASTE_COMMAND,
+  PASTE_TAG,
+  PasteCommandType,
   SELECTION_CHANGE_COMMAND,
   SerializedLexicalNode,
 } from 'lexical';
@@ -114,6 +128,32 @@ export const InstancePlugin: React.FC<PluginProps> = (props) => {
           rootElement.addEventListener('compositionend', handle, true);
         }
       }),
+      editor.registerCommand(
+        PASTE_COMMAND,
+        (event) => {
+          const [, files, hasTextContent] = eventFiles(event);
+          if (files.length > 0 && !hasTextContent) {
+            editor.dispatchCommand(DRAG_DROP_PASTE, files);
+            return true;
+          }
+
+          if (
+            isDOMNode(event.target) &&
+            isSelectionCapturedInDecoratorInput(event.target)
+          ) {
+            return false;
+          }
+
+          const selection = $getSelection();
+          if (selection !== null) {
+            onPasteForRichText(event, editor);
+            return true;
+          }
+
+          return false;
+        },
+        COMMAND_PRIORITY_LOW,
+      ),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
         () => {
@@ -527,4 +567,40 @@ function $getFollowUpNode({
     nodes: Array.from(set.values()),
     original,
   };
+}
+
+function onPasteForRichText(event: PasteCommandType, editor: LexicalEditor) {
+  event.preventDefault();
+  editor.update(
+    () => {
+      const selection = $getSelection();
+      const clipboardData =
+        objectKlassEquals(event, InputEvent) ||
+        objectKlassEquals(event, KeyboardEvent)
+          ? null
+          : event.clipboardData;
+      if (clipboardData != null && selection !== null) {
+        $insertDataTransferForRichText(
+          clipboardData,
+          selection,
+          editor,
+          (nodes: Record<string, any>[]) => {
+            dfs(nodes, (node, parent) => {
+              if (node.type === ParametersNode.getType()) {
+                Object.assign(
+                  node,
+                  $createTextNode(node.parameter.value).exportJSON(),
+                );
+              }
+              return (node?.children || []) as Record<string, any>[];
+            });
+            return nodes;
+          },
+        );
+      }
+    },
+    {
+      tag: PASTE_TAG,
+    },
+  );
 }

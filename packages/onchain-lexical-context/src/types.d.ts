@@ -2,6 +2,7 @@ import {EditorState} from 'lexical';
 import type {Instance} from 'onchain-lexical-instance';
 import React from 'react';
 import type {ReactAvatarProps} from 'react-avatar';
+import {ParameterUnified} from './InstanceConfig';
 
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -23,7 +24,10 @@ export interface ExtraSettings {
   reduceZIndex?: () => void;
 }
 
-export interface BuiltInInstanceConfig<Ins = Instance> {
+export interface BuiltInInstanceConfig<
+  Ins = Instance,
+  Params = Record<string, any>,
+> {
   selectedInstance: {
     number: string;
     nodeKey: string;
@@ -31,6 +35,8 @@ export interface BuiltInInstanceConfig<Ins = Instance> {
   setSelectedInstance(params: InstanceConfig['selectedInstance']): void;
   instanceMap: Map<string, Ins>;
   setInstanceMap(map: Map<string, Ins>): void;
+  parameterUnified: ParameterUnified<Params>;
+  setParameterUnified(map: ParameterUnified<Params>): void;
 }
 
 export interface InstanceConfigLet {

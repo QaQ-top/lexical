@@ -89,8 +89,11 @@ export const SPLIT_INSTANCE_NODE: LexicalCommand<{
 export const DELETE_INSTANCE_NODE = 'DELETE_INSTANCE_NODE';
 
 /** 插入参数 */
-export const INSERT_PARAMETERS: LexicalCommand<undefined> =
-  createCommand('INSERT_PARAMETERS');
+export const INSERT_PARAMETERS: LexicalCommand<{
+  instance?: Instance;
+  target?: string;
+  nodeKey?: string;
+}> = createCommand('INSERT_PARAMETERS');
 
 /** 富文本 DecoratorNode 节点组件更新事件*/
 export const COMPONENT_UPDATE: LexicalCommand<{
@@ -107,8 +110,11 @@ export const INSTANCE_TITLE_UPDATE: LexicalCommand<{
 
 /** 参数更新 */
 export const PARAMETERS_UPDATE: LexicalCommand<{
-  number: string;
-  value: string;
+  parameters: {
+    number: string;
+    insId: string;
+    attributeList: Record<string, unknown>[];
+  }[];
 }> = createCommand('PARAMETERS_UPDATE');
 
 /** 添加评论 */
@@ -120,6 +126,12 @@ export const ADD_COMMENT: LexicalCommand<{
   timeStamp: number;
   replyId?: string;
 }> = createCommand('ADD_COMMENT');
+
+/** 打开参数列表 */
+export const OPEN_PARAMS: LexicalCommand<{
+  number: string;
+  selection?: BaseSelection | null;
+}> = createCommand('OPEN_PARAMS');
 
 /** 获取禁止编辑dom节点选择器 */
 export const DisableSelector = `[usable='false']:not([ignoreusable])`;

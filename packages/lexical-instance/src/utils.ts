@@ -61,6 +61,7 @@ import {
   InstanceParagraphNode,
 } from './paragraph';
 import {$isInstanceTitleNode} from './paragraph/title';
+import {$isParametersNode} from './parameters';
 import {CompleteInstance, Instance, InstanceBaseInfo} from './types';
 
 export {ADD_NEW_INSTANCE_NODE, OPEN_CREATE_WINDOW} from './const';
@@ -228,7 +229,10 @@ export function getLatestValue<
  * 跳转到指定实例
  * dom 属性 data-scrollTo=“false” 时可以禁止跳转
  */
-export function $scrollTo(number: string) {
+export function $scrollTo(
+  number: string,
+  config: {isFocus?: boolean} = {isFocus: true},
+) {
   const editor = $getEditor();
   const nodeKey = numberNodeKey.get(number);
   const rootElement = editor.getRootElement();
@@ -245,7 +249,34 @@ export function $scrollTo(number: string) {
           '.top-container.editor-container',
         ),
       );
-      $getNodeByKey(nodeKey)?.selectStart();
+      if (config.isFocus) {
+        $getNodeByKey(nodeKey)?.selectStart();
+      }
+    }
+  }
+}
+
+export function $scrollToByNode(
+  node: LexicalNode,
+  config: {isFocus?: boolean} = {isFocus: true},
+) {
+  const editor = $getEditor();
+  const rootElement = editor.getRootElement();
+  const nodeKey = node.getKey();
+  if (rootElement) {
+    const target = editor.getElementByKey(nodeKey);
+    if (target) {
+      scrollIntoViewIfNeeded(
+        editor,
+        target.getBoundingClientRect(),
+        rootElement,
+        document.querySelector<HTMLDivElement>(
+          '.top-container.editor-container',
+        ),
+      );
+      if (config.isFocus) {
+        node.selectStart();
+      }
     }
   }
 }
@@ -628,7 +659,7 @@ export function $addInstancesNode({
 }
 
 export function $selectTextDecoratorNode(node?: LexicalNode | null) {
-  if ($isTextDecoratorNode(node)) {
+  if ($isTextDecoratorNode(node) && !$isParametersNode(node)) {
     const [previous, next] = [node.getPreviousSibling(), node.getNextSibling()];
     const rangeSelection = $createRangeSelection();
     if (previous) {

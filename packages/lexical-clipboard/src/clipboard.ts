@@ -129,6 +129,7 @@ export function $insertDataTransferForRichText(
   dataTransfer: DataTransfer,
   selection: BaseSelection,
   editor: LexicalEditor,
+  format?: (params: Record<string, unknown>[]) => void,
 ): void {
   const lexicalString = dataTransfer.getData('application/x-lexical-editor');
 
@@ -139,6 +140,7 @@ export function $insertDataTransferForRichText(
         payload.namespace === editor._config.namespace &&
         Array.isArray(payload.nodes)
       ) {
+        payload.nodes = format ? format(payload.nodes) : payload.nodes;
         const nodes = $generateNodesFromSerializedNodes(payload.nodes);
         return $insertGeneratedNodes(editor, nodes, selection);
       }

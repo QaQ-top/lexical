@@ -23,6 +23,7 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useSettings} from 'onchain-lexical-context/settings';
 import {
   $isInternalLinkNode,
@@ -80,7 +81,7 @@ function TextFormatFloatingToolbar({
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
   const {isTemporaryInstance} = useSelectedIds();
-
+  const {preview} = useInstanceConfig();
   const insertLink = useCallback(() => {
     if (!isLink) {
       setIsLinkEditMode(true);
@@ -96,7 +97,7 @@ function TextFormatFloatingToolbar({
   };
 
   const insertParameters = () => {
-    editor.dispatchCommand(INSERT_PARAMETERS, undefined);
+    editor.dispatchCommand(INSERT_PARAMETERS, {});
   };
 
   function mouseMoveListener(e: MouseEvent) {
@@ -330,20 +331,23 @@ function TextFormatFloatingToolbar({
             aria-label="Insert link">
             <i data-root-contains="1" className="format link" />
           </button>
-          <button
-            type="button"
-            onClick={insertParameters}
-            className={'popup-item spaced '}
-            title={translateI18n('[TODO] Insert parameter', {
-              placeholder: '参数',
-            })}
-            aria-label="Insert comment">
-            <Icon
-              data-root-contains="1"
-              type="icon-front-parameterpool"
-              className="format"
-            />
-          </button>
+          {!preview ? (
+            <button
+              type="button"
+              onClick={insertParameters}
+              className={'popup-item spaced '}
+              title={translateI18n('[TODO] Insert parameter', {
+                placeholder: '插入参数',
+              })}
+              aria-label="Insert comment">
+              <Icon
+                data-root-contains="1"
+                type="icon-front-parameterpool"
+                className="format"
+              />
+            </button>
+          ) : null}
+
           {isCanComment !== false ? (
             <button
               type="button"

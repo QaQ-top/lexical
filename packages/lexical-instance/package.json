@@ -7,13 +7,14 @@
     "instance"
   ],
   "license": "MIT",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "types": "index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "dependencies": {
+    "@lexical/clipboard": "^0.30.0",
     "@lexical/code": "^0.30.0",
     "@lexical/hashtag": "^0.30.0",
     "@lexical/list": "^0.30.0",
@@ -23,10 +24,10 @@
     "@lexical/table": "^0.30.0",
     "@lexical/utils": "^0.30.0",
     "lexical": "0.30.0",
-    "onchain-lexical-context": "^0.0.13",
-    "onchain-lexical-markdown": "^0.0.14",
-    "onchain-lexical-ui": "^0.0.13",
-    "onchain-utility": "^0.0.14"
+    "onchain-lexical-context": "^0.0.14",
+    "onchain-lexical-markdown": "^0.0.15",
+    "onchain-lexical-ui": "^0.0.14",
+    "onchain-utility": "^0.0.15"
   },
   "sideEffects": false,
   "exports": {

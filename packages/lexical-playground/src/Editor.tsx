@@ -198,7 +198,9 @@ export default function Editor(): JSX.Element {
             <RichTextPlugin
               contentEditable={
                 <div className={Styles['editor-scroller']}>
-                  <div className={Styles.editor} ref={onRef}>
+                  <div
+                    className={`floatingAnchor ${Styles.editor}`}
+                    ref={onRef}>
                     <ContentEditable placeholder={placeholder} />
                   </div>
                 </div>

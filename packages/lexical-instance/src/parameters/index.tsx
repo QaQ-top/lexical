@@ -5,78 +5,69 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   $applyNodeReplacement,
-  DOMConversionMap,
   DOMExportOutput,
   EditorConfig,
   LexicalEditor,
   LexicalNode,
   SerializedTextDecoratorNode,
-  SerializedTextNode,
   Spread,
   TextDecoratorNode,
-  TextNode,
 } from 'lexical';
+import {ParameterUnified} from 'onchain-lexical-context/instanceConfig';
 import {toBase64UTF8} from 'onchain-utility/base64';
 import React from 'react';
 
 import ParametersComponent from './parametersComponent';
-import {ParametersRef} from './types';
-
-export interface Parameters {
-  value: string;
-  number: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [k: string]: any;
-}
+import {Parameter, ParameterRef} from './types';
 
 export type SerializedInternalNode = Spread<
   {
-    parameters: Parameters;
+    parameter: Parameter;
   },
   SerializedTextDecoratorNode
 >;
 export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
-  /** 用于存储参数数据，保证每次读取能获取到最新值 */
-  static collection = new Map<string, Parameters>();
   /** 初始化值 */
-  __parameters: Parameters;
+  __parameter: {
+    isolation: Parameter;
+  };
 
-  __ref = React.createRef<ParametersRef>();
+  __ref = React.createRef<ParameterRef>();
 
   /** 最新的值 */
-  get parameters() {
-    return (
-      ParametersNode.collection.get(this.__parameters.number) ||
-      this.__parameters
-    );
+  get parameter() {
+    return this.__parameter.isolation;
   }
 
   static getType(): string {
-    return 'Parameters';
+    return 'Parameter';
   }
 
   static clone(node: ParametersNode) {
-    return new ParametersNode(Object.assign({}, node.parameters), node.__key);
+    return new ParametersNode(Object.assign({}, node.parameter), node.__key);
   }
 
   static importJSON(serializedNode: SerializedInternalNode): ParametersNode {
-    return $createParametersNode(serializedNode.parameters).updateFromJSON(
+    return $createParametersNode(serializedNode.parameter).updateFromJSON(
       serializedNode,
     );
   }
 
-  constructor(parameters: Parameters, key?: string) {
+  constructor(parameter: Parameter, key?: string) {
     super(key);
-    this.__parameters = parameters;
+    this.__parameter = {
+      isolation: parameter,
+    };
   }
 
   exportJSON(): SerializedInternalNode {
     return {
       ...super.exportJSON(),
-      parameters: this.parameters,
+      parameter: this.parameter,
     };
   }
   exportDOM(editor: LexicalEditor): DOMExportOutput {
@@ -84,9 +75,9 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
     element.setAttribute('parameter', '');
     element.setAttribute(
       'data-parameter',
-      toBase64UTF8(JSON.stringify(this.parameters)),
+      toBase64UTF8(JSON.stringify(this.parameter)),
     );
-    element.textContent = this.parameters.value;
+    element.textContent = this.parameter.value;
     return {element};
   }
 
@@ -118,7 +109,7 @@ export class ParametersNode extends TextDecoratorNode<React.ReactNode> {
   }
 }
 
-export function $createParametersNode(parameters: Parameters): ParametersNode {
+export function $createParametersNode(parameters: Parameter): ParametersNode {
   return $applyNodeReplacement(new ParametersNode(parameters));
 }
 
@@ -128,33 +119,17 @@ export function $isParametersNode(
   return node instanceof ParametersNode;
 }
 
-// export function updateParameters(parameters: Parameters) {
+// export function updateParameters(parameters: Parameter) {
 //   return ParametersNode.collection.set(parameters.number, parameters);
 // }
 
-class TestNode extends TextNode {
-  static getType(): string {
-    return 'Parameters';
-  }
-  static clone(node: TestNode): TestNode {
-    return new TestNode(node.__text, node.__key);
-  }
-
-  static importDOM(): DOMConversionMap | null {
-    return TextNode.importDOM();
-  }
-
-  static importJSON(serializedNode: SerializedTextNode): TextNode {
-    return $createTestNode().updateFromJSON(serializedNode);
-  }
-}
-
-export function $createTestNode(text = ''): TestNode {
-  return $applyNodeReplacement(new TestNode(text));
-}
-
-export function $isTestNode(
-  node: LexicalNode | null | undefined,
-): node is TestNode {
-  return node instanceof TestNode;
+export function $unifiedCreateParametersNode<T extends Record<string, any>>(
+  unified: ParameterUnified<T>,
+  parameter: T,
+) {
+  return $createParametersNode({
+    insId: parameter.insId,
+    number: parameter.number,
+    value: unified.setParameter(parameter).getParameterValue(parameter),
+  });
 }

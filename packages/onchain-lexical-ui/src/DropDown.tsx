@@ -194,6 +194,25 @@ function DropDownItems({
   );
 }
 
+export type ShouldUpdateFunc<T> = (prev?: T, next?: T) => boolean;
+
+const defaultShouldUpdate = <T,>(a?: T, b?: T) => !Object.is(a, b);
+
+function usePrevious<T>(
+  state: T,
+  shouldUpdate: ShouldUpdateFunc<T> = defaultShouldUpdate,
+): T | undefined {
+  const prevRef = useRef<T>();
+  const curRef = useRef<T>();
+
+  if (shouldUpdate(curRef.current, state)) {
+    prevRef.current = curRef.current;
+    curRef.current = state;
+  }
+
+  return prevRef.current;
+}
+
 export default function DropDown({
   disabled = false,
   showIcon = true,
@@ -226,6 +245,7 @@ export default function DropDown({
   const [showDropDown, setShowDropDown] = useState(false);
   const {extra} = useSettings();
   const [zIndex, setZIndex] = useState(100);
+  const previousShowDropDown = usePrevious(showDropDown);
 
   const handleClose = () => {
     setShowDropDown(false);
@@ -235,13 +255,15 @@ export default function DropDown({
   };
 
   useEffect(() => {
-    if (showDropDown) {
-      if (extra.getZIndex) {
-        setZIndex(extra.getZIndex());
-      }
-    } else {
-      if (extra.reduceZIndex) {
-        extra.reduceZIndex();
+    if (Boolean(previousShowDropDown) !== showDropDown) {
+      if (showDropDown) {
+        if (extra.getZIndex) {
+          setZIndex(extra.getZIndex());
+        }
+      } else {
+        if (extra.reduceZIndex) {
+          extra.reduceZIndex();
+        }
       }
     }
   }, [showDropDown]);

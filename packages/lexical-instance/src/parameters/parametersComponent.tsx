@@ -9,64 +9,109 @@
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
 import {$getNodeByKey, COMMAND_PRIORITY_EDITOR} from 'lexical';
+import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
 import {useStore} from 'onchain-utility/hooks';
+import {translateI18n} from 'onchain-utility/language';
 import React, {useEffect, useImperativeHandle, useRef} from 'react';
 
-import {PARAMETERS_UPDATE} from '../const';
+import {INSERT_PARAMETERS, PARAMETERS_UPDATE} from '../const';
+import {$getInstanceNodeByChild} from '../utils';
 import {$isParametersNode} from '.';
-import {ParametersRef} from './types';
+import Styles from './styles.module.less';
+import {ParameterRef} from './types';
 
-const ParametersComponent = React.forwardRef<ParametersRef, {nodeKey: string}>(
+const ParametersComponent = React.forwardRef<ParameterRef, {nodeKey: string}>(
   ({nodeKey}, ref) => {
     const [editor] = useLexicalComposerContext();
+    const {preview, parameterUnified} = useInstanceConfig();
     const spanRef = useRef<HTMLSpanElement>(null);
-    const [parameters, setParameters, , latestParameters] = useStore({
+    const [parameter, setParameter, , latestParameter] = useStore({
+      insId: '',
       number: '',
       value: '',
     });
+
+    const isCanUse = !preview;
 
     useEffect(() => {
       editor.read(() => {
         const node = $getNodeByKey(nodeKey);
         if ($isParametersNode(node)) {
-          setParameters(node.parameters);
+          const parameter = node.parameter;
+          setParameter(
+            Object.assign(node.parameter, {
+              value: parameterUnified.getParameterValue(parameter.insId),
+            }),
+          );
         }
       });
       return mergeRegister(
         editor.registerCommand(
           PARAMETERS_UPDATE,
-          ({number, value}) => {
-            const latest = latestParameters.current;
-            if (number !== latest.number) {
+          ({parameters}) => {
+            const latest = latestParameter.current;
+            const parameter = parameters.find(
+              (parameter) => parameter.insId === latest.insId,
+            );
+            if (!parameter) {
               return false;
             }
             const node = $getNodeByKey(nodeKey);
             if ($isParametersNode(node)) {
-              setParameters({value});
-              Object.assign(node.parameters, {value});
+              Promise.resolve().then(() => {
+                const value = parameterUnified
+                  .setParameter(parameter)
+                  .getParameterValue(parameter.insId);
+                setParameter({value});
+                Object.assign(node.parameter, {value});
+              });
             }
-            return true;
+            return false;
           },
           COMMAND_PRIORITY_EDITOR,
         ),
       );
-    }, []);
+    }, [parameterUnified]);
 
     useImperativeHandle(
       ref,
       () => {
         return {
+          getParameter() {
+            return latestParameter.current;
+          },
           getValue() {
-            return latestParameters.current.value;
+            return parameterUnified.getParameterValue(
+              latestParameter.current.insId,
+            );
           },
         };
       },
-      [],
+      [parameterUnified],
     );
 
     return (
-      <span ref={spanRef} role="button" tabIndex={0}>
-        {parameters.value}
+      <span
+        className={`parameter ${Styles.parameter} ${
+          isCanUse ? Styles.pointer : ''
+        }`}
+        title={translateI18n('[TODO] Parameter', {placeholder: '参数'})}
+        ref={spanRef}
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          if (isCanUse) {
+            editor.dispatchCommand(INSERT_PARAMETERS, {
+              instance: editor.read(() => {
+                return $getInstanceNodeByChild($getNodeByKey(nodeKey)!)
+                  ?.__instance.value;
+              }),
+              nodeKey,
+              target: parameter.insId,
+            });
+          }
+        }}>
+        {parameter.value}
       </span>
     );
   },

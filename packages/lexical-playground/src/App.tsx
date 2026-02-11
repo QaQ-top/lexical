@@ -220,7 +220,11 @@ function App({namespace}: {namespace: string}): JSX.Element {
         paragraph.append($createInternalLinkNode(Instance.number));
         const paragraph2 = $createInstanceParagraphNode();
         paragraph2.append(
-          $createParametersNode({number: 'WER13432', value: '134/kg'}),
+          $createParametersNode({
+            insId: '12435444',
+            number: 'WER13432',
+            value: '134/kg',
+          }),
         );
         instance.append(paragraph, paragraph2);
         const content = `JSON<[{"children":[],"direction":"ltr","format":"","indent":0,"type":"Paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"飞","type":"text","version":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"洒","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"mark","version":1,"ids":["e13f5f8e-59d9-4d52-94c9-1443644f4481"]}],"direction":"ltr","format":"","indent":0,"type":"Paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":"ltr","format":"","indent":0,"type":"Paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"type":"Equation","version":1,"equation":"ffsdad","inline":true}],"direction":null,"format":"","indent":0,"type":"Paragraph","version":1,"textFormat":0,"textStyle":""}]>`;
