@@ -8,6 +8,7 @@
 
 import type {SerializedDocument} from '@lexical/file';
 import type {MarkNode} from '@lexical/mark';
+import type {LexicalComposerContextType} from '@lexical/react/LexicalComposerContext';
 import type {
   BaseSelection,
   InternalSerializedNode,
@@ -63,6 +64,11 @@ export declare const $appendNodesToHTML: (
   parentElement: HTMLElement | DocumentFragment,
   selection?: BaseSelection | null,
 ) => boolean;
+
+export declare const useLexicalComposerContext: <
+  LE = LexicalEditor,
+  LC = LexicalComposerContextType,
+>() => [LexicalEditor | LE, LexicalComposerContextType | LC];
 /** -------------------------------------------------------------------------- */
 export {buildImportMap, default as RichTextEditor} from './App';
 export * from './commenting';
@@ -81,7 +87,7 @@ export * from '@lexical/mark';
 export * from '@lexical/react/LexicalAutoFocusPlugin';
 export * from '@lexical/react/LexicalClearEditorPlugin';
 export {LexicalComposer} from '@lexical/react/LexicalComposer';
-export {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+export * from '@lexical/react/LexicalComposerContext';
 export * from '@lexical/react/LexicalEditorRefPlugin';
 export * from '@lexical/react/LexicalErrorBoundary';
 export * from '@lexical/react/LexicalHistoryPlugin';
