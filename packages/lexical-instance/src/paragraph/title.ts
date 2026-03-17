@@ -41,7 +41,6 @@ import {$isInstanceParagraphNode, InstanceParagraphNode} from '.';
 import Styles from './styles.module.less';
 
 export class InstanceTitleNode extends InstanceHeadingNode {
-  __indent = 3;
   static getType(): string {
     return 'Title';
   }

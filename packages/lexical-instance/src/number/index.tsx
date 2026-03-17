@@ -154,11 +154,6 @@ export function $isNumberDecoratorNode(
 export function $registerNumberDecoratorNodeUpdate(editor: LexicalEditor) {
   // let date = Date.now();
   return editor.registerNodeTransform(InstanceNode, (node) => {
-    // 当内容变化时更新装饰
-    // const now = Date.now();
-    // if (now - date > 1) {
-    //   date = now;
-    // }
     serialNumber(editor, node.getParent(), node.getIndexWithinParent());
   });
 }
@@ -184,15 +179,15 @@ function serialNumber(
   }
 }
 
-/** 监听 InstanceNode 更新，实时更新序号 */
+/** 监听 NumberDecorator 更新，实时更新序号时更新 paddingLeft */
 export function $registerNumberDecoratorDomUpdate(editor: LexicalEditor) {
   return editor.registerNodeTransform(NumberDecoratorNode, (node) => {
     // 当内容变化时更新装饰
     const serial = node.__serialNumber;
-    if (serial) {
-      const [styleElement, remove] = getStyleElement(editor, node);
-      const width = getTextWidth(node.__serialNumber, styleElement);
-      remove();
+    const number = node.__instance.value.number;
+    const content = [serial, number].filter(Boolean).join(' ');
+    if (content) {
+      const width = getTextWidth({editor, node, text: content});
       const next = node.getNextSibling()?.getWritable();
       if ($isInstanceParagraphNode(next) && next.isTitle) {
         const element = editor.getElementByKey(next.getKey());
@@ -200,11 +195,6 @@ export function $registerNumberDecoratorDomUpdate(editor: LexicalEditor) {
           element.style.paddingLeft = `${width}px`;
         }
         next.__paddingLeft = `${width}px`;
-
-        // console.log(
-        //   {key: node.__key, 'No.': node.__serialNumber, width},
-        //   'FFFF---',
-        // );
       }
     }
   });
@@ -214,37 +204,25 @@ function getStyleElement(
   editor: LexicalEditor,
   node: NumberDecoratorNode,
 ): [HTMLElement, () => void] {
-  const selfElement = editor.getElementByKey(node.getKey());
-  if (!selfElement) {
-    const publicStyles = node.getNumberRootElement(editor._config);
-    document.body.appendChild(publicStyles);
-    return [publicStyles, () => publicStyles.remove()];
-  }
-  return [selfElement, () => {}];
+  const numberStylesDom = node.getNumberRootElement(editor._config);
+  numberStylesDom.style.cssText = `padding:0px;position:absolute;z-index:-99;`;
+  const box = editor.getRootElement() || document.body;
+  box.appendChild(numberStylesDom);
+  return [numberStylesDom, () => numberStylesDom.remove()];
 }
 
-function getTextWidth(text: string, cssStyle?: string | Element | null) {
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d')!;
-
-  // 处理不同类型的样式输入
-  let fontString = '24px Arial'; // 默认值
-
-  if (typeof cssStyle === 'string') {
-    // 直接使用传入的CSS字体字符串
-    fontString = cssStyle;
-  } else if (cssStyle instanceof Element) {
-    // 从DOM元素获取计算后的样式
-    const computedStyle = window.getComputedStyle(cssStyle);
-    fontString = `
-      ${computedStyle.fontStyle} 
-      ${computedStyle.fontWeight} 
-      ${computedStyle.fontSize} 
-      ${computedStyle.fontFamily}
-    `;
-  }
-  // 应用字体到Canvas
-  context.font = fontString;
-  // 返回测量结果
-  return context.measureText(text).width;
+function getTextWidth({
+  editor,
+  node,
+  text,
+}: {
+  editor: LexicalEditor;
+  node: NumberDecoratorNode;
+  text: string;
+}) {
+  const [styleElement, remove] = getStyleElement(editor, node);
+  styleElement.append(text);
+  const width = styleElement.offsetWidth;
+  remove();
+  return width + 3;
 }

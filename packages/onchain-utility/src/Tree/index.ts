@@ -399,8 +399,9 @@ function optimizeStructure<T>({
   data,
   childrenKey = 'children',
   signKey = 'id',
-}: Params<T>): T[] {
-  if (data.length > 1) {
+  isSupportMultipleRoot = false,
+}: Params<T> & {isSupportMultipleRoot?: boolean}): T[] {
+  if (data.length > 1 || isSupportMultipleRoot) {
     return [
       {
         [childrenKey]: data,
@@ -512,6 +513,7 @@ export async function upgrade<T extends Item>({
   data,
   signKey = 'id',
   isFollow,
+  isSupportMultipleRoot = false,
   onStopFollow,
   onFilterFollow,
   onUpgrade,
@@ -521,6 +523,7 @@ export async function upgrade<T extends Item>({
   onError,
 }: MoveParams<T> & {
   isFollow?: boolean;
+  isSupportMultipleRoot?: boolean;
   onStopFollow?: (item: T) => boolean;
   onFilterFollow?: (item: T[]) => T[];
   onUpgrade?: (params: {
@@ -530,7 +533,7 @@ export async function upgrade<T extends Item>({
   }) => Promise<boolean> | boolean;
   onUpgraded?: (upgrades: T[]) => void;
 }) {
-  data = optimizeStructure({childrenKey, data, signKey});
+  data = optimizeStructure({childrenKey, data, isSupportMultipleRoot, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
   const {crossLayerSort, getInsertIdx} = generatedAcrossHierarchySort({
     signKey,

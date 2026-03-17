@@ -7,6 +7,7 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+/** 是否是Moment对象（_表示为内部函数谨慎使用） */
 export function _isMoment(obj: any) {
   return (
     obj != null &&
@@ -22,6 +23,12 @@ export function _isMoment(obj: any) {
   );
 }
 
+/**
+ * 创建一个可解构的对象，该对象同时具有原始对象的属性和数组的迭代器，使其可以使用对象和数组两种解构方式
+ * @param obj - 需要转换的对象
+ * @param arr - 用于提供迭代器的数组
+ * @returns 一个结合了对象属性和数组迭代器的新对象
+ */
 export function makeDestructurable<
   T extends Record<string, unknown>,
   A extends readonly [any, ...any],
@@ -47,6 +54,7 @@ export function makeDestructurable<
   }
 }
 
+/** 创建对象枚举，可以避免两个相同枚举缺不相等 */
 export function createEnumObject<T extends string>(o: {[P in T]: P}) {
   return o;
 }
@@ -54,14 +62,71 @@ export function createEnumObject<T extends string>(o: {[P in T]: P}) {
 export function toTypeString<T>(value: T): string {
   return Object.prototype.toString.call(value);
 }
+
 export function toRawType<T>(value: T): string {
   // 从字符串中提取“RawType”，如“[object RawType]”
   return toTypeString(value).slice(8, -1);
 }
+
+export function isString(value: any): value is string {
+  return toRawType(value) === 'String';
+}
+
+export function isNumber(value: any): value is number {
+  return toRawType(value) === 'Number';
+}
+
+/** 判断值是否为NaN */
+export function isNaN(value?: any): value is number {
+  return Number.isNaN(value);
+}
+
+export function isBoolean(value?: any): value is boolean {
+  return toRawType(value) === 'Boolean';
+}
+
+export function isUndefined(value?: any): value is undefined {
+  return toRawType(value) === 'Undefined';
+}
+
+export function isNull(value?: any): value is null {
+  return toRawType(value) === 'Null';
+}
+
+export function isNil(value?: any): value is null | undefined {
+  return isNull(value) || isUndefined(value);
+}
+
+/**
+ * 判断是否是 `null` 或 `undefined`
+ * @example
+ * _.isNil(null);
+ * // => true
+ *
+ * _.isNil(void 0);
+ * // => true
+ *
+ * _.isNil(NaN);
+ * // => false
+ */
+export function isObject(value?: any): value is object {
+  return toRawType(value) === 'Object';
+}
+
+export function isArray(value?: unknown): value is unknown[] {
+  return toRawType(value) === 'Array';
+}
+
+export function isFunction(value?: any): value is (...args: any[]) => any {
+  return toRawType(value) === 'Function';
+}
+
+/** 判断对象是否有某个属性 */
 export function hasOwnProperty<T>(data: T, key: string | symbol | number) {
   return data && Object.prototype.hasOwnProperty.call(data, key);
 }
 
+/** 是否是整型key */
 export function isIntegerKey(key: unknown) {
   return (
     typeof key === 'string' &&
@@ -70,10 +135,13 @@ export function isIntegerKey(key: unknown) {
     '' + parseInt(key, 10) === key
   );
 }
+
+/** 是否是空对象 */
 export function isEmptyObject(obj: object | undefined | null) {
   return obj ? !Object.keys(obj).length : true;
 }
 
+/** 生成 innerHTML  */
 export function getHTMLTagString(params: {
   type: string;
   attributes?: Record<string, any>;
