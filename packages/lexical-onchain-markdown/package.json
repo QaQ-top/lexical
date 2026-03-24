@@ -28,7 +28,7 @@
     "@lexical/file": "0.30.0",
     "lexical": "0.30.0",
     "onchain-lexical-instance": "^0.0.17",
-    "onchain-utility": "^0.0.15"
+    "onchain-utility": "^0.0.17"
   },
   "repository": {
     "type": "git",

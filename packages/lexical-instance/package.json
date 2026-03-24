@@ -27,7 +27,7 @@
     "onchain-lexical-context": "^0.0.15",
     "onchain-lexical-markdown": "^0.0.16",
     "onchain-lexical-ui": "^0.0.15",
-    "onchain-utility": "^0.0.15"
+    "onchain-utility": "^0.0.17"
   },
   "sideEffects": false,
   "exports": {

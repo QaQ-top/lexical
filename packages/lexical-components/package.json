@@ -20,7 +20,7 @@
     "lexical": "0.30.0",
     "onchain-lexical-instance": "^0.0.17",
     "onchain-lexical-markdown": "^0.0.16",
-    "onchain-utility": "^0.0.15"
+    "onchain-utility": "^0.0.17"
   },
   "peerDependencies": {
     "react": ">=17.x",

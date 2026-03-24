@@ -79,9 +79,44 @@ export function levelTransformTree<T extends Item>({
     }
   });
 
-  return root.children;
+  type _Item = T & {children: _Item[]};
+  return root.children as _Item[];
 }
 
+/** 获取全部子孙节点  */
+export function getTreeDescendants<T extends Item>({
+  data,
+  key,
+  signKey = 'id',
+  childrenKey = 'children',
+}: Params<T> & {key: string}) {
+  const {self} = getTreeRelation({
+    childrenKey,
+    data,
+    lookup(item, index) {
+      return item[signKey] === key;
+    },
+  });
+  return arrayAttributeFlat({childrenKey, data: self?.[childrenKey] || []});
+}
+
+/** 获取全部祖先节点 */
+export function getTreeAncestors<T extends Item>({
+  data,
+  key,
+  signKey = 'id',
+  childrenKey = 'children',
+}: Params<T> & {key: string}) {
+  return getTreeRelation({
+    childrenKey,
+    data,
+    lookup(item, index) {
+      return item[signKey] === key;
+    },
+  }).stack;
+}
+
+/** 删除树节点 */
 export function deleteTreeNodes<T extends Item>({
   data,
   selectedKeys,
@@ -265,6 +300,63 @@ export function getSiblings<T extends Item>({
 }
 
 /**
+ * @description 是否跨层
+ * @date 2022-11-21 20:03:52
+ * @export
+ * @param {string[]} hierarchy 选中任务的层级
+ * @returns {*}
+ */
+export function getSelectedNodeHierarchyStatus<T extends Item>({
+  data,
+  selectedKeys,
+  signKey = 'id',
+  childrenKey = 'children',
+}: Params<T> & {
+  selectedKeys: string[];
+}): {
+  /** 层级深度是否有差别 */
+  isDifferentDepths: boolean;
+  /** 选中是否包含了祖先节点和其后的节点 */
+  isIncludedParent: boolean;
+} {
+  const relations = selectedKeys.map((key) =>
+    getTreeRelation({
+      childrenKey,
+      data,
+      lookup(item, index) {
+        return item[signKey] === key;
+      },
+    }),
+  );
+  // 深度集合
+  const deepSet = new Set(relations.map((rel) => rel.stack.length));
+  const isDifferentDepths = deepSet.size > 1;
+  if (isDifferentDepths) {
+    return {
+      isDifferentDepths,
+      isIncludedParent: relations
+        .sort((a, b) => {
+          return b.stack.length - a.stack.length;
+        })
+        .some((item) => {
+          const ancestors = getTreeAncestors({
+            childrenKey,
+            data,
+            key: item.self[signKey],
+            signKey,
+          }).map((item) => item[signKey]);
+          return selectedKeys.some((id) => ancestors.includes(id));
+        }),
+    };
+  }
+
+  return {
+    isDifferentDepths,
+    isIncludedParent: false,
+  };
+}
+
+/**
  * @description 合并相邻的选中数据
  * @date 2023-02-15 16:11:16
  * @export
@@ -438,6 +530,16 @@ type MoveParams<T> = Params<T> & {
   onError?: (params: {selected: T[]; isMoveUp?: boolean}) => boolean | void;
 };
 
+interface ParentParams<T> {
+  originalParent: T;
+  parent: T;
+}
+
+interface ExpandedState<T> {
+  add: T;
+  remove: T | null;
+}
+
 export function move<T extends Item>({
   data,
   signKey = 'id',
@@ -509,6 +611,12 @@ export function moveDown<T extends Item>(_: MoveParams<T>) {
   });
 }
 
+interface OnUpgradeParams<T> {
+  selected: T[];
+  parent: T;
+  grandpa?: T;
+}
+
 export async function upgrade<T extends Item>({
   data,
   signKey = 'id',
@@ -526,12 +634,11 @@ export async function upgrade<T extends Item>({
   isSupportMultipleRoot?: boolean;
   onStopFollow?: (item: T) => boolean;
   onFilterFollow?: (item: T[]) => T[];
-  onUpgrade?: (params: {
-    selected: T[];
-    parent: T;
-    grandpa?: T;
-  }) => Promise<boolean> | boolean;
-  onUpgraded?: (upgrades: T[]) => void;
+  onUpgrade?: (params: OnUpgradeParams<T>) => Promise<boolean> | boolean;
+  onUpgraded?: (
+    upgrades: T[],
+    params: ExpandedState<T[typeof signKey]>,
+  ) => void;
 }) {
   data = optimizeStructure({childrenKey, data, isSupportMultipleRoot, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
@@ -606,7 +713,16 @@ export async function upgrade<T extends Item>({
 
         const insert = (data: T[], index: number) => {
           data.splice(index, 0, ...selected);
-          onUpgraded?.(selected);
+          onUpgraded?.(
+            selected,
+            getExpandedState({
+              childrenKey,
+              data,
+              originalParent: parent,
+              parent: grandpa!,
+              signKey,
+            }),
+          );
         };
         const insertIndex = getInsertIdx({
           leader: start,
@@ -619,6 +735,12 @@ export async function upgrade<T extends Item>({
   }
 }
 
+interface OnDowngradedParams<T> {
+  selected: T[];
+  beforeSibling: T[];
+  parent: T | undefined;
+}
+
 export async function downgrade<T extends Item>({
   data,
   signKey = 'id',
@@ -628,12 +750,11 @@ export async function downgrade<T extends Item>({
   childrenKey = 'children',
   onError,
 }: MoveParams<T> & {
-  onDowngrade?: (params: {
-    selected: T[];
-    beforeSibling: T[];
-    parent: T | undefined;
-  }) => Promise<boolean> | boolean;
-  onDowngraded?: (downgrades: T[]) => void;
+  onDowngrade?: (params: OnDowngradedParams<T>) => Promise<boolean> | boolean;
+  onDowngraded?: (
+    downgrades: T[],
+    params: ExpandedState<T[typeof signKey]>,
+  ) => void;
 }) {
   data = optimizeStructure({childrenKey, data, signKey});
   const layers = mergeAdjacent({childrenKey, data, selectKeys, signKey});
@@ -662,7 +783,16 @@ export async function downgrade<T extends Item>({
         const newChildren = [...(before[childrenKey] || []), ...children];
         if (children.length) {
           (before as Item)[childrenKey] = [...newChildren];
-          onDowngraded?.(children);
+          onDowngraded?.(
+            children,
+            getExpandedState({
+              childrenKey,
+              data,
+              originalParent: parent,
+              parent: before,
+              signKey,
+            }),
+          );
         }
       }
     }
@@ -721,4 +851,20 @@ export function treeSearch<T extends Record<string, any>>({
       }
     })
     .filter((row): row is T => !!row);
+}
+
+function getExpandedState<T extends Item>({
+  originalParent,
+  parent,
+  signKey = 'id',
+  childrenKey = 'children',
+}: ParentParams<T> & Params<T>) {
+  const isRemove = !originalParent[childrenKey]?.length;
+
+  type Key = T[typeof signKey];
+
+  return {
+    add: parent[signKey] as Key,
+    remove: isRemove ? (originalParent[signKey] as Key) : null,
+  };
 }
