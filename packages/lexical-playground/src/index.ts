@@ -85,6 +85,7 @@ export * from '@lexical/history';
 export * from '@lexical/html';
 export * from '@lexical/mark';
 export * from '@lexical/react/LexicalAutoFocusPlugin';
+export * from '@lexical/react/LexicalBlockStandaloneTildeHashPlugin';
 export * from '@lexical/react/LexicalClearEditorPlugin';
 export {LexicalComposer} from '@lexical/react/LexicalComposer';
 export * from '@lexical/react/LexicalComposerContext';

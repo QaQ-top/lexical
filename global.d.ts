@@ -30,3 +30,20 @@ interface BaseComponentProps<T = unknown> {
   ref?: React.Ref<T>;
   style?: React.CSSProperties;
 }
+// 补充缺失的全局类型
+declare type TranslateI18nParams = Record<string, any>;
+
+interface Window {
+  translateI18n: (params: TranslateI18nParams) => string;
+}
+
+// 扩展 HTMLElement 的 onbeforematch 属性（用于 collapsible）
+interface HTMLElement {
+  onbeforematch: ((this: HTMLElement, ev: Event) => any) | null;
+}
+
+// 声明 CSS 模块
+declare module '*.module.less' {
+  const classes: { readonly [key: string]: string };
+  export default classes;
+}

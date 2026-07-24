@@ -63,7 +63,9 @@ export default defineConfig(({mode}) => ({
     },
   },
   plugins: [
-    mode === 'development' ? viteMonorepoResolutionPlugin() : null,
+    mode === 'development' || mode === 'production'
+      ? viteMonorepoResolutionPlugin()
+      : null,
     mode === 'development'
       ? codeInspectorPlugin({
           bundler: 'vite',

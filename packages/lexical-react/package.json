@@ -78,6 +78,26 @@
         "default": "./dist/LexicalAutoFocusPlugin.js"
       }
     },
+    "./LexicalBlockStandaloneTildeHashPlugin": {
+      "import": {
+        "types": "./LexicalBlockStandaloneTildeHashPlugin.d.ts",
+        "default": "./dist/LexicalBlockStandaloneTildeHashPlugin.mjs"
+      },
+      "require": {
+        "types": "./LexicalBlockStandaloneTildeHashPlugin.d.ts",
+        "default": "./dist/LexicalBlockStandaloneTildeHashPlugin.js"
+      }
+    },
+    "./LexicalBlockStandaloneTildeHashPlugin.js": {
+      "import": {
+        "types": "./LexicalBlockStandaloneTildeHashPlugin.d.ts",
+        "default": "./dist/LexicalBlockStandaloneTildeHashPlugin.mjs"
+      },
+      "require": {
+        "types": "./LexicalBlockStandaloneTildeHashPlugin.d.ts",
+        "default": "./dist/LexicalBlockStandaloneTildeHashPlugin.js"
+      }
+    },
     "./LexicalAutoLinkPlugin": {
       "import": {
         "types": "./LexicalAutoLinkPlugin.d.ts",

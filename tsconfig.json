@@ -44,6 +44,9 @@
       "@lexical/react/LexicalAutoFocusPlugin": [
         "./packages/lexical-react/src/LexicalAutoFocusPlugin.ts"
       ],
+      "@lexical/react/LexicalBlockStandaloneTildeHashPlugin": [
+        "./packages/lexical-react/src/LexicalBlockStandaloneTildeHashPlugin.tsx"
+      ],
       "@lexical/react/LexicalAutoLinkPlugin": [
         "./packages/lexical-react/src/LexicalAutoLinkPlugin.ts"
       ],
