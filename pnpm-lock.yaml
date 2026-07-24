@@ -268,7 +268,11 @@ importers:
         specifier: ^7.1.4
         version: 7.3.6(@types/node@17.0.45)(jiti@1.21.7)(less@4.8.0)(lightningcss@1.33.0)(terser@5.49.0)
 
-  packages/lexical: {}
+  packages/lexical:
+    dependencies:
+      '@lexical/utils':
+        specifier: workspace:*
+        version: link:../lexical-utils
 
   packages/lexical-clipboard:
     dependencies:

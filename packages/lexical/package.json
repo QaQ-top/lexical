@@ -19,6 +19,9 @@
   },
   "module": "Lexical.mjs",
   "sideEffects": false,
+  "dependencies": {
+    "@lexical/utils": "workspace:*"
+  },
   "exports": {
     ".": {
       "import": {
