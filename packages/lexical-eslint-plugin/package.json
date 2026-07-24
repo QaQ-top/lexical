@@ -29,11 +29,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "default": "./dist/LexicalEslintPlugin.mjs"
+        "default": "./LexicalEslintPlugin.js"
       },
       "require": {
         "types": "./index.d.ts",
-        "default": "./dist/LexicalEslintPlugin.js"
+        "default": "./LexicalEslintPlugin.js"
       }
     }
   },
