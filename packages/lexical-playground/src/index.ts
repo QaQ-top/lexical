@@ -6,13 +6,9 @@
  *
  */
 
-import type {SerializedDocument} from '@lexical/file';
 import type {MarkNode} from '@lexical/mark';
 import type {LexicalComposerContextType} from '@lexical/react/LexicalComposerContext';
 import type {
-  BaseSelection,
-  InternalSerializedNode,
-  LexicalCommand,
   LexicalEditor,
   LexicalNode,
   RangeSelection,
@@ -28,43 +24,27 @@ import {
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 
 /** Type Start -------------------------------------------------------------------------- */
-export declare const OPEN_COMMENT: LexicalCommand<boolean>;
-
-export declare const importSerializedNode: (
-  editor: LexicalEditor,
-  serializedRoot: SerializedLexicalNode,
-) => void;
+// 类型一致性核对(以 lib/index.d.ts 内联后版本为基准):
+//   OPEN_COMMENT            ✅ 一致,删除(从 @lexical/react 透出)
+//   importSerializedNode     ✅ 一致,删除(从 @lexical/file 透出)
+//   exportJSON              ✅ 等价(都是 Omit<ExportConfig,'fileName'>),删除
+//   exportNodeToJSON        ✅ 一致,删除(从 @lexical/file 透出)
+//   $appendNodesToHTML      ✅ 一致,删除(从 @lexical/html 透出)
+//   $advanceParseSerializedNode  ⚠️ 不一致:官方版本是 <T = LexicalNode>(...) => T
+//                                       这里是 (s) => LexicalNode(无泛型)。保留。
+//   $wrapSelectionInMarkNode     ⚠️ 不一致:官方返回 MarkNode | void | undefined
+//                                       这里是 MarkNode | undefined。保留(去掉 void 兼容)。
+//   useLexicalComposerContext    ⚠️ 不一致:官方别名 LexicalComposerContextWithEditor<LE,LC>
+//                                       这里是直接写元组。保留。
 export declare const $advanceParseSerializedNode: (
   serializedNode: SerializedLexicalNode,
 ) => LexicalNode;
-
-export declare const exportJSON: (
-  editor: LexicalEditor,
-  config?: Readonly<{
-    source?: string;
-    formatJSON?: (
-      root: InternalSerializedNode,
-    ) => Promise<InternalSerializedNode>;
-  }>,
-) => Promise<SerializedDocument>;
-export declare const exportNodeToJSON: <
-  SerializedNode extends SerializedLexicalNode,
->(
-  node: LexicalNode,
-) => SerializedNode;
 export declare const $wrapSelectionInMarkNode: (
   selection: RangeSelection,
   isBackward: boolean,
   id: string,
   createNode?: (ids: Array<string>) => MarkNode,
 ) => MarkNode | undefined;
-export declare const $appendNodesToHTML: (
-  editor: LexicalEditor,
-  currentNode: LexicalNode,
-  parentElement: HTMLElement | DocumentFragment,
-  selection?: BaseSelection | null,
-) => boolean;
-
 export declare const useLexicalComposerContext: <
   LE = LexicalEditor,
   LC = LexicalComposerContextType,
