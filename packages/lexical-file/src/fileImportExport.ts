@@ -90,14 +90,14 @@ export function importFile(editor: LexicalEditor) {
  * @param serializedNode
  * @returns
  */
-export function $advanceParseSerializedNode<T = LexicalNode>(
+export function $advanceParseSerializedNode(
   serializedNode: SerializedLexicalNode,
 ) {
   serializedNode = {...serializedNode};
   if (serializedNode.type === 'root') {
     serializedNode.type = 'Fragment';
   }
-  return $baseParseSerializedNode(serializedNode) as T;
+  return $baseParseSerializedNode(serializedNode);
 }
 
 export function importSerializedNode(

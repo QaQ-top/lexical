@@ -23,33 +23,6 @@ import {
 
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 
-/** Type Start -------------------------------------------------------------------------- */
-// 类型一致性核对(以 lib/index.d.ts 内联后版本为基准):
-//   OPEN_COMMENT            ✅ 一致,删除(从 @lexical/react 透出)
-//   importSerializedNode     ✅ 一致,删除(从 @lexical/file 透出)
-//   exportJSON              ✅ 等价(都是 Omit<ExportConfig,'fileName'>),删除
-//   exportNodeToJSON        ✅ 一致,删除(从 @lexical/file 透出)
-//   $appendNodesToHTML      ✅ 一致,删除(从 @lexical/html 透出)
-//   $advanceParseSerializedNode  ⚠️ 不一致:官方版本是 <T = LexicalNode>(...) => T
-//                                       这里是 (s) => LexicalNode(无泛型)。保留。
-//   $wrapSelectionInMarkNode     ⚠️ 不一致:官方返回 MarkNode | void | undefined
-//                                       这里是 MarkNode | undefined。保留(去掉 void 兼容)。
-//   useLexicalComposerContext    ⚠️ 不一致:官方别名 LexicalComposerContextWithEditor<LE,LC>
-//                                       这里是直接写元组。保留。
-export declare const $advanceParseSerializedNode: (
-  serializedNode: SerializedLexicalNode,
-) => LexicalNode;
-export declare const $wrapSelectionInMarkNode: (
-  selection: RangeSelection,
-  isBackward: boolean,
-  id: string,
-  createNode?: (ids: Array<string>) => MarkNode,
-) => MarkNode | undefined;
-export declare const useLexicalComposerContext: <
-  LE = LexicalEditor,
-  LC = LexicalComposerContextType,
->() => [LexicalEditor | LE, LexicalComposerContextType | LC];
-/** -------------------------------------------------------------------------- */
 export {buildImportMap, default as RichTextEditor} from './App';
 export * from './commenting';
 export {default as Editor} from './Editor';
