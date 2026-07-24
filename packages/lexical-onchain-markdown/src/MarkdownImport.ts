@@ -24,6 +24,7 @@ import {
   $getSelection,
   $isParagraphNode,
   $isRootNode,
+  $setSelection,
   ElementNode,
 } from 'lexical';
 import {$createInstanceParagraphNode, Instance} from 'onchain-lexical-instance';
@@ -103,7 +104,16 @@ export function createMarkdownImport(
     }
 
     if ($getSelection() !== null) {
-      root.selectStart();
+      if ($isRootNode(root)) {
+        // 真实编辑器导入：按文档约定把光标移动到起始位置。
+        root.selectStart();
+      } else {
+        // 导入到游离的 fragment（例如序列化成 JSON 的无界面场景）：
+        // 上面的节点删除可能让选区仍锚定在被删除的节点上。此时并没有需要
+        // 恢复的光标，直接清空选区，避免本次 update 提交时抛出
+        // “selection has been lost…” 错误。
+        $setSelection(null);
+      }
     }
   };
 }

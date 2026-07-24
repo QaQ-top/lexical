@@ -21,6 +21,7 @@ import {
   $textToRichNodes,
   getJSONRegexp,
   getStorageSerializedString,
+  type SerializedNode,
 } from './instanceToSerializeNode';
 // import {createMarkdownExport} from './MarkdownExport';
 import {registerMarkdownShortcuts} from './MarkdownShortcuts';
@@ -81,6 +82,7 @@ export {
   ORDERED_LIST,
   QUOTE,
   registerMarkdownShortcuts,
+  type SerializedNode,
   STRIKETHROUGH,
   TEXT_FORMAT_TRANSFORMERS,
   TEXT_MATCH_TRANSFORMERS,

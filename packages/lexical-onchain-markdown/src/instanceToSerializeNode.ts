@@ -9,6 +9,7 @@
 
 import {$advanceParseSerializedNode} from '@lexical/file';
 import {
+  $setSelection,
   createEditor,
   CreateEditorArgs,
   ElementNode,
@@ -58,6 +59,11 @@ const markdownToSerializedNode = async ({
           getInstanceTransformers(),
           fragment,
         );
+        // 这里只是把 fragment 序列化成 JSON，没有真实 DOM，也不需要选区。
+        // markdown 导入过程中可能会删除节点（清理空段落 / 合并行），若选区仍
+        // 锚定在被删除的节点上，本次 update 提交时 Lexical 会抛出
+        // “selection has been lost…” 错误。清空选区后提交阶段就没有需要校验的选区了。
+        $setSelection(null);
         resolve(exportNodeToJSON<SerializedNode>(fragment).children || []);
       });
     } catch (e) {
