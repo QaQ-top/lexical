@@ -96,11 +96,15 @@ const Bar = (props: {
   }, [components]);
 
   useEffect(() => {
-    editor.read(() => {
-      setParentInstance(
-        ($getNodeByKey(insNodeKey!)?.getParent() as InstanceNode)?.__instance
-          ?.value,
-      );
+    if (!insNodeKey) {
+      setParentInstance(null);
+      return;
+    }
+    const next = editor.read(
+      () => ($getNodeByKey(insNodeKey)?.getParent() as InstanceNode)?.__instance?.value,
+    );
+    Promise.resolve().then(() => {
+      setParentInstance(next ?? null);
     });
   }, [insNodeKey, editor]);
 

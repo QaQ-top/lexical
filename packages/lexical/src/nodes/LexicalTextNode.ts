@@ -812,6 +812,26 @@ export class TextNode extends LexicalNode {
     }
     const self = this.getWritable();
     self.__text = text;
+    // 防御性：当 selection 的 anchor/focus 引用本节点，且 offset 超过新的
+    // 文本长度时，主动钳制回 [0, length]。这覆盖了类似 `~#` 输入拦截
+    // 在 registerNodeTransform 中同步 setTextContent 的场景：
+    // - 旧长度 3 ("~#~")，新长度 2 ("~#")
+    // - anchor.offset 仍为 3
+    // 不修正会导致后续 commit / listeners 中
+    // `RangeSelection.getNodes()` → `$caretFromPoint` 抛
+    // `devInvariant: $getTextNodeOffset: invalid offset ...`。
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      const key = self.__key;
+      const safeSize = text.length;
+      const {anchor, focus} = selection;
+      if (anchor.type === 'text' && anchor.key === key && anchor.offset > safeSize) {
+        anchor.set(key, safeSize, 'text');
+      }
+      if (focus.type === 'text' && focus.key === key && focus.offset > safeSize) {
+        focus.set(key, safeSize, 'text');
+      }
+    }
     return self;
   }
 
