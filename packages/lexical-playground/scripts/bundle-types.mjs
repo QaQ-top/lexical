@@ -118,6 +118,13 @@ function ownerPackageOf(fileName) {
     const rest = after[1];
     const seg = rest.split('/')[0];
     if (seg.startsWith('onchain-')) return seg;
+    // The core `lexical` package lives at `packages/lexical/` but is
+    // imported as the bare specifier `lexical` (not `@lexical/lexical`).
+    // Keep that name aligned with `INLINE_PACKAGES` so its sources —
+    // LexicalNode.ts, nodes/LexicalElementNode.ts, … — are recognised
+    // and inlined; otherwise the bundle ships dangling references to
+    // `ElementNode`, `LexicalNode`, `Klass`, etc.
+    if (seg === 'lexical') return 'lexical';
     return '@lexical/' + seg.replace(/^lexical-/, '');
   }
   return null;
