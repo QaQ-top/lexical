@@ -8,10 +8,10 @@
     "packages/*"
   ],
   "engines": {
-    "npm": ">=8.2.3",
-    "yarn": ">=1"
+    "pnpm": ">=8",
+    "node": ">=18"
   },
-  "engineStrict": true,
+  "packageManager": "pnpm@10.8.0",
   "scripts": {
     "start": "cross-env NODE_ENV=development concurrently \"npm:collab\" \"npm run dev --prefix packages/lexical-playground\"",
     "start:website": "npm run start --prefix packages/lexical-website -- --port 3001",
