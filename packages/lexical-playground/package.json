@@ -13,6 +13,7 @@
     "build-prod": "vite build --mode production",
     "build-types": "node scripts/bundle-types.mjs",
     "build-vercel": "npm run build-types && npm run build-prod",
+    "release": "node scripts/release.mjs patch",
     "preview": "vite preview"
   },
   "dependencies": {
