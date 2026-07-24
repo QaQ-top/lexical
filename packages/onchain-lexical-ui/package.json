@@ -20,11 +20,11 @@
   "exports": {
     "./EditorShellStyles": {
       "import": {
-        "types": "./src/EditorShellStyles.tsx",
+        "types": "./src/EditorShellStyles/index.tsx",
         "default": "./dist/EditorShellStyles.mjs"
       },
       "require": {
-        "types": "./src/EditorShellStyles.tsx",
+        "types": "./src/EditorShellStyles/index.tsx",
         "default": "./dist/EditorShellStyles.js"
       }
     },
@@ -34,7 +34,7 @@
         "default": "./dist/Icon.mjs"
       },
       "require": {
-        "types": "./src/Icon.tsx",
+        "types": "./src/Icon/index.tsx",
         "default": "./dist/Icon.js"
       }
     },
