@@ -19,6 +19,7 @@ import type {
 import {
   $applyNodeReplacement,
   $isElementNode,
+  $isRootNode,
   $isTextNode,
   EditorConfig,
   ElementFormatType,
@@ -373,7 +374,11 @@ export function $isInstanceNode(
   return node instanceof InstanceNode;
 }
 
-export function $remove(node: LexicalNode) {
+/**
+ * 保留的原始版本：带段落数量判断、空段落检查和光标调整。
+ * 用于后续按需回滚替换当前 `$remove`。
+ */
+export function $removeLegacy(node: LexicalNode) {
   const parent = node.getParent();
   if ($isInstanceNode(parent)) {
     const practicals = parent.getPracticalChildren();
@@ -401,6 +406,22 @@ export function $remove(node: LexicalNode) {
           node.selectEnd();
         }
       }
+      return false;
+    }
+  }
+  return true;
+}
+
+export function $remove(node: LexicalNode) {
+  const parent = node.getParent();
+  if ($isInstanceNode(parent)) {
+    // 删除 title 时,不删 title,而是删整个 Instance (连同 title 一起)
+    if ($isInstanceParagraphNode(node) && node.isTitle) {
+      // 根 Instance 不能让 title 反向触发整段删除 (被设计为永远不被用户级联删除)
+      if ($isRootNode(parent.getParent())) {
+        return false;
+      }
+      parent.remove();
       return false;
     }
   }

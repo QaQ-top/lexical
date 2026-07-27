@@ -3,8 +3,7 @@
   "version": "0.0.36",
   "type": "module",
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "dev": "vite --host --port 3000",
@@ -12,7 +11,7 @@
     "build-dev": "vite build",
     "build-prod": "vite build --mode production",
     "build-types": "node scripts/bundle-types.mjs",
-    "build-vercel": "npm run build-types && npm run build-prod",
+    "build-vercel": "npm run build-prod && npm run build-types",
     "release": "node scripts/release.mjs patch",
     "preview": "vite preview"
   },
