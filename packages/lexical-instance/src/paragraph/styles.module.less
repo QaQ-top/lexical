@@ -4,15 +4,25 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 68px;
+  & > span:nth-of-type(2) {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   &.title-hover {
     white-space: initial;
     overflow: initial;
     & > span:nth-of-type(2) {
+      max-width: none;
+      overflow: initial;
+      white-space: initial;
       display: inline-block;
       min-height: 100%;
       position: relative;
       left: -5px;
-      z-index: 1;
+      z-index: 3;
       line-height: 36px;
       background-color: #f9f9f9;
       border: 1px solid #d8d8d8;

@@ -6,14 +6,6 @@
  *
  */
 
-import type {MarkNode} from '@lexical/mark';
-import type {LexicalComposerContextType} from '@lexical/react/LexicalComposerContext';
-import type {
-  LexicalEditor,
-  LexicalNode,
-  RangeSelection,
-  SerializedLexicalNode,
-} from 'lexical';
 import type {Instance} from 'onchain-lexical-instance';
 
 import {
@@ -24,6 +16,7 @@ import {
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 
 export {buildImportMap, default as RichTextEditor} from './App';
+export type {Comment, Thread} from './commenting';
 export * from './commenting';
 export {default as Editor} from './Editor';
 export {default as RichTextNodes} from './nodes/PlaygroundNodes';

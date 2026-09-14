@@ -132,11 +132,54 @@ export class InstanceTitleNode extends InstanceHeadingNode {
         if (display <= titleWidth) {
           element.classList.add(Styles['title-hover']);
           span.onmouseout = function (event) {
+            const selection = document.getSelection();
+            if (selection && element.contains(selection.anchorNode)) {
+              return;
+            }
             element.classList.remove(Styles['title-hover']);
           };
         }
       }
     };
+
+    const checkOverflow = () => {
+      const span = element.querySelector(
+        `span:nth-of-type(2)`,
+      ) as HTMLSpanElement | null;
+      if (!span) {
+        return;
+      }
+      const titleWidth = span.offsetWidth;
+      const headingWidth = element.offsetWidth;
+      const styles = element.computedStyleMap();
+      const paddingLeft = (styles.get('padding-left') || {value: 0}) as {
+        value: number;
+      };
+      const paddingRight = (styles.get('padding-right') || {value: 0})! as {
+        value: number;
+      };
+      const display = headingWidth - paddingRight.value - paddingLeft.value;
+      if (display <= titleWidth) {
+        element.classList.add(Styles['title-hover']);
+      } else {
+        element.classList.remove(Styles['title-hover']);
+      }
+    };
+
+    const mutationObserver = new MutationObserver(checkOverflow);
+    mutationObserver.observe(element, {
+      characterData: true,
+      childList: true,
+      subtree: true,
+    });
+
+    const onSelectionChange = () => {
+      const selection = document.getSelection();
+      if (!selection || !element.contains(selection.anchorNode)) {
+        element.classList.remove(Styles['title-hover']);
+      }
+    };
+    document.addEventListener('selectionchange', onSelectionChange);
 
     return element;
   }
