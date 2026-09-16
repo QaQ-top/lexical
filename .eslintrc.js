@@ -123,6 +123,13 @@ module.exports = {
       },
     },
     {
+      files: ['packages/lexical-playground/scripts/**'],
+      rules: {
+        'ft-flow/sort-keys': OFF,
+        'no-console': OFF,
+      },
+    },
+    {
       files: [
         'packages/*/src/index.ts',
         'packages/*/src/index.tsx',
