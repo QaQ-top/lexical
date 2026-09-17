@@ -232,7 +232,15 @@ function rewriteEntryReexports(text, inlinedSpecs, specToExportedNames) {
   blocks.sort((a, b) => b.start - a.start);
   let out = text;
   for (const block of blocks) {
-    if (!inlinedSpecs.has(block.spec)) {
+    // Flatten any block whose spec is owned by an inlined package —
+    // including relative paths like './App' (owned by the entry
+    // package itself, which is always in `inlinedSpecs`). Skipping
+    // relative paths here leaves `export { buildImportMap } from
+    // "./App";` in the entry segment, which the upcoming strip pass
+    // then drops wholesale — the consumer's TS sees TS2307 for
+    // `./App`.
+    const isRelative = block.spec.startsWith('./') || block.spec.startsWith('/') || block.spec.startsWith('../');
+    if (!isRelative && !inlinedSpecs.has(block.spec)) {
       continue;
     }
     const items = parseExportSpecItems(block.inner);
@@ -278,7 +286,8 @@ function rewriteEntryReexports(text, inlinedSpecs, specToExportedNames) {
   }
   matches.sort((a, b) => b.start - a.start);
   for (const match of matches) {
-    if (!inlinedSpecs.has(match.spec)) {
+    const isRelative = match.spec.startsWith('./') || match.spec.startsWith('/') || match.spec.startsWith('../');
+    if (!isRelative && !inlinedSpecs.has(match.spec)) {
       continue;
     }
     const names = specToExportedNames.get(match.spec);
