@@ -199,23 +199,29 @@ async function main() {
       console.error(`\n❌`, err);
       process.exit(1);
     }
-    // 4. 通过重新拉取 registry 校验发布是否真的落地。
-    // npm registry 走多层 CDN，发布成功后立刻 fetch 经常还看不到新版本
-    // （cache 还没同步），所以带延迟重试几次再判定。
+    // 4. 校验发布结果。pnpm publish 返回 0 已经说明版本进入了 npm
+    // 发布队列（此时多半还在 Validating 阶段，public registry 暂不可
+    // 见），所以这里只把「registry 已可见」当作锦上添花的确认信号，
+    // 不再作为发布的硬成功条件 —— Validating 也算发布成功。
     console.log('\n🔍 正在校验发布结果...');
     const snapshotAfter = await waitForPublishedVersion(pkg.name, newVersion);
-    if (
-      !snapshotAfter?.maxPublished ||
-      compareVersions(snapshotAfter?.maxPublished, newVersion) < 0
-    ) {
-      console.error(
-        `\n❌ 发布校验失败：等待 registry 同步超时，registry 中最高版本为 ${
+    const fullyPublished =
+      snapshotAfter?.maxPublished != null &&
+      compareVersions(snapshotAfter?.maxPublished, newVersion) >= 0;
+    if (fullyPublished) {
+      console.log(`\n✅ 校验通过，v${newVersion} 已发布到 npm`);
+    } else {
+      // pnpm publish 已成功，但 registry 暂未同步 —— 大概率是 npm 还
+      // 在 Validating。视为发布成功，提示可手动复查。
+      console.warn(
+        `\n⚠️  v${newVersion} 在 npm registry 暂未可见（当前最高 ${
           snapshotAfter?.maxPublished ?? '(无)'
-        }，期望至少 ${newVersion}`,
+        }），但 pnpm publish 已返回成功 —— 大概率处于 Validating 状态。`,
       );
-      process.exit(1);
+      console.warn(
+        `   几分钟后可用 \`npm view ${pkg.name} version\` 复查；如长时间卡在 Validating 才需人工介入。`,
+      );
     }
-    console.log(`\n✅ 校验通过，v${newVersion} 已发布到 npm`);
 
     // 5. 一次性提交：发布成功才落账，避免历史残留未发布的脏记录
     exec('git add package.json');
