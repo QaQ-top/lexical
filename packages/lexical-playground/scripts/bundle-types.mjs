@@ -1693,20 +1693,76 @@ function stripInlinedDefaultExports(text) {
  * snippet. Used to detect collisions between inlined sections
  * (e.g. two files both declaring `type Position`).
  *
+ * Only counts truly top-level names — declarations inside
+ * `declare global { ... }` are GLOBAL AUGMENTATIONS, not module
+ * declarations. Multiple sections can each declare
+ * `declare global { interface Window { ... } }` and TypeScript
+ * merges them naturally; the dedup logic must NOT rename or drop
+ * those, otherwise the augmentation stops augmenting.
+ *
+ * Returns names declared both at top level and inside
+ * `declare global { ... }` blocks. Callers that need to decide
+ * between the two should use `topLevelOnlyDeclNames` /
+ * `globalAugmentationNames` instead.
+ *
  * @param {string} text
  * @returns {string[]} names in source order
  */
 function topLevelDeclNames(text) {
+  const top = topLevelOnlyDeclNames(text);
+  const global = globalAugmentationNames(text);
+  return [...top, ...global];
+}
+
+/**
+ * Names declared at the actual top level of the snippet
+ * (`interface Foo`, `type Foo`, `class Foo`, etc., at column 0).
+ * Excludes anything inside `declare global { ... }` blocks — those
+ * are global augmentations that merge in TS, not module-local
+ * declarations that would collide if renamed.
+ */
+function topLevelOnlyDeclNames(text) {
   const names = [];
-  // `interface Foo`, `type Foo`, `class Foo`, `function Foo`,
-  // `enum Foo`, `const Foo`, `let Foo`, `var Foo` — each prefixed
-  // by an optional `declare`. The `^` plus `m` flag scopes each
-  // match to its own line.
   const re =
     /^(?:declare\s+)?(?:interface|type|class|function|enum|const|let|var)\s+([A-Za-z_$][\w$]*)/gm;
   let m;
   while ((m = re.exec(text)) !== null) {
     names.push(m[1]);
+  }
+  return names;
+}
+
+/**
+ * Names declared inside `declare global { ... }` blocks. These are
+ * global augmentations (e.g. `interface Window`,
+ * `interface HTMLElement`) and merge naturally across sections —
+ * the dedup logic must leave them alone.
+ */
+function globalAugmentationNames(text) {
+  const names = [];
+  let m;
+  const blockRe = /declare\s+global\s*\{/g;
+  while ((m = blockRe.exec(text)) !== null) {
+    const start = m.index + m[0].length;
+    let depth = 1;
+    let i = start;
+    while (i < text.length && depth > 0) {
+      const ch = text[i];
+      if (ch === '{') {
+        depth += 1;
+      } else if (ch === '}') {
+        depth -= 1;
+      }
+      i += 1;
+    }
+    const inner = text.slice(start, i - 1);
+    // `\s*` matches the indentation of declarations inside
+    // `declare global { ... }`.
+    const innerRe = /^\s*(?:declare\s+)?(?:interface|type|class|function|enum|const|let|var)\s+([A-Za-z_$][\w$]*)/gm;
+    let mm;
+    while ((mm = innerRe.exec(inner)) !== null) {
+      names.push(mm[1]);
+    }
   }
   return names;
 }
@@ -1748,7 +1804,12 @@ function dedupeInlinedSections(inlinedSourceToDts) {
   for (const [fileName, dtsText] of inlinedSourceToDts) {
     const lines = dtsText.split(/\r?\n/);
     const trimmed = lines.map((l) => l.trim());
-    const decls = topLevelDeclNames(dtsText);
+    // Dedup only top-level module declarations. Names declared
+    // inside `declare global { ... }` are global augmentations
+    // (`interface Window`, `interface HTMLElement`, …) — TS merges
+    // those automatically across sections, so renaming or dropping
+    // here would stop them from augmenting the real globals.
+    const decls = topLevelOnlyDeclNames(dtsText);
     // Within a single section, a name can appear more than once
     // because of TS declaration merging (e.g. `interface TextNode`
     // + `class TextNode extends LexicalNode` in the same file).
