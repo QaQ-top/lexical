@@ -26,16 +26,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalMark.dev.mjs",
-        "production": "./LexicalMark.prod.mjs",
-        "node": "./LexicalMark.node.mjs",
-        "default": "./LexicalMark.mjs"
+        "default": "./dist/LexicalMark.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalMark.dev.js",
-        "production": "./LexicalMark.prod.js",
-        "default": "./LexicalMark.js"
+        "default": "./dist/LexicalMark.js"
       }
     }
   }

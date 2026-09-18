@@ -211,6 +211,9 @@ export const FOCUS_COMMAND: LexicalCommand<FocusEvent> =
   createCommand('FOCUS_COMMAND');
 export const BLUR_COMMAND: LexicalCommand<FocusEvent> =
   createCommand('BLUR_COMMAND');
+/** 打开评论 */
+export const OPEN_COMMENT: LexicalCommand<boolean> =
+  createCommand('OPEN_COMMENT');
 /**
  * @deprecated in v0.31.0, use KEY_DOWN_COMMAND and check for modifiers
  * directly.

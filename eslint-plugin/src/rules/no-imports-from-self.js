@@ -13,7 +13,32 @@
 const fs = require('fs');
 const path = require('node:path');
 
-const {PackageMetadata} = require('../../../scripts/shared/PackageMetadata.js');
+// The repo's `scripts/shared/PackageMetadata.js` lives at the
+// monorepo root. We can't use a fixed `../../../` relative path
+// because once pnpm copies this rule into
+// `node_modules/.pnpm/.../node_modules/eslint-plugin-lexical/src/rules/`
+// the relative depth changes and the require would fail. Walk up
+// from `__dirname` until we find `scripts/shared/PackageMetadata.js`.
+function resolvePackageMetadata() {
+  let dir = __dirname;
+  while (true) {
+    const candidate = path.join(dir, 'scripts/shared/PackageMetadata.js');
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      throw new Error(
+        '[eslint-plugin-lexical] Cannot locate ' +
+          'scripts/shared/PackageMetadata.js from ' +
+          __dirname,
+      );
+    }
+    dir = parent;
+  }
+}
+
+const {PackageMetadata} = require(resolvePackageMetadata());
 
 /**
  * @param {string} fn

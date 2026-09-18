@@ -16,11 +16,11 @@ import {
   TableRowNode,
 } from '@lexical/table';
 import {EditorThemeClasses, Klass, LexicalEditor, LexicalNode} from 'lexical';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import TextInput from 'onchain-lexical-ui/TextInput';
+import {translateI18n} from 'onchain-utility/language';
 import {createContext, useContext, useEffect, useMemo, useState} from 'react';
-
-import Button from '../ui/Button';
-import {DialogActions} from '../ui/Dialog';
-import TextInput from '../ui/TextInput';
 
 export type InsertTableCommandPayload = Readonly<{
   columns: string;
@@ -112,7 +112,10 @@ export function InsertTableDialog({
     <>
       <TextInput
         placeholder={'# of rows (1-500)'}
-        label="Rows"
+        label={translateI18n('[TODO] Rows', {
+          placeholder: '行',
+        })}
+        labelWidth={35}
         onChange={setRows}
         value={rows}
         data-test-id="table-modal-rows"
@@ -120,15 +123,20 @@ export function InsertTableDialog({
       />
       <TextInput
         placeholder={'# of columns (1-50)'}
-        label="Columns"
+        label={translateI18n('[TODO] Columns', {
+          placeholder: '列',
+        })}
+        labelWidth={35}
         onChange={setColumns}
         value={columns}
         data-test-id="table-modal-columns"
         type="number"
       />
       <DialogActions data-test-id="table-model-confirm-insert">
-        <Button disabled={isDisabled} onClick={onClick}>
-          Confirm
+        <Button type="primary" disabled={isDisabled} onClick={onClick}>
+          {translateI18n('[TODO] Confirm', {
+            placeholder: '确认',
+          })}
         </Button>
       </DialogActions>
     </>

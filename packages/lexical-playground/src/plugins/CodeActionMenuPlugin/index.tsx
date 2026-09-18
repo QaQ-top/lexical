@@ -8,22 +8,25 @@
 
 import type {JSX} from 'react';
 
-import './index.css';
-
-import {
-  $isCodeNode,
-  CodeNode,
-  getLanguageFriendlyName,
-  normalizeCodeLang,
-} from '@lexical/code';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$getNearestNodeFromDOMNode, isHTMLElement} from 'lexical';
+import {
+  $getNearestNodeFromDOMNode,
+  isHTMLElement,
+  LexicalEditor,
+} from 'lexical';
+import {
+  $isInstanceCodeNode,
+  getLanguageFriendlyName,
+  InstanceCodeNode,
+  normalizeCodeLang,
+} from 'onchain-lexical-instance';
 import {useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
 
 import {CopyButton} from './components/CopyButton';
 import {canBePrettier, PrettierButton} from './components/PrettierButton';
+import Styles from './index.module.less';
 import {useDebounce} from './utils';
 
 const CODE_PADDING = 8;
@@ -57,7 +60,7 @@ function CodeActionMenuContainer({
 
   const debouncedOnMouseMove = useDebounce(
     (event: MouseEvent) => {
-      const {codeDOMNode, isOutside} = getMouseInfo(event);
+      const {codeDOMNode, isOutside} = getMouseInfo(event, editor);
       if (isOutside) {
         setShown(false);
         return;
@@ -69,13 +72,13 @@ function CodeActionMenuContainer({
 
       codeDOMNodeRef.current = codeDOMNode;
 
-      let codeNode: CodeNode | null = null;
+      let codeNode: InstanceCodeNode | null = null;
       let _lang = '';
 
       editor.update(() => {
         const maybeCodeNode = $getNearestNodeFromDOMNode(codeDOMNode);
 
-        if ($isCodeNode(maybeCodeNode)) {
+        if ($isInstanceCodeNode(maybeCodeNode)) {
           codeNode = maybeCodeNode;
           _lang = codeNode.getLanguage() || '';
         }
@@ -113,7 +116,7 @@ function CodeActionMenuContainer({
 
   useEffect(() => {
     return editor.registerMutationListener(
-      CodeNode,
+      InstanceCodeNode,
       (mutations) => {
         editor.getEditorState().read(() => {
           for (const [key, type] of mutations) {
@@ -143,7 +146,9 @@ function CodeActionMenuContainer({
   return (
     <>
       {isShown ? (
-        <div className="code-action-menu-container" style={{...position}}>
+        <div
+          className={Styles['code-action-menu-container']}
+          style={{...position}}>
           <div className="code-highlight-language">{codeFriendlyName}</div>
           <CopyButton editor={editor} getCodeDOMNode={getCodeDOMNode} />
           {canBePrettier(normalizedLang) ? (
@@ -159,19 +164,22 @@ function CodeActionMenuContainer({
   );
 }
 
-function getMouseInfo(event: MouseEvent): {
+function getMouseInfo(
+  event: MouseEvent,
+  editor: LexicalEditor,
+): {
   codeDOMNode: HTMLElement | null;
   isOutside: boolean;
 } {
   const target = event.target;
-
+  const codeClassName = editor._config.theme.code;
   if (isHTMLElement(target)) {
     const codeDOMNode = target.closest<HTMLElement>(
-      'code.PlaygroundEditorTheme__code',
+      `code.${codeClassName ?? 'PlaygroundEditorTheme__code'}`,
     );
     const isOutside = !(
       codeDOMNode ||
-      target.closest<HTMLElement>('div.code-action-menu-container')
+      target.closest<HTMLElement>(`div.${Styles['code-action-menu-container']}`)
     );
 
     return {codeDOMNode, isOutside};

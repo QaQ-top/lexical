@@ -6,16 +6,16 @@
  *
  */
 
-import './fontSize.css';
-
 import {LexicalEditor} from 'lexical';
-import * as React from 'react';
-
 import {
   MAX_ALLOWED_FONT_SIZE,
   MIN_ALLOWED_FONT_SIZE,
-} from '../../context/ToolbarContext';
+} from 'onchain-lexical-context/toolBar';
+import {translateI18n} from 'onchain-utility/language';
+import * as React from 'react';
+
 import {SHORTCUTS} from '../ShortcutsPlugin/shortcuts';
+import Styles from './fontSize.module.less';
 import {
   updateFontSize,
   updateFontSizeInSelection,
@@ -100,10 +100,13 @@ export default function FontSize({
         onClick={() =>
           updateFontSize(editor, UpdateFontSizeType.decrement, inputValue)
         }
-        className="toolbar-item font-decrement"
+        className={`toolbar-item ${Styles['font-decrement']}`}
         aria-label="Decrease font size"
-        title={`Decrease font size (${SHORTCUTS.DECREASE_FONT_SIZE})`}>
-        <i className="format minus-icon" />
+        title={translateI18n('[TODO] Decrease font size ({sk})', {
+          placeholder: '缩小字体{sk}',
+          variate: {sk: SHORTCUTS.DECREASE_FONT_SIZE},
+        })}>
+        <i className={`format ${Styles['minus-icon']}`} />
       </button>
 
       <input
@@ -111,7 +114,7 @@ export default function FontSize({
         title="Font size"
         value={inputValue}
         disabled={disabled}
-        className="toolbar-item font-size-input"
+        className={`toolbar-item ${Styles['font-size-input']}`}
         min={MIN_ALLOWED_FONT_SIZE}
         max={MAX_ALLOWED_FONT_SIZE}
         onChange={(e) => setInputValue(e.target.value)}
@@ -129,10 +132,13 @@ export default function FontSize({
         onClick={() =>
           updateFontSize(editor, UpdateFontSizeType.increment, inputValue)
         }
-        className="toolbar-item font-increment"
+        className={`toolbar-item ${Styles['font-increment']}`}
         aria-label="Increase font size"
-        title={`Increase font size (${SHORTCUTS.INCREASE_FONT_SIZE})`}>
-        <i className="format add-icon" />
+        title={translateI18n('[TODO] Increase font size ({sk})', {
+          placeholder: '增大字体{sk}',
+          variate: {sk: SHORTCUTS.INCREASE_FONT_SIZE},
+        })}>
+        <i className={`format ${Styles['add-icon']}`} />
       </button>
     </>
   );

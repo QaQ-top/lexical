@@ -34,6 +34,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
 
+import {DisableSelector} from '../../hooks/useContentEditable';
 import {getThemeSelector} from '../../utils/getThemeSelector';
 import {useDebounce} from '../CodeActionMenuPlugin/utils';
 
@@ -53,7 +54,6 @@ function TableHoverActionsContainer({
   const [position, setPosition] = useState({});
   const tableSetRef = useRef<Set<NodeKey>>(new Set());
   const tableCellDOMNodeRef = useRef<HTMLElement | null>(null);
-
   const debouncedOnMouseMove = useDebounce(
     (event: MouseEvent) => {
       const {isOutside, tableDOMNode} = getMouseInfo(event, getTheme);
@@ -114,15 +114,28 @@ function TableHoverActionsContainer({
       );
 
       if (tableDOMElement) {
+        const nonContentEditable = (tableDOMElement as HTMLElement).closest(
+          DisableSelector,
+        );
+        if (nonContentEditable) {
+          setShownColumn(false);
+          setShownRow(false);
+          return;
+        }
         const {
           width: tableElemWidth,
           y: tableElemY,
           right: tableElemRight,
           left: tableElemLeft,
-          bottom: tableElemBottom,
-          height: tableElemHeight,
         } = (tableDOMElement as HTMLTableElement).getBoundingClientRect();
-
+        const {
+          width: boxElemWidth,
+          bottom: boxElemBottom,
+          height: boxElemHeight,
+        } = (
+          tableDOMElement as HTMLTableElement
+        ).parentElement!.getBoundingClientRect();
+        const width = Math.min(boxElemWidth, tableElemWidth);
         // Adjust for using the scrollable table container
         const parentElement = (tableDOMElement as HTMLTableElement)
           .parentElement;
@@ -148,17 +161,17 @@ function TableHoverActionsContainer({
               tableHasScroll && parentElement
                 ? parentElement.offsetLeft
                 : tableElemLeft - editorElemLeft,
-            top: tableElemBottom - editorElemY + 5,
+            top: boxElemBottom - editorElemY + 5,
             width:
               tableHasScroll && parentElement
                 ? parentElement.offsetWidth
-                : tableElemWidth,
+                : width,
           });
         } else if (hoveredColumnNode) {
           setShownColumn(true);
           setShownRow(false);
           setPosition({
-            height: tableElemHeight,
+            height: boxElemHeight,
             left: tableElemRight - editorElemLeft + 5,
             top: tableElemY - editorElemY,
             width: BUTTON_WIDTH_PX,

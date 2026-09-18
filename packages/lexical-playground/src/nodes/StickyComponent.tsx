@@ -9,8 +9,6 @@
 import type {LexicalEditor, NodeKey} from 'lexical';
 import type {JSX} from 'react';
 
-import './StickyNode.css';
-
 import {useCollaborationContext} from '@lexical/react/LexicalCollaborationContext';
 import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
@@ -20,14 +18,15 @@ import {LexicalNestedComposer} from '@lexical/react/LexicalNestedComposer';
 import {PlainTextPlugin} from '@lexical/react/LexicalPlainTextPlugin';
 import {calculateZoomLevel} from '@lexical/utils';
 import {$getNodeByKey} from 'lexical';
+import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
+import ContentEditable from 'onchain-lexical-ui/ContentEditable';
 import * as React from 'react';
 import {useEffect, useLayoutEffect, useRef} from 'react';
 
-import {createWebsocketProvider} from '../collaboration';
-import {useSharedHistoryContext} from '../context/SharedHistoryContext';
 import StickyEditorTheme from '../themes/StickyEditorTheme';
-import ContentEditable from '../ui/ContentEditable';
 import {$isStickyNode} from './StickyNode';
+import Styles from './StickyNode.module.less';
 
 type Positioning = {
   isDragging: boolean;
@@ -198,7 +197,7 @@ export default function StickyComponent({
   const {historyState} = useSharedHistoryContext();
 
   return (
-    <div ref={stickyContainerRef} className="sticky-note-container">
+    <div ref={stickyContainerRef} className={Styles['sticky-note-container']}>
       <div
         className={`sticky-note ${color}`}
         onPointerDown={(event) => {
@@ -255,8 +254,8 @@ export default function StickyComponent({
             contentEditable={
               <ContentEditable
                 placeholder="What's up?"
-                placeholderClassName="StickyNode__placeholder"
-                className="StickyNode__contentEditable"
+                placeholderClassName={Styles.placeholder}
+                className={Styles.contentEditable}
               />
             }
             ErrorBoundary={LexicalErrorBoundary}

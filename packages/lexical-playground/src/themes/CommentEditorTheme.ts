@@ -8,13 +8,12 @@
 
 import type {EditorThemeClasses} from 'lexical';
 
-import './CommentEditorTheme.css';
-
+import Styles from './CommentEditorTheme.module.less';
 import baseTheme from './PlaygroundEditorTheme';
 
 const theme: EditorThemeClasses = {
   ...baseTheme,
-  paragraph: 'CommentEditorTheme__paragraph',
+  paragraph: Styles.CommentEditorTheme__paragraph,
 };
 
 export default theme;

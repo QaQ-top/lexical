@@ -7,6 +7,7 @@
 !scripts/npm/**
 **/*.js.flow
 **/*.d.ts
+!global.d.ts
 **/playwright*/**
 **/node_modules
 .ts-temp

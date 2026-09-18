@@ -1,0 +1,63 @@
+.tree-view-output {
+  display: block;
+  background: #222;
+  color: #fff;
+  padding: 0;
+  font-size: 12px;
+  margin: 1px auto 10px auto;
+  position: relative;
+  overflow: hidden;
+  // border-bottom-left-radius: 10px;
+  // border-bottom-right-radius: 10px;
+}
+.debug {
+  &-timetravel {
+    &-panel {
+      overflow: hidden;
+      padding: 0 0 10px 0;
+      margin: auto;
+      display: flex;
+      &-slider {
+        padding: 0;
+        flex: 8;
+      }
+      &-button {
+        padding: 0;
+        border: 0;
+        background: none;
+        flex: 1;
+        color: #fff;
+        font-size: 12px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    &-button {
+      border: 0;
+      padding: 0;
+      font-size: 12px;
+      top: 10px;
+      right: 15px;
+      position: absolute;
+      background: none;
+      color: #fff;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  &-treetype-button {
+    border: 0;
+    padding: 0;
+    font-size: 12px;
+    top: 10px;
+    right: 85px;
+    position: absolute;
+    background: none;
+    color: #fff;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

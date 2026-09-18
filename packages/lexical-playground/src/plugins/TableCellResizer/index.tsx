@@ -9,8 +9,6 @@ import type {TableCellNode, TableDOMCell, TableMapType} from '@lexical/table';
 import type {LexicalEditor, NodeKey} from 'lexical';
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {
@@ -42,6 +40,9 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
+import {DisableSelector} from '../../hooks/useContentEditable';
+import Styles from './index.module.less';
+
 type PointerPosition = {
   x: number;
   y: number;
@@ -57,6 +58,7 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
   const resizerRef = useRef<HTMLDivElement | null>(null);
   const tableRectRef = useRef<ClientRect | null>(null);
   const [hasTable, setHasTable] = useState(false);
+  const [contentEditable, setContentEditable] = useState(false);
 
   const pointerStartPosRef = useRef<PointerPosition | null>(null);
   const [pointerCurrentPos, updatePointerCurrentPos] =
@@ -150,6 +152,7 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
 
               targetRef.current = target as HTMLElement;
               tableRectRef.current = tableElement.getBoundingClientRect();
+              setContentEditable(!tableElement.closest(DisableSelector));
               updateActiveCell(cell);
             },
             {editor},
@@ -437,15 +440,15 @@ function TableCellResizer({editor}: {editor: LexicalEditor}): JSX.Element {
 
   return (
     <div ref={resizerRef}>
-      {activeCell != null && (
+      {activeCell != null && contentEditable && (
         <>
           <div
-            className="TableCellResizer__resizer TableCellResizer__ui"
+            className={Styles.resizer}
             style={resizerStyles.right || undefined}
             onPointerDown={toggleResize('right')}
           />
           <div
-            className="TableCellResizer__resizer TableCellResizer__ui"
+            className={Styles.resizer}
             style={resizerStyles.bottom || undefined}
             onPointerDown={toggleResize('bottom')}
           />

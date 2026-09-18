@@ -10,6 +10,7 @@ import type {LexicalEditor} from 'lexical';
 
 import {Provider, TOGGLE_CONNECT_COMMAND} from '@lexical/yjs';
 import {COMMAND_PRIORITY_LOW} from 'lexical';
+import {generateSecureUUID} from 'onchain-utility';
 import {useEffect, useState} from 'react';
 import {
   Array as YArray,
@@ -25,7 +26,13 @@ export type Comment = {
   deleted: boolean;
   id: string;
   timeStamp: number;
+  showTime: string;
+  commentTime?: string;
+  commentUserId?: string;
+  at?: string;
   type: 'comment';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k: string]: any;
 };
 
 export type Thread = {
@@ -38,10 +45,7 @@ export type Thread = {
 export type Comments = Array<Thread | Comment>;
 
 function createUID(): string {
-  return Math.random()
-    .toString(36)
-    .replace(/[^a-z]+/g, '')
-    .substring(0, 5);
+  return generateSecureUUID();
 }
 
 export function createComment(
@@ -56,6 +60,7 @@ export function createComment(
     content,
     deleted: deleted === undefined ? false : deleted,
     id: id === undefined ? createUID() : id,
+    showTime: '',
     timeStamp:
       timeStamp === undefined
         ? performance.timeOrigin + performance.now()
@@ -92,6 +97,7 @@ function markDeleted(comment: Comment): Comment {
     content: '[Deleted Comment]',
     deleted: true,
     id: comment.id,
+    showTime: '',
     timeStamp: comment.timeStamp,
     type: 'comment',
   };

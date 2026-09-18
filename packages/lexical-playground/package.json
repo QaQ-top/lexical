@@ -1,38 +1,51 @@
 {
-  "name": "lexical-playground",
-  "version": "0.30.0",
-  "private": true,
+  "name": "onchain-rich-text-editor",
+  "version": "0.0.40",
   "type": "module",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "dev": "vite --host --port 3000",
+    "dev:debug": "cross-env NODE_DEBUG=1 vite --host --port 3001 --mode development",
     "build-dev": "vite build",
     "build-prod": "vite build --mode production",
-    "build-vercel": "(cd ../../ && node ./scripts/build.js) && npm run build-dev",
+    "build-types": "node scripts/bundle-types.mjs",
+    "build-vercel": "npm run build-prod && npm run build-types",
+    "release": "node scripts/release.mjs patch",
     "preview": "vite preview"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.0",
-    "@lexical/clipboard": "0.30.0",
-    "@lexical/code": "0.30.0",
-    "@lexical/file": "0.30.0",
-    "@lexical/hashtag": "0.30.0",
-    "@lexical/link": "0.30.0",
-    "@lexical/list": "0.30.0",
-    "@lexical/mark": "0.30.0",
-    "@lexical/overflow": "0.30.0",
-    "@lexical/plain-text": "0.30.0",
-    "@lexical/react": "0.30.0",
-    "@lexical/rich-text": "0.30.0",
-    "@lexical/selection": "0.30.0",
-    "@lexical/table": "0.30.0",
-    "@lexical/utils": "0.30.0",
+    "@lexical/clipboard": "workspace:*",
+    "@lexical/code": "workspace:*",
+    "@lexical/file": "workspace:*",
+    "@lexical/hashtag": "workspace:*",
+    "@lexical/link": "workspace:*",
+    "@lexical/list": "workspace:*",
+    "@lexical/mark": "workspace:*",
+    "@lexical/overflow": "workspace:*",
+    "@lexical/plain-text": "workspace:*",
+    "@lexical/react": "workspace:*",
+    "@lexical/rich-text": "workspace:*",
+    "@lexical/selection": "workspace:*",
+    "@lexical/table": "workspace:*",
+    "@lexical/text": "workspace:*",
+    "@lexical/utils": "workspace:*",
+    "@lexical/yjs": "workspace:*",
     "katex": "^0.16.10",
-    "lexical": "0.30.0",
+    "lexical": "workspace:*",
     "lodash-es": "^4.17.21",
-    "prettier": "^2.8.8",
+    "onchain-lexical-context": "workspace:*",
+    "onchain-lexical-instance": "workspace:*",
+    "onchain-lexical-markdown": "workspace:*",
+    "onchain-lexical-ui": "workspace:*",
+    "onchain-utility": "^0.0.19",
+    "prettier": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
+    "vite-plugin-style-inject": "^0.0.1",
     "y-websocket": "^1.5.4",
     "yjs": ">=13.5.42"
   },
@@ -43,9 +56,23 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@types/lodash-es": "^4.14.182",
     "@vitejs/plugin-react": "^4.2.1",
+    "code-inspector-plugin": "^0.20.10",
+    "dts-bundle-generator": "^9.5.1",
     "rollup-plugin-copy": "^3.5.0",
-    "vite": "^5.2.11",
+    "vite": "^7.1.4",
     "vite-plugin-static-copy": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.es.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.cjs.mjs"
+      }
+    }
+  }
 }

@@ -1,0 +1,71 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+@import './const.less';
+
+.Modal__overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  flex-direction: column;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: transparent;
+  flex-grow: 0px;
+  flex-shrink: 1px;
+  z-index: 999;
+}
+.Modal__modal {
+  min-height: 100px;
+  min-width: 300px;
+  display: flex;
+  flex-grow: 0px;
+  background-color: #fff;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 10px 0px #00000024;
+  border: 1px solid @themeColor;;
+}
+.Modal__titleBox {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: all-scroll;
+  border-bottom: 1px solid #ccc;
+  background-color: @themeColor;
+}
+.Modal__contentBox {
+  padding: 16px 16px;
+  :global {
+    .color-picker-wrapper {
+      padding: 0;
+    }
+  }
+}
+.Modal__title {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0px;
+}
+.Modal__closeButton {
+  color: #fff;
+  border: 0px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-align: center;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 0;
+}

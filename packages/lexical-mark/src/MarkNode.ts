@@ -21,7 +21,13 @@ import {
   addClassNamesToElement,
   removeClassNamesFromElement,
 } from '@lexical/utils';
-import {$applyNodeReplacement, $isRangeSelection, ElementNode} from 'lexical';
+import {
+  $applyNodeReplacement,
+  $getEditor,
+  $isRangeSelection,
+  ElementNode,
+  OPEN_COMMENT,
+} from 'lexical';
 
 export type SerializedMarkNode = Spread<
   {
@@ -75,6 +81,11 @@ export class MarkNode extends ElementNode {
     if (this.__ids.length > 1) {
       addClassNamesToElement(element, config.theme.markOverlap);
     }
+    const editor = $getEditor();
+    element.setAttribute('mark-id', this.getIDs().join(','));
+    element.onclick = () => {
+      editor.dispatchCommand(OPEN_COMMENT, true);
+    };
     return element;
   }
 

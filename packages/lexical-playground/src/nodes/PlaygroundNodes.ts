@@ -17,27 +17,47 @@ import {OverflowNode} from '@lexical/overflow';
 import {HorizontalRuleNode} from '@lexical/react/LexicalHorizontalRuleNode';
 import {HeadingNode, QuoteNode} from '@lexical/rich-text';
 import {TableCellNode, TableNode, TableRowNode} from '@lexical/table';
+import {
+  BarDecoratorNode,
+  CollapsibleContainerNode,
+  CollapsibleContentNode,
+  CollapsibleTitleNode,
+  Fragment,
+  ImageNode,
+  InlineImageNode,
+  InstanceCodeHighlightNode,
+  InstanceCodeNode,
+  InstanceContentNode,
+  InstanceEquationNode,
+  InstanceHeadingNode,
+  InstanceHorizontalRuleNode,
+  InstanceListItemNode,
+  InstanceListNode,
+  InstanceNode,
+  InstanceParagraphNode,
+  InstanceQuoteNode,
+  InstanceTableNode,
+  InstanceTitleNode,
+  InternalLinkNode,
+  KeywordNode,
+  NumberDecoratorNode,
+  PageBreakNode,
+  ParametersNode,
+  PlaceholderDecoratorNode,
+} from 'onchain-lexical-instance';
 
-import {CollapsibleContainerNode} from '../plugins/CollapsiblePlugin/CollapsibleContainerNode';
-import {CollapsibleContentNode} from '../plugins/CollapsiblePlugin/CollapsibleContentNode';
-import {CollapsibleTitleNode} from '../plugins/CollapsiblePlugin/CollapsibleTitleNode';
 import {AutocompleteNode} from './AutocompleteNode';
-import {EmojiNode} from './EmojiNode';
-import {EquationNode} from './EquationNode';
-import {ExcalidrawNode} from './ExcalidrawNode';
+// import {EmojiNode} from './EmojiNode';
+// import {ExcalidrawNode} from './ExcalidrawNode';
 import {FigmaNode} from './FigmaNode';
-import {ImageNode} from './ImageNode';
-import {InlineImageNode} from './InlineImageNode/InlineImageNode';
-import {KeywordNode} from './KeywordNode';
 import {LayoutContainerNode} from './LayoutContainerNode';
 import {LayoutItemNode} from './LayoutItemNode';
 import {MentionNode} from './MentionNode';
-import {PageBreakNode} from './PageBreakNode';
 import {PollNode} from './PollNode';
 import {SpecialTextNode} from './SpecialTextNode';
-import {StickyNode} from './StickyNode';
-import {TweetNode} from './TweetNode';
-import {YouTubeNode} from './YouTubeNode';
+// import {StickyNode} from './StickyNode';
+// import {TweetNode} from './TweetNode';
+// import {YouTubeNode} from './YouTubeNode';
 
 const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
@@ -54,18 +74,17 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   LinkNode,
   OverflowNode,
   PollNode,
-  StickyNode,
+  // StickyNode,
   ImageNode,
   InlineImageNode,
   MentionNode,
-  EmojiNode,
-  ExcalidrawNode,
-  EquationNode,
+  // EmojiNode,
+  // ExcalidrawNode,
   AutocompleteNode,
   KeywordNode,
   HorizontalRuleNode,
-  TweetNode,
-  YouTubeNode,
+  // TweetNode,
+  // YouTubeNode,
   FigmaNode,
   MarkNode,
   CollapsibleContainerNode,
@@ -75,6 +94,27 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   LayoutContainerNode,
   LayoutItemNode,
   SpecialTextNode,
+  InstanceNode,
+  InstanceContentNode,
+  InstanceEquationNode,
+  BarDecoratorNode,
+  NumberDecoratorNode,
+  InstanceParagraphNode,
+  PlaceholderDecoratorNode,
+  InstanceHeadingNode,
+  InstanceTitleNode,
+  InstanceListItemNode,
+  InstanceListNode,
+  InstanceQuoteNode,
+  InstanceCodeNode,
+  InstanceCodeHighlightNode,
+  InstanceTableNode,
+  InstanceHorizontalRuleNode,
+  InternalLinkNode,
+  ParametersNode,
+  Fragment,
 ];
+
+window.PlaygroundNodes = PlaygroundNodes;
 
 export default PlaygroundNodes;

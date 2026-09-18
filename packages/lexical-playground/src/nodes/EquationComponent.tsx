@@ -20,12 +20,12 @@ import {
   NodeKey,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import EquationEditor from 'onchain-lexical-ui/EquationEditor';
+import KatexRenderer from 'onchain-lexical-ui/KatexRenderer';
 import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
 
-import EquationEditor from '../ui/EquationEditor';
-import KatexRenderer from '../ui/KatexRenderer';
 import {$isEquationNode} from './EquationNode';
 
 type EquationComponentProps = {

@@ -30,16 +30,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalClipboard.dev.mjs",
-        "production": "./LexicalClipboard.prod.mjs",
-        "node": "./LexicalClipboard.node.mjs",
-        "default": "./LexicalClipboard.mjs"
+        "default": "./dist/LexicalClipboard.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalClipboard.dev.js",
-        "production": "./LexicalClipboard.prod.js",
-        "default": "./LexicalClipboard.js"
+        "default": "./dist/LexicalClipboard.js"
       }
     }
   }

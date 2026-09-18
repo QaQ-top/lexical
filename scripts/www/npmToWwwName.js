@@ -6,7 +6,7 @@
  *
  */
 'use strict';
-
+const ONCHAIN = 'onchain-';
 /**
  * Converts a package name in the npm name convention to the www
  * convention, e.g.:
@@ -18,6 +18,9 @@
  * @returns {string} the name of the package in www format
  */
 module.exports = function npmToWwwName(name) {
+  if (name.startsWith(ONCHAIN)) {
+    name = name.replace(ONCHAIN, '@onchain/');
+  }
   const parts = name.replace(/^@/, '').split(/\//g);
   // Handle the @lexical/react/FlatNameSpace scenario
   if (parts.length > 2) {

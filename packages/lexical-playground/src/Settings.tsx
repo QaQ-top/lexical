@@ -9,11 +9,11 @@
 import type {JSX} from 'react';
 
 import {CAN_USE_BEFORE_INPUT} from '@lexical/utils';
+import {useSettings} from 'onchain-lexical-context/settings';
+import Switch from 'onchain-lexical-ui/Switch';
 import {useEffect, useMemo, useState} from 'react';
 
-import {INITIAL_SETTINGS, isDevPlayground} from './appSettings';
-import {useSettings} from './context/SettingsContext';
-import Switch from './ui/Switch';
+import {INITIAL_SETTINGS} from './appSettings';
 
 export default function Settings(): JSX.Element {
   const windowLocation = window.location;
@@ -28,7 +28,6 @@ export default function Settings(): JSX.Element {
       isCharLimit,
       isCharLimitUtf8,
       isAutocomplete,
-      showTreeView,
       showNestedEditorTreeView,
       // disableBeforeInput,
       showTableOfContents,
@@ -64,7 +63,7 @@ export default function Settings(): JSX.Element {
       />
       {showSettings ? (
         <div className="switches">
-          {isRichText && isDevPlayground && (
+          {isRichText && VITE_IS_DEVELOPMENT && (
             <Switch
               onClick={() => {
                 setOption('isCollab', !isCollab);
@@ -74,7 +73,7 @@ export default function Settings(): JSX.Element {
               text="Collaboration"
             />
           )}
-          {isDevPlayground && (
+          {VITE_IS_DEVELOPMENT && (
             <Switch
               onClick={() => {
                 if (isSplitScreen) {
@@ -92,11 +91,11 @@ export default function Settings(): JSX.Element {
             checked={measureTypingPerf}
             text="Measure Perf"
           />
-          <Switch
+          {/* <Switch
             onClick={() => setOption('showTreeView', !showTreeView)}
             checked={showTreeView}
             text="Debug View"
-          />
+          /> */}
           <Switch
             onClick={() =>
               setOption('showNestedEditorTreeView', !showNestedEditorTreeView)

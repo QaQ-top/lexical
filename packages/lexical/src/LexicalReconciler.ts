@@ -120,7 +120,7 @@ function setTextAlign(domStyle: CSSStyleDeclaration, value: string): void {
   domStyle.setProperty('text-align', value);
 }
 
-const DEFAULT_INDENT_VALUE = '40px';
+const DEFAULT_INDENT_VALUE = '34px';
 
 function setElementIndent(dom: HTMLElement, indent: number): void {
   const indentClassName = activeEditorConfig.theme.indent;
@@ -140,7 +140,7 @@ function setElementIndent(dom: HTMLElement, indent: number): void {
     DEFAULT_INDENT_VALUE;
 
   dom.style.setProperty(
-    'padding-inline-start',
+    'padding-left',
     indent === 0 ? '' : `calc(${indent} * ${indentationBaseValue})`,
   );
 }
@@ -217,7 +217,7 @@ function $createNode(key: NodeKey, slot: ElementDOMSlot | null): HTMLElement {
         reconcileDecorator(key, decorator);
       }
       // Decorators are always non editable
-      dom.contentEditable = 'false';
+      dom.contentEditable = node.contentEditable;
     } else if ($isTextNode(node)) {
       if (!node.isDirectionless()) {
         subTreeDirectionedTextContent += text;

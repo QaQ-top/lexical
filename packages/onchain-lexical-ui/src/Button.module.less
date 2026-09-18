@@ -1,0 +1,50 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+@import './const.less';
+
+.Button__root {
+  color: #333;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 0px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  height: 30px;
+  min-width: 72px;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #ddd;
+  }
+  &[data-type='primary'] {
+    color: #fff;
+    background-color: @themeColor;
+    &:hover {
+      background-color: @themeColorHover;
+    }
+  }
+
+  &.Button__disabled {
+    color: #999;
+    cursor: not-allowed;
+    &[data-type='primary'],
+    &:hover {
+      background-color: #eee;
+    }
+  }
+}
+.Button__small {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 13px;
+}

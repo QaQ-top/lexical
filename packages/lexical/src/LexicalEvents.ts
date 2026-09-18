@@ -22,6 +22,8 @@ import {
 import invariant from 'shared/invariant';
 import warnOnlyOnce from 'shared/warnOnlyOnce';
 
+import {$findMatchingParent} from '@lexical/utils';
+
 import {
   $getPreviousSelection,
   $getRoot,
@@ -79,7 +81,6 @@ import {
 } from './LexicalSelection';
 import {getActiveEditor, updateEditorSync} from './LexicalUpdates';
 import {
-  $findMatchingParent,
   $flushMutations,
   $getAdjacentNode,
   $getNodeByKey,

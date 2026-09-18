@@ -1,0 +1,423 @@
+@import './const.less';
+
+.editor-shell {
+  width: 100%;
+  // border-radius: 2px;
+  // max-width: 1100px;
+  color: #333;
+  position: relative;
+  font-weight: 400;
+  height: 100%;
+
+  :global {
+    .editor-container {
+      min-width: 300px;
+      background: #fff;
+      position: relative;
+      display: block;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    div.hasToolbar {
+      height: calc(100% - 36px);
+    }
+
+    .editor-container.tree-view {
+      border-radius: 0;
+    }
+
+    .editor-container.plain-text {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .chevron-down {
+      background-color: transparent;
+      background-size: contain;
+      display: inline-block;
+      height: 8px;
+      width: 8px;
+    }
+    .keyword {
+      color: rgb(241, 118, 94);
+      font-weight: bold;
+    }
+    .down {
+      border: 0;
+      display: flex;
+      background: none;
+      padding: 0;
+      outline: none;
+      cursor: pointer;
+      vertical-align: middle;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: space-between;
+      .dropdown-button-text {
+        display: inline-flex;
+      }
+    }
+  }
+}
+div.editor-shell {
+  line-height: 1.7;
+}
+:global {
+  i.add-comment {
+    background-size: cover !important;
+    background-image: url(/richText/chat-left-text.svg);
+  }
+
+  i.palette {
+    background-image: url(/richText/palette.svg);
+  }
+
+  i.bucket {
+    background-image: url(/richText/paint-bucket.svg);
+  }
+
+  i.bold {
+    background-image: url(/richText/type-bold.svg);
+  }
+
+  i.italic {
+    background-image: url(/richText/type-italic.svg);
+  }
+
+  i.clear {
+    background-image: url(/richText/trash.svg);
+  }
+
+  i.code {
+    background-image: url(/richText/code.svg);
+  }
+
+  i.underline {
+    background-image: url(/richText/type-underline.svg);
+  }
+
+  i.uppercase {
+    background-image: url(/richText/type-uppercase.svg);
+  }
+
+  i.lowercase {
+    background-image: url(/richText/type-lowercase.svg);
+  }
+
+  i.capitalize {
+    background-image: url(/richText/type-capitalize.svg);
+  }
+
+  i.strikethrough {
+    background-image: url(/richText/type-strikethrough.svg);
+  }
+
+  i.subscript {
+    background-image: url(/richText/type-subscript.svg);
+  }
+
+  i.superscript {
+    background-image: url(/richText/type-superscript.svg);
+  }
+
+  i.highlight {
+    background-image: url(/richText/highlighter.svg);
+  }
+
+  i.link {
+    background-image: url(/richText/link.svg);
+  }
+
+  i.horizontal-rule {
+    background-image: url(/richText/horizontal-rule.svg);
+  }
+
+  .icon.plus {
+    background-image: url(/richText/plus.svg);
+  }
+
+  .icon.caret-right {
+    background-image: url(/richText/caret-right-fill.svg);
+  }
+
+  .icon.dropdown-more {
+    background-image: url(/richText/dropdown-more.svg);
+  }
+
+  .icon.font-color {
+    background-image: url(/richText/font-color.svg);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+  }
+
+  .icon.bg-color {
+    background-image: url(/richText/bg-color.svg);
+  }
+
+  .icon.font-family {
+    background-image: url(/richText/font-family.svg);
+  }
+
+  i.image {
+    background-image: url(/richText/file-image.svg);
+  }
+
+  i.table {
+    background-image: url(/richText/table.svg);
+  }
+
+  i.close {
+    background-image: url(/richText/close.svg);
+  }
+
+  i.figma {
+    background-image: url(/richText/figma.svg);
+  }
+
+  i.poll {
+    background-image: url(/richText/card-checklist.svg);
+  }
+
+  i.columns {
+    background-image: url(/richText/3-columns.svg);
+  }
+
+  i.x {
+    background-image: url(/richText/x.svg);
+  }
+
+  i.youtube {
+    background-image: url(/richText/youtube.svg);
+  }
+
+  .icon.left-align,
+  i.left-align {
+    background-image: url(/richText/text-left.svg);
+  }
+
+  .icon.center-align,
+  i.center-align {
+    background-image: url(/richText/text-center.svg);
+  }
+
+  .icon.right-align,
+  i.right-align {
+    background-image: url(/richText/text-right.svg);
+  }
+
+  .icon.justify-align,
+  i.justify-align {
+    background-image: url(/richText/justify.svg);
+  }
+
+  .icon.vertical-top,
+  i.left-align {
+    background-image: url(/richText/vertical-top.svg);
+  }
+
+  .icon.vertical-middle,
+  i.center-align {
+    background-image: url(/richText/vertical-middle.svg);
+  }
+
+  .icon.vertical-bottom,
+  i.right-align {
+    background-image: url(/richText/vertical-bottom.svg);
+  }
+
+  i.indent {
+    background-image: url(/richText/indent.svg);
+  }
+
+  i.markdown {
+    background-image: url(/richText/markdown.svg);
+  }
+
+  i.outdent {
+    background-image: url(/richText/outdent.svg);
+  }
+
+  i.undo {
+    background-image: url(/richText/arrow-counterclockwise.svg);
+  }
+
+  i.redo {
+    background-image: url(/richText/arrow-clockwise.svg);
+  }
+
+  i.sticky {
+    background-image: url(/richText/sticky.svg);
+  }
+
+  i.mic {
+    background-image: url(/richText/mic.svg);
+  }
+
+  i.import {
+    background-image: url(/richText/upload.svg);
+  }
+
+  i.export {
+    background-image: url(/richText/download.svg);
+  }
+
+  i.share {
+    background-image: url(/richText/send.svg);
+  }
+
+  i.diagram-2 {
+    background-image: url(/richText/diagram-2.svg);
+  }
+
+  i.user {
+    background-image: url(/richText/user.svg);
+  }
+
+  i.equation {
+    background-image: url(/richText/plus-slash-minus.svg);
+  }
+
+  i.gif {
+    background-image: url(/richText/filetype-gif.svg);
+  }
+
+  i.copy {
+    background-image: url(/richText/copy.svg);
+  }
+
+  i.success {
+    background-image: url(/richText/success.svg);
+  }
+
+  i.prettier {
+    background-image: url(/richText/prettier.svg);
+  }
+
+  i.prettier-error {
+    background-image: url(/richText/prettier-error.svg);
+  }
+
+  i.page-break,
+  .icon.page-break {
+    background-image: url(/richText/scissors.svg);
+  }
+
+  .actions i.indent {
+    background-image: url(/richText/indent.svg);
+  }
+
+  .actions i.outdent {
+    background-image: url(/richText/outdent.svg);
+  }
+
+  .actions i.lock {
+    background-image: url(/richText/lock-fill.svg);
+  }
+
+  .actions i.image {
+    background-image: url(/richText/file-image.svg);
+  }
+
+  .actions i.table {
+    background-image: url(/richText/table.svg);
+  }
+
+  .actions i.unlock {
+    background-image: url(/richText/lock.svg);
+  }
+
+  .actions i.left-align {
+    background-image: url(/richText/text-left.svg);
+  }
+
+  .actions i.center-align {
+    background-image: url(/richText/text-center.svg);
+  }
+
+  .actions i.right-align {
+    background-image: url(/richText/text-right.svg);
+  }
+
+  .actions i.justify-align {
+    background-image: url(/richText/justify.svg);
+  }
+
+  .actions i.disconnect {
+    background-image: url(/richText/plug.svg);
+  }
+
+  .actions i.connect {
+    background-image: url(/richText/plug-fill.svg);
+  }
+  .link-editor div.link-edit {
+    background-image: url(/richText/pencil-fill.svg);
+  }
+
+  .link-editor div.link-trash {
+    background-image: url(/richText/trash.svg);
+  }
+
+  .link-editor div.link-cancel {
+    background-image: url(/richText/close.svg);
+  }
+
+  .link-editor div.link-confirm {
+    background-image: url(/richText/success-alt.svg);
+  }
+  i.chevron-down {
+    background-image: url(/richText/chevron-down.svg);
+  }
+  .icon.paragraph {
+    background-image: url(/richText/text-paragraph.svg);
+  }
+
+  .icon.h1 {
+    background-image: url(/richText/type-h1.svg);
+  }
+
+  .icon.h2 {
+    background-image: url(/richText/type-h2.svg);
+  }
+
+  .icon.h3 {
+    background-image: url(/richText/type-h3.svg);
+  }
+
+  .icon.h4 {
+    background-image: url(/richText/type-h4.svg);
+  }
+
+  .icon.h5 {
+    background-image: url(/richText/type-h5.svg);
+  }
+
+  .icon.h6 {
+    background-image: url(/richText/type-h6.svg);
+  }
+
+  .icon.bullet-list,
+  .icon.bullet {
+    background-image: url(/richText/list-ul.svg);
+  }
+
+  .icon.check-list,
+  .icon.check {
+    background-image: url(/richText/square-check.svg);
+  }
+
+  .icon.numbered-list,
+  .icon.number {
+    background-image: url(/richText/list-ol.svg);
+  }
+
+  .icon.quote {
+    background-image: url(/richText/chat-square-quote.svg);
+  }
+
+  .icon.code {
+    background-image: url(/richText/code.svg);
+  }
+}

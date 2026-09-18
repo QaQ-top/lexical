@@ -29,15 +29,10 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalEslintPlugin.dev.mjs",
-        "production": "./LexicalEslintPlugin.prod.mjs",
-        "node": "./LexicalEslintPlugin.node.mjs",
-        "default": "./LexicalEslintPlugin.mjs"
+        "default": "./LexicalEslintPlugin.js"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalEslintPlugin.dev.js",
-        "production": "./LexicalEslintPlugin.prod.js",
         "default": "./LexicalEslintPlugin.js"
       }
     }

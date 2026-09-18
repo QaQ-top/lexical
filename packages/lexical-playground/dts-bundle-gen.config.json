@@ -1,0 +1,49 @@
+{
+  "compilationOptions": {
+    "preferredConfigPath": "../../tsconfig.json"
+  },
+  "entries": [
+    {
+      "filePath": "./src/index.ts",
+      "outFile": "./lib/index.d.ts",
+      "libraries": {
+        "importedLibraries": [
+          "onchain-utility",
+          "react",
+          "react-dom",
+          "@types/react",
+          "@types/react-dom"
+        ],
+        "inlinedLibraries": [
+          "@lexical/react",
+          "@lexical/file",
+          "@lexical/history",
+          "@lexical/html",
+          "@lexical/mark",
+          "@lexical/selection",
+          "@lexical/table",
+          "@lexical/text",
+          "@lexical/utils",
+          "@lexical/clipboard",
+          "@lexical/code",
+          "@lexical/hashtag",
+          "@lexical/link",
+          "@lexical/list",
+          "@lexical/overflow",
+          "@lexical/plain-text",
+          "@lexical/rich-text",
+          "@lexical/yjs",
+          "lexical",
+          "onchain-lexical-context",
+          "onchain-lexical-instance",
+          "onchain-lexical-markdown",
+          "onchain-lexical-ui"
+        ]
+      },
+      "output": {
+        "inlineDeclareGlobals": true,
+        "inlineDeclareExternals": true
+      }
+    }
+  ]
+}

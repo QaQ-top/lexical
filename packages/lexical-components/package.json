@@ -1,0 +1,56 @@
+{
+  "name": "onchain-lexical-components",
+  "description": "This package provides Lexical components and hooks for React applications.",
+  "keywords": [
+    "react",
+    "lexical",
+    "editor",
+    "rich-text"
+  ],
+  "license": "MIT",
+  "version": "0.0.16",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@lexical/react": "^0.30.0",
+    "@lexical/rich-text": "^0.30.0",
+    "@lexical/utils": "^0.30.0",
+    "lexical": "0.30.0",
+    "onchain-lexical-instance": "^0.0.17",
+    "onchain-lexical-markdown": "^0.0.16",
+    "onchain-utility": "^0.0.17"
+  },
+  "peerDependencies": {
+    "react": ">=17.x",
+    "react-dom": ">=17.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/lexical",
+    "directory": "packages/lexical-react"
+  },
+  "exports": {
+    "./DraggableBlockPlugin": {
+      "import": {
+        "types": "./DraggableBlockPlugin.d.ts",
+        "default": "./dist/DraggableBlockPlugin.mjs"
+      },
+      "require": {
+        "types": "./DraggableBlockPlugin.d.ts",
+        "default": "./dist/DraggableBlockPlugin.js"
+      }
+    },
+    "./MarkdownShortcutPlugin": {
+      "import": {
+        "types": "./MarkdownShortcutPlugin.d.ts",
+        "default": "./dist/MarkdownShortcutPlugin.mjs"
+      },
+      "require": {
+        "types": "./MarkdownShortcutPlugin.d.ts",
+        "default": "./dist/MarkdownShortcutPlugin.js"
+      }
+    }
+  }
+}

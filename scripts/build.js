@@ -19,6 +19,7 @@ const replace = require('@rollup/plugin-replace');
 const json = require('@rollup/plugin-json');
 const alias = require('@rollup/plugin-alias');
 const terser = require('@rollup/plugin-terser');
+const postcss = require('rollup-plugin-postcss');
 const {exec} = require('child-process-promise');
 const {packagesManager} = require('./shared/packagesManager');
 const npmToWwwName = require('./www/npmToWwwName');
@@ -156,7 +157,7 @@ async function build(
       );
     },
     input: inputFile,
-    onwarn(warning) {
+    onwarn(warning, warn) {
       if (warning.code === 'CIRCULAR_DEPENDENCY') {
         // Ignored
       } else if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
@@ -168,6 +169,8 @@ async function build(
         warning.code === 'SOURCEMAP_ERROR' &&
         warning.message.endsWith(`Can't resolve original location of error.`)
       ) {
+        // Ignored
+      } else if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
         // Ignored
       } else if (typeof warning.code === 'string') {
         console.error(warning);
@@ -188,14 +191,17 @@ async function build(
       alias({
         entries: [
           {find: 'shared', replacement: path.resolve('packages/shared/src')},
+          // {find: 'crypto', replacement: 'crypto-browserify'},
         ],
       }),
       nodeResolve({
+        browser: true,
         extensions,
       }),
       babel({
         babelHelpers: 'bundled',
         babelrc: false,
+        compact: false,
         configFile: false,
         exclude: '/**/node_modules/**',
         extensions,
@@ -245,6 +251,15 @@ async function build(
           return `${getComment()}\n${patchedSource}`;
         },
       },
+      postcss({
+        autoModules: true,
+        extract: false,
+        inject: true,
+        minimize: true,
+        modules: true,
+        plugins: [],
+        use: ['less'],
+      }),
     ],
     // This ensures PrismJS imports get included in the bundle
     treeshake: name !== 'Lexical Code' ? 'smallest' : false,
@@ -261,11 +276,16 @@ async function build(
     file: outputFile,
     format, // change between es and cjs modules
     freeze: false,
+    inlineDynamicImports: true,
     interop: format === 'esm' ? 'esModule' : undefined,
     paths: format === 'esm' ? resolveExternalEsm : undefined,
   };
+  console.log('build module start ---------');
+  console.log('module name: ' + outputFile);
   const result = await rollup.rollup(inputOptions);
+  console.log('module write');
   const {output} = await result.write(outputOptions);
+  console.log('end ---------\r\n');
   return output[0].exports;
 }
 

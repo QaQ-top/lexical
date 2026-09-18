@@ -1,0 +1,52 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+import type {JSX} from 'react';
+
+import * as React from 'react';
+import {HTMLInputTypeAttribute} from 'react';
+
+import Styles from './Input.module.less';
+
+type Props = Readonly<{
+  'data-test-id'?: string;
+  label: string;
+  labelWidth?: number;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  value: string;
+  type?: HTMLInputTypeAttribute;
+}>;
+
+export default function TextInput({
+  label,
+  labelWidth,
+  value,
+  onChange,
+  placeholder = '',
+  'data-test-id': dataTestId,
+  type = 'text',
+}: Props): JSX.Element {
+  return (
+    <div className={Styles.Input__wrapper}>
+      <label style={{width: labelWidth}} className={Styles.Input__label}>
+        {label}
+      </label>
+      <input
+        type={type}
+        className={Styles.Input__input}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+        data-test-id={dataTestId}
+      />
+    </div>
+  );
+}

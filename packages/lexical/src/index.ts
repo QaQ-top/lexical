@@ -106,6 +106,7 @@ export {
   KEY_TAB_COMMAND,
   MOVE_TO_END,
   MOVE_TO_START,
+  OPEN_COMMENT,
   OUTDENT_CONTENT_COMMAND,
   PASTE_COMMAND,
   REDO_COMMAND,
@@ -166,6 +167,7 @@ export type {
   EditorStateReadOptions,
   SerializedEditorState,
 } from './LexicalEditorState';
+export {exportNodeToJSON} from './LexicalEditorState';
 export type {EventHandler} from './LexicalEvents';
 export type {
   DOMChildConversion,
@@ -218,7 +220,11 @@ export {
   $isNodeSelection,
   $isRangeSelection,
 } from './LexicalSelection';
-export {$parseSerializedNode, isCurrentlyReadOnlyMode} from './LexicalUpdates';
+export {
+  $parseSerializedNode,
+  type InternalSerializedNode,
+  isCurrentlyReadOnlyMode,
+} from './LexicalUpdates';
 export {
   $addUpdateTag,
   $applyNodeReplacement,
@@ -266,6 +272,7 @@ export {
   isSelectionWithinEditor,
   removeFromParent,
   resetRandomKey,
+  scrollIntoViewIfNeeded,
   setDOMUnmanaged,
   setNodeIndentFromDOM,
 } from './LexicalUtils';
@@ -293,6 +300,11 @@ export type {SerializedRootNode} from './nodes/LexicalRootNode';
 export {$isRootNode, RootNode} from './nodes/LexicalRootNode';
 export type {SerializedTabNode} from './nodes/LexicalTabNode';
 export {$createTabNode, $isTabNode, TabNode} from './nodes/LexicalTabNode';
+export {
+  $isTextDecoratorNode,
+  type SerializedTextDecoratorNode,
+  TextDecoratorNode,
+} from './nodes/LexicalTextDecoratorNode';
 export type {
   SerializedTextNode,
   TextFormatType,

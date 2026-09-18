@@ -1,0 +1,82 @@
+.actions {
+  position: absolute;
+  text-align: right;
+  margin: 10px;
+  bottom: 0;
+  right: 0;
+  &.tree-view {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  :global {
+    .action-button {
+      background-color: #eee;
+      border: 0;
+      padding: 8px 12px;
+      position: relative;
+      margin-left: 5px;
+      border-radius: 15px;
+      color: #222;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background-color: #ddd;
+      color: #000;
+    }
+
+    .action-button-mic.active {
+      animation: mic-pulsate-color 3s infinite;
+    }
+
+    button.action-button:disabled {
+      opacity: 0.6;
+      background: #eee;
+      cursor: not-allowed;
+    }
+    i {
+      background-size: contain;
+      display: inline-block;
+      height: 15px;
+      width: 15px;
+      vertical-align: -0.25em;
+    }
+    i.indent {
+      background-image: url(images/icons/indent.svg);
+    }
+    i.outdent {
+      background-image: url(images/icons/outdent.svg);
+    }
+    i.lock {
+      background-image: url(images/icons/lock-fill.svg);
+    }
+    i.image {
+      background-image: url(images/icons/file-image.svg);
+    }
+    i.table {
+      background-image: url(images/icons/table.svg);
+    }
+    i.unlock {
+      background-image: url(images/icons/lock.svg);
+    }
+    i.left-align {
+      background-image: url(images/icons/text-left.svg);
+    }
+    i.center-align {
+      background-image: url(images/icons/text-center.svg);
+    }
+    i.right-align {
+      background-image: url(images/icons/text-right.svg);
+    }
+    i.justify-align {
+      background-image: url(images/icons/justify.svg);
+    }
+    i.disconnect {
+      background-image: url(images/icons/plug.svg);
+    }
+    i.connect {
+      background-image: url(images/icons/plug-fill.svg);
+    }
+  }
+}

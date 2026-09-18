@@ -45,13 +45,17 @@ import {
   isDOMNode,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {useSettings} from 'onchain-lexical-context/settings';
+import ColorPicker from 'onchain-lexical-ui/ColorPicker';
+import DropDown, {DropDownItem} from 'onchain-lexical-ui/DropDown';
+import {translateI18n, useStore} from 'onchain-utility';
 import * as React from 'react';
 import {ReactPortal, useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
+import {DisableSelector} from '../../hooks/useContentEditable';
 import useModal from '../../hooks/useModal';
-import ColorPicker from '../../ui/ColorPicker';
-import DropDown, {DropDownItem} from '../../ui/DropDown';
+import Styles from './index.module.less';
 
 function computeSelectionCount(selection: TableSelection): {
   columns: number;
@@ -102,6 +106,7 @@ function currentCellBackgroundColor(editor: LexicalEditor): null | string {
 }
 
 type TableCellActionMenuProps = Readonly<{
+  zIndex?: number;
   contextRef: {current: null | HTMLElement};
   onClose: () => void;
   setIsMenuOpen: (isOpen: boolean) => void;
@@ -114,6 +119,7 @@ type TableCellActionMenuProps = Readonly<{
 }>;
 
 function TableActionMenu({
+  zIndex,
   onClose,
   tableCellNode: _tableCellNode,
   setIsMenuOpen,
@@ -124,15 +130,26 @@ function TableActionMenu({
   const [editor] = useLexicalComposerContext();
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
-  const [selectionCounts, updateSelectionCounts] = useState({
-    columns: 1,
-    rows: 1,
-  });
+  // const [selectionCounts, updateSelectionCounts] = useState({
+  //   columns: 1,
+  //   rows: 1,
+  // });
   const [canMergeCells, setCanMergeCells] = useState(false);
   const [canUnmergeCell, setCanUnmergeCell] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState(
     () => currentCellBackgroundColor(editor) || '',
   );
+  const {store, setStore} = useStore<{
+    above?: string;
+    below?: string;
+    left?: string;
+    right?: string;
+  }>(() => ({
+    above: '1',
+    below: '1',
+    left: '1',
+    right: '1',
+  }));
 
   useEffect(() => {
     return editor.registerMutationListener(
@@ -158,7 +175,7 @@ function TableActionMenu({
       // Merge cells
       if ($isTableSelection(selection)) {
         const currentSelectionCounts = computeSelectionCount(selection);
-        updateSelectionCounts(computeSelectionCount(selection));
+        // updateSelectionCounts(computeSelectionCount(selection));
         setCanMergeCells(
           currentSelectionCounts.columns > 1 || currentSelectionCounts.rows > 1,
         );
@@ -273,27 +290,27 @@ function TableActionMenu({
   };
 
   const insertTableRowAtSelection = useCallback(
-    (shouldInsertAfter: boolean) => {
+    (shouldInsertAfter: boolean, counts?: string) => {
       editor.update(() => {
-        for (let i = 0; i < selectionCounts.rows; i++) {
+        for (let i = 0; i < Number(counts || 1); i++) {
           $insertTableRowAtSelection(shouldInsertAfter);
         }
         onClose();
       });
     },
-    [editor, onClose, selectionCounts.rows],
+    [editor, onClose],
   );
 
   const insertTableColumnAtSelection = useCallback(
-    (shouldInsertAfter: boolean) => {
+    (shouldInsertAfter: boolean, counts?: string) => {
       editor.update(() => {
-        for (let i = 0; i < selectionCounts.columns; i++) {
+        for (let i = 0; i < Number(counts || 1); i++) {
           $insertTableColumnAtSelection(shouldInsertAfter);
         }
         onClose();
       });
     },
-    [editor, onClose, selectionCounts.columns],
+    [editor, onClose],
   );
 
   const deleteTableRowAtSelection = useCallback(() => {
@@ -479,7 +496,11 @@ function TableActionMenu({
           className="item"
           onClick={() => mergeTableCellsAtSelection()}
           data-test-id="table-merge-cells">
-          <span className="text">Merge cells</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Merge cells', {
+              placeholder: '合并单元格',
+            })}
+          </span>
         </button>
       );
     } else if (canUnmergeCell) {
@@ -489,7 +510,11 @@ function TableActionMenu({
           className="item"
           onClick={() => unmergeTableCellsAtSelection()}
           data-test-id="table-unmerge-cells">
-          <span className="text">Unmerge cells</span>
+          <span className="text">
+            {translateI18n('[TODO] 国际化 Unmerge cells', {
+              placeholder: '取消合并单元格',
+            })}
+          </span>
         </button>
       );
     }
@@ -498,8 +523,9 @@ function TableActionMenu({
   return createPortal(
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="dropdown"
+      className={Styles.dropdown}
       ref={dropDownRef}
+      style={{zIndex}}
       onClick={(e) => {
         e.stopPropagation();
       }}>
@@ -508,25 +534,40 @@ function TableActionMenu({
         type="button"
         className="item"
         onClick={() =>
-          showColorPickerModal('Cell background color', () => (
-            <ColorPicker
-              color={backgroundColor}
-              onChange={handleCellBackgroundColor}
-            />
-          ))
+          showColorPickerModal(
+            translateI18n('[TODO] 国际化 Cell background color', {
+              placeholder: '单元格背景颜色',
+            }),
+            () => (
+              <ColorPicker
+                color={backgroundColor}
+                onChange={handleCellBackgroundColor}
+              />
+            ),
+          )
         }
         data-test-id="table-background-color">
-        <span className="text">Background color</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Background color', {
+            placeholder: '背景颜色',
+          })}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => toggleRowStriping()}
         data-test-id="table-row-striping">
-        <span className="text">Toggle Row Striping</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Toggle Row Striping', {
+            placeholder: '切换行条带',
+          })}
+        </span>
       </button>
       <DropDown
-        buttonLabel="Vertical Align"
+        buttonLabel={translateI18n('[TODO] 国际化 Vertical Align', {
+          placeholder: '垂直对齐',
+        })}
         buttonClassName="item"
         buttonAriaLabel="Formatting options for vertical alignment">
         <DropDownItem
@@ -536,7 +577,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-top" />
-            <span className="text">Top Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Top Align', {
+                placeholder: '顶部对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
         <DropDownItem
@@ -546,7 +591,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-middle" />
-            <span className="text">Middle Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Middle Align', {
+                placeholder: '中间对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
         <DropDownItem
@@ -556,7 +605,11 @@ function TableActionMenu({
           className="item wide">
           <div className="icon-text-container">
             <i className="icon vertical-bottom" />
-            <span className="text">Bottom Align</span>
+            <span className="text">
+              {translateI18n('[TODO] 国际化 Bottom Align', {
+                placeholder: '底部对齐',
+              })}
+            </span>
           </div>
         </DropDownItem>
       </DropDown>
@@ -565,64 +618,90 @@ function TableActionMenu({
         className="item"
         onClick={() => toggleFirstRowFreeze()}
         data-test-id="table-freeze-first-row">
-        <span className="text">Toggle First Row Freeze</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Row Freeze', {placeholder: '冻结行'})}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => toggleFirstColumnFreeze()}
         data-test-id="table-freeze-first-column">
-        <span className="text">Toggle First Column Freeze</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Column Freeze', {
+            placeholder: '冻结列',
+          })}
+        </span>
       </button>
       <hr />
       <button
         type="button"
         className="item"
-        onClick={() => insertTableRowAtSelection(false)}
+        onClick={() => insertTableRowAtSelection(false, store.above)}
         data-test-id="table-insert-row-above">
-        <span className="text">
-          Insert{' '}
-          {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`}{' '}
-          above
-        </span>
+        <InsertComponent
+          text={[
+            translateI18n('[TODO] 国际化 Insert', {
+              placeholder: '在当前行的上方插入',
+            }),
+            translateI18n('[TODO] 国际化 rows above', {placeholder: '行'}),
+          ]}
+          value={store.above}
+          setValue={(value) => setStore({above: value})}
+          insert={() => insertTableRowAtSelection(false, store.above)}
+        />
       </button>
       <button
         type="button"
         className="item"
-        onClick={() => insertTableRowAtSelection(true)}
+        onClick={() => insertTableRowAtSelection(true, store.below)}
         data-test-id="table-insert-row-below">
-        <span className="text">
-          Insert{' '}
-          {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`}{' '}
-          below
-        </span>
+        <InsertComponent
+          text={[
+            translateI18n('[TODO] 国际化 Insert', {
+              placeholder: '在当前行的下方插入',
+            }),
+            translateI18n('[TODO] 国际化 rows above', {placeholder: '行'}),
+          ]}
+          value={store.below}
+          setValue={(value) => setStore({below: value})}
+          insert={() => insertTableRowAtSelection(true, store.below)}
+        />
       </button>
       <hr />
       <button
         type="button"
         className="item"
-        onClick={() => insertTableColumnAtSelection(false)}
+        onClick={() => insertTableColumnAtSelection(false, store.left)}
         data-test-id="table-insert-column-before">
-        <span className="text">
-          Insert{' '}
-          {selectionCounts.columns === 1
-            ? 'column'
-            : `${selectionCounts.columns} columns`}{' '}
-          left
-        </span>
+        <InsertComponent
+          text={[
+            translateI18n('[TODO] 国际化 Insert', {
+              placeholder: '在当前列左侧插入',
+            }),
+            translateI18n('[TODO] 国际化 columns left', {placeholder: '列'}),
+          ]}
+          value={store.left}
+          setValue={(value) => setStore({left: value})}
+          insert={() => insertTableRowAtSelection(false, store.left)}
+        />
       </button>
       <button
         type="button"
         className="item"
-        onClick={() => insertTableColumnAtSelection(true)}
+        onClick={() => insertTableColumnAtSelection(true, store.right)}
         data-test-id="table-insert-column-after">
-        <span className="text">
-          Insert{' '}
-          {selectionCounts.columns === 1
-            ? 'column'
-            : `${selectionCounts.columns} columns`}{' '}
-          right
-        </span>
+        <InsertComponent
+          text={[
+            translateI18n('[TODO] 国际化 Insert', {
+              placeholder: '在当前列右侧插入',
+            }),
+            translateI18n('[TODO] 国际化 columns right', {placeholder: '列'}),
+          ]}
+          value={store.right}
+          setValue={(value) => setStore({right: value})}
+          insert={() => insertTableRowAtSelection(true, store.right)}
+        />
       </button>
       <hr />
       <button
@@ -630,21 +709,31 @@ function TableActionMenu({
         className="item"
         onClick={() => deleteTableColumnAtSelection()}
         data-test-id="table-delete-columns">
-        <span className="text">Delete column</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Delete column', {
+            placeholder: '删除列',
+          })}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => deleteTableRowAtSelection()}
         data-test-id="table-delete-rows">
-        <span className="text">Delete row</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Delete row', {placeholder: '删除行'})}
+        </span>
       </button>
       <button
         type="button"
         className="item"
         onClick={() => deleteTableAtSelection()}
         data-test-id="table-delete">
-        <span className="text">Delete table</span>
+        <span className="text">
+          {translateI18n('[TODO] 国际化 Delete table', {
+            placeholder: '删除表格',
+          })}
+        </span>
       </button>
       <hr />
       <button
@@ -653,11 +742,18 @@ function TableActionMenu({
         onClick={() => toggleTableRowIsHeader()}
         data-test-id="table-row-header">
         <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
-          TableCellHeaderStates.ROW
-            ? 'Remove'
-            : 'Add'}{' '}
-          row header
+          {translateI18n('[TODO] 国际化 {operation} row header', {
+            placeholder: '{operation}行标题',
+            variate: {
+              operation:
+                (tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
+                TableCellHeaderStates.ROW
+                  ? translateI18n('[TODO]: 国际化 Remove', {
+                      placeholder: '删除',
+                    })
+                  : translateI18n('[TODO]: 国际化 Add', {placeholder: '添加'}),
+            },
+          })}
         </span>
       </button>
       <button
@@ -666,11 +762,18 @@ function TableActionMenu({
         onClick={() => toggleTableColumnIsHeader()}
         data-test-id="table-column-header">
         <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
-          TableCellHeaderStates.COLUMN
-            ? 'Remove'
-            : 'Add'}{' '}
-          column header
+          {translateI18n('[TODO] 国际化 {operation} column header', {
+            placeholder: '{operation}列标题',
+            variate: {
+              operation:
+                (tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
+                TableCellHeaderStates.COLUMN
+                  ? translateI18n('[TODO]: 国际化 Remove', {
+                      placeholder: '删除',
+                    })
+                  : translateI18n('[TODO]: 国际化 Add', {placeholder: '添加'}),
+            },
+          })}
         </span>
       </button>
     </div>,
@@ -690,7 +793,8 @@ function TableCellActionMenuContainer({
   const menuButtonRef = useRef<HTMLDivElement | null>(null);
   const menuRootRef = useRef<HTMLButtonElement | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const {extra} = useSettings();
+  const [zIndex, setZIndex] = useState(100);
   const [tableCellNode, setTableMenuCellNode] = useState<TableCellNode | null>(
     null,
   );
@@ -733,8 +837,8 @@ function TableCellActionMenuContainer({
     const activeElement = document.activeElement;
     function disable() {
       if (menu) {
-        menu.classList.remove('table-cell-action-button-container--active');
-        menu.classList.add('table-cell-action-button-container--inactive');
+        menu.classList.remove(Styles.active);
+        menu.classList.add(Styles.inactive);
       }
       setTableMenuCellNode(null);
     }
@@ -750,8 +854,9 @@ function TableCellActionMenuContainer({
     if (
       $isRangeSelection(selection) &&
       rootElement !== null &&
-      nativeSelection !== null &&
-      rootElement.contains(nativeSelection.anchorNode)
+      nativeSelection !== null
+      // 聚焦的焦点是否在编辑器内
+      // && rootElement.contains(nativeSelection.anchorNode)
     ) {
       const tableCellNodeFromSelection = $getTableCellNodeFromLexicalNode(
         selection.anchor.getNode(),
@@ -826,20 +931,14 @@ function TableCellActionMenuContainer({
       return disable();
     }
     const enabled = !tableObserver || !tableObserver.isSelecting;
-    menu.classList.toggle(
-      'table-cell-action-button-container--active',
-      enabled,
-    );
-    menu.classList.toggle(
-      'table-cell-action-button-container--inactive',
-      !enabled,
-    );
+    menu.classList.toggle(Styles.active, enabled);
+    menu.classList.toggle(Styles.inactive, !enabled);
     if (enabled) {
       const tableCellRect = tableCellParentNodeDOM.getBoundingClientRect();
       const anchorRect = anchorElem.getBoundingClientRect();
       const top = tableCellRect.top - anchorRect.top;
       const left = tableCellRect.right - anchorRect.left;
-      menu.style.transform = `translate(${left}px, ${top}px)`;
+      menu.style.transform = `translate(${left + 5}px, ${top - 7}px)`;
     }
   }, [editor, anchorElem, checkTableCellOverflow]);
 
@@ -887,13 +986,48 @@ function TableCellActionMenuContainer({
     prevTableCellDOM.current = tableCellNode;
   }, [prevTableCellDOM, tableCellNode]);
 
+  const contentEditable = React.useMemo(() => {
+    if (tableCellNode) {
+      return !editor
+        .getElementByKey(tableCellNode.getKey())
+        ?.closest(DisableSelector);
+    }
+    return false;
+  }, [editor, tableCellNode]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      if (extra.getZIndex) {
+        setZIndex(extra.getZIndex());
+      }
+    } else {
+      if (extra.reduceZIndex) {
+        extra.reduceZIndex();
+      }
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const wheel = (e: WheelEvent) => {
+      if (e.target instanceof HTMLElement) {
+        if (!e.target.closest(`.${Styles.dropdown}`)) {
+          setIsMenuOpen(false);
+        }
+      }
+    };
+    window.addEventListener('wheel', wheel);
+    return () => {
+      window.removeEventListener('wheel', wheel);
+    };
+  }, []);
+
   return (
-    <div className="table-cell-action-button-container" ref={menuButtonRef}>
-      {tableCellNode != null && (
+    <div className={Styles.container} ref={menuButtonRef}>
+      {tableCellNode != null && contentEditable && (
         <>
           <button
             type="button"
-            className="table-cell-action-button chevron-down"
+            className={`${Styles.button} chevron-down`}
             onClick={(e) => {
               e.stopPropagation();
               setIsMenuOpen(!isMenuOpen);
@@ -904,6 +1038,7 @@ function TableCellActionMenuContainer({
           {colorPickerModal}
           {isMenuOpen && (
             <TableActionMenu
+              zIndex={zIndex}
               contextRef={menuRootRef}
               setIsMenuOpen={setIsMenuOpen}
               onClose={() => setIsMenuOpen(false)}
@@ -936,3 +1071,31 @@ export default function TableActionMenuPlugin({
     anchorElem,
   );
 }
+
+const InsertComponent = (props: {
+  text: [string, string];
+  value?: string;
+  setValue: (value: string) => void;
+  insert: () => void;
+}) => {
+  return (
+    <span className="text">
+      <span>{props.text[0]}</span>
+      <input
+        className="insert-input"
+        type="number"
+        min={1}
+        placeholder="1"
+        value={props.value}
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => props.setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.code === 'Enter') {
+            props.insert();
+          }
+        }}
+      />
+      <span>{props.text[1]}</span>
+    </span>
+  );
+};

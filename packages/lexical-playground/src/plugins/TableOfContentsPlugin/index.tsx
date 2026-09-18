@@ -10,12 +10,12 @@ import type {HeadingTagType} from '@lexical/rich-text';
 import type {NodeKey} from 'lexical';
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {TableOfContentsPlugin as LexicalTableOfContentsPlugin} from '@lexical/react/LexicalTableOfContentsPlugin';
 import {useEffect, useRef, useState} from 'react';
 import * as React from 'react';
+
+import Styles from './index.module.less';
 
 const MARGIN_ABOVE_EDITOR = 624;
 const HEADING_WIDTH = 9;
@@ -138,7 +138,7 @@ function TableOfContentsList({
   }, [tableOfContents, editor]);
 
   return (
-    <div className="table-of-contents">
+    <div className={Styles['table-of-contents']}>
       <ul className="headings">
         {tableOfContents.map(([key, text, tag], index) => {
           if (index === 0) {

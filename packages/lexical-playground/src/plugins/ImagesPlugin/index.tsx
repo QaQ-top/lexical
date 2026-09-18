@@ -30,21 +30,21 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
-import {useEffect, useRef, useState} from 'react';
-import * as React from 'react';
-
-import landscapeImage from '../../images/landscape.jpg';
-import yellowFlowerImage from '../../images/yellow-flower.jpg';
 import {
   $createImageNode,
   $isImageNode,
   ImageNode,
   ImagePayload,
-} from '../../nodes/ImageNode';
-import Button from '../../ui/Button';
-import {DialogActions, DialogButtonsList} from '../../ui/Dialog';
-import FileInput from '../../ui/FileInput';
-import TextInput from '../../ui/TextInput';
+} from 'onchain-lexical-instance';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions, DialogButtonsList} from 'onchain-lexical-ui/Dialog';
+import FileInput from 'onchain-lexical-ui/FileInput';
+import TextInput from 'onchain-lexical-ui/TextInput';
+import {translateI18n} from 'onchain-utility/language';
+import {useEffect, useRef, useState} from 'react';
+import * as React from 'react';
+
+import Styles from './index.module.less';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -64,25 +64,35 @@ export function InsertImageUriDialogBody({
   return (
     <>
       <TextInput
-        label="Image URL"
+        label={translateI18n('[TODO] Insert Image', {
+          placeholder: '图片地址',
+        })}
         placeholder="i.e. https://source.unsplash.com/random"
         onChange={setSrc}
         value={src}
         data-test-id="image-modal-url-input"
       />
       <TextInput
-        label="Alt Text"
-        placeholder="Random unsplash image"
+        label={translateI18n('[TODO] Alt Text', {
+          placeholder: '描述',
+        })}
+        placeholder={translateI18n('[TODO] Image description', {
+          placeholder: '图片描述',
+        })}
         onChange={setAltText}
         value={altText}
         data-test-id="image-modal-alt-text-input"
       />
       <DialogActions>
         <Button
+          type="primary"
+          className={Styles.button}
           data-test-id="image-modal-confirm-btn"
           disabled={isDisabled}
           onClick={() => onClick({altText, src})}>
-          Confirm
+          {translateI18n('[TODO] Confirm', {
+            placeholder: '确认',
+          })}
         </Button>
       </DialogActions>
     </>
@@ -109,30 +119,45 @@ export function InsertImageUploadedDialogBody({
     };
     if (files !== null) {
       reader.readAsDataURL(files[0]);
+    } else {
+      setSrc('');
     }
   };
 
   return (
     <>
       <FileInput
-        label="Image Upload"
+        label={translateI18n('[TODO] Insert Image', {
+          placeholder: '选择图片',
+        })}
         onChange={loadImage}
+        placeholder={translateI18n('[TODO] Please select a image', {
+          placeholder: '请选择图片',
+        })}
         accept="image/*"
         data-test-id="image-modal-file-upload"
       />
       <TextInput
-        label="Alt Text"
-        placeholder="Descriptive alternative text"
+        label={translateI18n('[TODO] Alt Text', {
+          placeholder: '描述',
+        })}
+        placeholder={translateI18n('[TODO] Image description', {
+          placeholder: '图片描述',
+        })}
         onChange={setAltText}
         value={altText}
         data-test-id="image-modal-alt-text-input"
       />
       <DialogActions>
         <Button
+          type="primary"
+          className={Styles.button}
           data-test-id="image-modal-file-upload-btn"
           disabled={isDisabled}
           onClick={() => onClick({altText, src})}>
-          Confirm
+          {translateI18n('[TODO] Confirm', {
+            placeholder: '确认',
+          })}
         </Button>
       </DialogActions>
     </>
@@ -170,32 +195,18 @@ export function InsertImageDialog({
       {!mode && (
         <DialogButtonsList>
           <Button
-            data-test-id="image-modal-option-sample"
-            onClick={() =>
-              onClick(
-                hasModifier.current
-                  ? {
-                      altText:
-                        'Daylight fir trees forest glacier green high ice landscape',
-                      src: landscapeImage,
-                    }
-                  : {
-                      altText: 'Yellow flower in tilt shift lens',
-                      src: yellowFlowerImage,
-                    },
-              )
-            }>
-            Sample
-          </Button>
-          <Button
             data-test-id="image-modal-option-url"
             onClick={() => setMode('url')}>
-            URL
+            {translateI18n('[TODO] Url', {
+              placeholder: '在线图片',
+            })}
           </Button>
           <Button
             data-test-id="image-modal-option-file"
             onClick={() => setMode('file')}>
-            File
+            {translateI18n('[TODO] File', {
+              placeholder: '本地图片',
+            })}
           </Button>
         </DialogButtonsList>
       )}

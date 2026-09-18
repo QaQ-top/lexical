@@ -24,16 +24,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalFile.dev.mjs",
-        "production": "./LexicalFile.prod.mjs",
-        "node": "./LexicalFile.node.mjs",
-        "default": "./LexicalFile.mjs"
+        "default": "./dist/LexicalFile.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalFile.dev.js",
-        "production": "./LexicalFile.prod.js",
-        "default": "./LexicalFile.js"
+        "default": "./dist/LexicalFile.js"
       }
     }
   },

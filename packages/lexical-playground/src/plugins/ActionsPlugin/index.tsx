@@ -11,16 +11,12 @@ import type {JSX} from 'react';
 
 import {$createCodeNode, $isCodeNode} from '@lexical/code';
 import {
+  advanceImportFile,
   editorStateFromSerializedDocument,
   exportFile,
-  importFile,
   SerializedDocument,
   serializedDocumentFromEditorState,
 } from '@lexical/file';
-import {
-  $convertFromMarkdownString,
-  $convertToMarkdownString,
-} from '@lexical/markdown';
 import {useCollaborationContext} from '@lexical/react/LexicalCollaborationContext';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
@@ -35,18 +31,27 @@ import {
   COMMAND_PRIORITY_EDITOR,
   HISTORIC_TAG,
 } from 'lexical';
+import {
+  INITIAL_SETTINGS,
+  jsonBase64StringToUpLoadUrl,
+  markdownBase64StringToUpLoadUrl,
+} from 'onchain-lexical-context';
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  getInstanceTransformers,
+} from 'onchain-lexical-markdown';
+import Button from 'onchain-lexical-ui/Button';
 import {useCallback, useEffect, useState} from 'react';
 
-import {INITIAL_SETTINGS} from '../../appSettings';
 import useFlashMessage from '../../hooks/useFlashMessage';
 import useModal from '../../hooks/useModal';
-import Button from '../../ui/Button';
 import {docFromHash, docToHash} from '../../utils/docSerialization';
-import {PLAYGROUND_TRANSFORMERS} from '../MarkdownTransformers';
 import {
   SPEECH_TO_TEXT_COMMAND,
   SUPPORT_SPEECH_RECOGNITION,
 } from '../SpeechToTextPlugin';
+import Styles from './index.module.less';
 
 async function sendEditorState(editor: LexicalEditor): Promise<void> {
   const stringifiedEditorState = JSON.stringify(editor.getEditorState());
@@ -170,34 +175,38 @@ export default function ActionsPlugin({
   }, [editor, isEditable]);
 
   const handleMarkdownToggle = useCallback(() => {
-    editor.update(() => {
+    editor.update(async () => {
       const root = $getRoot();
       const firstChild = root.getFirstChild();
       if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
         $convertFromMarkdownString(
           firstChild.getTextContent(),
-          PLAYGROUND_TRANSFORMERS,
+          getInstanceTransformers(),
           undefined, // node
           shouldPreserveNewLinesInMarkdown,
         );
       } else {
-        const markdown = $convertToMarkdownString(
-          PLAYGROUND_TRANSFORMERS,
-          undefined, //node
-          shouldPreserveNewLinesInMarkdown,
+        const markdown = await markdownBase64StringToUpLoadUrl(
+          $convertToMarkdownString(
+            getInstanceTransformers(),
+            undefined, //node
+            shouldPreserveNewLinesInMarkdown,
+          ),
         );
-        const codeNode = $createCodeNode('markdown');
-        codeNode.append($createTextNode(markdown));
-        root.clear().append(codeNode);
-        if (markdown.length === 0) {
-          codeNode.select();
-        }
+        editor.update(() => {
+          const codeNode = $createCodeNode('markdown');
+          codeNode.append($createTextNode(markdown));
+          root.clear().append(codeNode);
+          if (markdown.length === 0) {
+            codeNode.select();
+          }
+        });
       }
     });
   }, [editor, shouldPreserveNewLinesInMarkdown]);
 
   return (
-    <div className="actions">
+    <div className={Styles.actions}>
       {SUPPORT_SPEECH_RECOGNITION && (
         <button
           onClick={() => {
@@ -217,7 +226,7 @@ export default function ActionsPlugin({
       )}
       <button
         className="action-button import"
-        onClick={() => importFile(editor)}
+        onClick={() => advanceImportFile(editor)}
         title="Import"
         aria-label="Import editor state from JSON">
         <i className="import" />
@@ -228,6 +237,9 @@ export default function ActionsPlugin({
         onClick={() =>
           exportFile(editor, {
             fileName: `Playground ${new Date().toISOString()}`,
+            formatJSON(root) {
+              return jsonBase64StringToUpLoadUrl(root);
+            },
             source: 'Playground',
           })
         }

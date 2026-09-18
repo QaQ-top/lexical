@@ -21,14 +21,19 @@ export default function lexicalMonorepoPlugin(): Plugin {
               `${process.env.npm_package_version}+git`,
             ),
           },
+          // Always resolve workspace deps from `src/` instead of
+          // `dist/`. Both `vite build` and `vite dev` need to find
+          // the @lexical/*, lexical, onchain-lexical-*, shared/*
+          // packages at their source paths so callers don't have to
+          // pre-build the workspace packages first.
           resolve: {
-            alias: viteModuleResolution(
-              env.mode === 'production'
-                ? 'production'
-                : env.command === 'serve'
-                ? 'source'
-                : 'development',
-            ),
+            alias: viteModuleResolution('source').map(({find, replacement}) => {
+              // 通过正则的完整匹配 解决 @onchain/utility @onchain/utility/traversal 模块匹配错误的问题
+              return {
+                find: typeof find === 'string' ? new RegExp(`^${find}$`) : find,
+                replacement,
+              };
+            }),
           },
         }),
         config,

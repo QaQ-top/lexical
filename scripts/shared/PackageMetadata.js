@@ -116,6 +116,9 @@ class PackageMetadata {
         'This package should have exports, try `npm run update-version` first',
       );
     }
+    if (this.packageJson.name === 'onchain-rich-text-editor') {
+      return [];
+    }
     /** @type {Array<NpmModuleExportEntry>} */
     const entries = [];
     for (const [key, value] of Object.entries(this.packageJson.exports)) {
@@ -144,7 +147,7 @@ class PackageMetadata {
     return this.getExportedNpmModuleNames().map((name) => {
       const outputFileName = npmToWwwName(name);
       const sourceBaseName = name === npmName ? 'index' : outputFileName;
-      const sourceCandidates = ['.ts', '.tsx'].map(
+      const sourceCandidates = ['.ts', '.tsx', '/index.ts', '/index.tsx'].map(
         (ext) => sourceBaseName + ext,
       );
       const sourceFileName = sourceCandidates.find((fn) =>

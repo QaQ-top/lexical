@@ -19,20 +19,18 @@
   },
   "module": "Lexical.mjs",
   "sideEffects": false,
+  "dependencies": {
+    "@lexical/utils": "workspace:*"
+  },
   "exports": {
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./Lexical.dev.mjs",
-        "production": "./Lexical.prod.mjs",
-        "node": "./Lexical.node.mjs",
-        "default": "./Lexical.mjs"
+        "default": "./dist/Lexical.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./Lexical.dev.js",
-        "production": "./Lexical.prod.js",
-        "default": "./Lexical.js"
+        "default": "./dist/Lexical.js"
       }
     }
   }

@@ -7,5 +7,12 @@
       "source.fixAll.eslint",
       "source.fixAll.format"
     ]
-  }
+  },
+  "cSpell.words": [
+    "apicode",
+    "onbeforematch",
+    "contenteditable",
+    "ignorecontenteditable",
+    "ignoreusable",
+  ]
 }

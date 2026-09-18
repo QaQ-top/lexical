@@ -9,8 +9,6 @@ import type {Position} from './InlineImageNode';
 import type {BaseSelection, LexicalEditor, NodeKey} from 'lexical';
 import type {JSX} from 'react';
 
-import './InlineImageNode.css';
-
 import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
@@ -31,17 +29,19 @@ import {
   KEY_ESCAPE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import Button from 'onchain-lexical-ui/Button';
+import ContentEditable from 'onchain-lexical-ui/ContentEditable';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import Select from 'onchain-lexical-ui/Select';
+import TextInput from 'onchain-lexical-ui/TextInput';
 import * as React from 'react';
 import {Suspense, useCallback, useEffect, useRef, useState} from 'react';
 
 import useModal from '../../hooks/useModal';
+import PublicStyles from '../../plugins/index.module.less';
 import LinkPlugin from '../../plugins/LinkPlugin';
-import Button from '../../ui/Button';
-import ContentEditable from '../../ui/ContentEditable';
-import {DialogActions} from '../../ui/Dialog';
-import Select from '../../ui/Select';
-import TextInput from '../../ui/TextInput';
 import {InlineImageNode} from './InlineImageNode';
+import Styles from './InlineImageNode.module.less';
 
 const imageCache = new Set();
 
@@ -152,7 +152,7 @@ export function UpdateInlineImageDialog({
         <option value="full">Full Width</option>
       </Select>
 
-      <div className="Input__wrapper">
+      <div className={PublicStyles.Input__wrapper}>
         <input
           id="caption"
           type="checkbox"
@@ -365,8 +365,8 @@ export default function InlineImageComponent({
                 contentEditable={
                   <ContentEditable
                     placeholder="Enter a caption..."
-                    placeholderClassName="InlineImageNode__placeholder"
-                    className="InlineImageNode__contentEditable"
+                    placeholderClassName={Styles.placeholder}
+                    className={Styles.contentEditable}
                   />
                 }
                 ErrorBoundary={LexicalErrorBoundary}

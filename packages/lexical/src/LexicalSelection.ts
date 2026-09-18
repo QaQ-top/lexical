@@ -90,6 +90,7 @@ import {
   toggleTextFormatType,
 } from './LexicalUtils';
 import {$createTabNode, $isTabNode} from './nodes/LexicalTabNode';
+import {$isTextDecoratorNode} from './nodes/LexicalTextDecoratorNode';
 
 export type TextPointType = {
   _selection: BaseSelection;
@@ -1131,8 +1132,9 @@ export class RangeSelection implements BaseSelection {
         firstNode.replace(textNode);
       }
 
+      // 修改为从上到下删除，(i > 0 用来保证输入文字不被删除，i > -1会导致输入的文字也会被删除)
       // Remove all selected nodes that haven't already been removed.
-      for (let i = 1; i < selectedNodesLength; i++) {
+      for (let i = selectedNodesLength - 1; i > 0; i--) {
         const selectedNode = selectedNodes[i];
         const key = selectedNode.__key;
         if (!markedNodeKeysForKeep.has(key)) {
@@ -1182,7 +1184,7 @@ export class RangeSelection implements BaseSelection {
     }
     const applyFormatToElements = (alignWith: number | null) => {
       selectedNodes.forEach((node) => {
-        if ($isElementNode(node)) {
+        if ($isElementNode(node) || $isTextDecoratorNode(node)) {
           const newFormat = node.getFormatFlags(formatType, alignWith);
           node.setTextFormat(newFormat);
         }

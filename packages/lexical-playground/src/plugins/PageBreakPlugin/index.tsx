@@ -17,9 +17,12 @@ import {
   createCommand,
   LexicalCommand,
 } from 'lexical';
+import {
+  $createPageBreakNode,
+  $isSelectedTitleNode,
+  PageBreakNode,
+} from 'onchain-lexical-instance';
 import {useEffect} from 'react';
-
-import {$createPageBreakNode, PageBreakNode} from '../../nodes/PageBreakNode';
 
 export const INSERT_PAGE_BREAK: LexicalCommand<undefined> = createCommand();
 
@@ -40,6 +43,9 @@ export default function PageBreakPlugin(): JSX.Element | null {
           const selection = $getSelection();
 
           if (!$isRangeSelection(selection)) {
+            return false;
+          }
+          if ($isSelectedTitleNode()) {
             return false;
           }
 

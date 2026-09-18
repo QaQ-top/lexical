@@ -67,7 +67,7 @@ import {
 } from './LexicalConstants';
 import {LexicalEditor} from './LexicalEditor';
 import {flushRootMutations} from './LexicalMutations';
-import {$normalizeSelection} from './LexicalNormalization';
+import {$normalizeAnchor, $normalizeSelection} from './LexicalNormalization';
 import {
   errorOnInfiniteTransforms,
   errorOnReadOnly,
@@ -1086,7 +1086,7 @@ export function $selectAll(selection?: RangeSelection | null): RangeSelection {
   } else {
     // Create a new RangeSelection
     const newSelection = root.select(0, root.getChildrenSize());
-    $setSelection($normalizeSelection(newSelection));
+    $setSelection($normalizeAnchor($normalizeSelection(newSelection)));
     return newSelection;
   }
 }
@@ -1283,10 +1283,15 @@ export function getDOMOwnerDocument(
     : null;
 }
 
+/**
+ * 跳转到指定dom
+ * dom 属性 data-scrollTo=“false” 时可以禁止跳转（非源代码）
+ */
 export function scrollIntoViewIfNeeded(
   editor: LexicalEditor,
   selectionRect: DOMRect,
   rootElement: HTMLElement,
+  showWindowElement?: HTMLElement | null,
 ): void {
   const doc = getDOMOwnerDocument(rootElement);
   const defaultView = getDefaultView(doc);
@@ -1298,6 +1303,9 @@ export function scrollIntoViewIfNeeded(
   let targetTop = 0;
   let targetBottom = 0;
   let element: HTMLElement | null = rootElement;
+  const {height: windowHeight = 0} = showWindowElement
+    ? showWindowElement.getBoundingClientRect()
+    : {};
 
   while (element !== null) {
     const isBodyElement = element === doc.body;
@@ -1314,7 +1322,7 @@ export function scrollIntoViewIfNeeded(
     if (currentTop < targetTop) {
       diff = -(targetTop - currentTop);
     } else if (currentBottom > targetBottom) {
-      diff = currentBottom - targetBottom;
+      diff = currentBottom - targetBottom + (windowHeight - 40);
     }
 
     if (diff !== 0) {
@@ -1322,11 +1330,14 @@ export function scrollIntoViewIfNeeded(
         // Only handles scrolling of Y axis
         defaultView.scrollBy(0, diff);
       } else {
-        const scrollTop = element.scrollTop;
-        element.scrollTop += diff;
-        const yOffset = element.scrollTop - scrollTop;
-        currentTop -= yOffset;
-        currentBottom -= yOffset;
+        const scrollState = element.getAttribute('data-scrollTo');
+        if (scrollState !== 'false') {
+          const scrollTop = element.scrollTop;
+          element.scrollTop += diff;
+          const yOffset = element.scrollTop - scrollTop;
+          currentTop -= yOffset;
+          currentBottom -= yOffset;
+        }
       }
     }
     if (isBodyElement) {
@@ -1696,23 +1707,6 @@ export function $splitNode(
   const [leftTree, rightTree] = recurse(startNode);
 
   return [leftTree, rightTree];
-}
-
-export function $findMatchingParent(
-  startingNode: LexicalNode,
-  findFn: (node: LexicalNode) => boolean,
-): LexicalNode | null {
-  let curr: ElementNode | LexicalNode | null = startingNode;
-
-  while (curr !== $getRoot() && curr != null) {
-    if (findFn(curr)) {
-      return curr;
-    }
-
-    curr = curr.getParent();
-  }
-
-  return null;
 }
 
 /**

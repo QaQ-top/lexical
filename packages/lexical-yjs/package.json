@@ -33,16 +33,11 @@
     ".": {
       "import": {
         "types": "./index.d.ts",
-        "development": "./LexicalYjs.dev.mjs",
-        "production": "./LexicalYjs.prod.mjs",
-        "node": "./LexicalYjs.node.mjs",
-        "default": "./LexicalYjs.mjs"
+        "default": "./dist/LexicalYjs.mjs"
       },
       "require": {
         "types": "./index.d.ts",
-        "development": "./LexicalYjs.dev.js",
-        "production": "./LexicalYjs.prod.js",
-        "default": "./LexicalYjs.js"
+        "default": "./dist/LexicalYjs.js"
       }
     }
   }

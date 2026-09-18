@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import type {JSX} from 'react';
 
@@ -27,12 +28,17 @@ import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
 import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {CAN_USE_DOM} from '@lexical/utils';
+import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useInstanceConfig} from 'onchain-lexical-context/instanceConfig';
+import {useSettings} from 'onchain-lexical-context/settings';
+import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
+import {InstancePlugin} from 'onchain-lexical-instance';
+import ContentEditable from 'onchain-lexical-ui/ContentEditable';
+import {translateI18n} from 'onchain-utility';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 
-import {createWebsocketProvider} from './collaboration';
-import {useSettings} from './context/SettingsContext';
-import {useSharedHistoryContext} from './context/SharedHistoryContext';
+import Styles from './Editor.module.less';
 import ActionsPlugin from './plugins/ActionsPlugin';
 import AutocompletePlugin from './plugins/AutocompletePlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
@@ -44,7 +50,6 @@ import CommentPlugin from './plugins/CommentPlugin';
 import ComponentPickerPlugin from './plugins/ComponentPickerPlugin';
 import ContextMenuPlugin from './plugins/ContextMenuPlugin';
 import DragDropPaste from './plugins/DragDropPastePlugin';
-import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
 import EmojisPlugin from './plugins/EmojisPlugin';
 import EquationsPlugin from './plugins/EquationsPlugin';
@@ -53,7 +58,6 @@ import FigmaPlugin from './plugins/FigmaPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingTextFormatToolbarPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
-import InlineImagePlugin from './plugins/InlineImagePlugin';
 import KeywordsPlugin from './plugins/KeywordsPlugin';
 import {LayoutPlugin} from './plugins/LayoutPlugin/LayoutPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
@@ -74,7 +78,6 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import TwitterPlugin from './plugins/TwitterPlugin';
 import YouTubePlugin from './plugins/YouTubePlugin';
-import ContentEditable from './ui/ContentEditable';
 
 const skipCollaborationInit =
   // @ts-expect-error
@@ -91,7 +94,6 @@ export default function Editor(): JSX.Element {
       hasLinkAttributes,
       isCharLimitUtf8,
       isRichText,
-      showTreeView,
       showTableOfContents,
       shouldUseLexicalContextMenu,
       shouldPreserveNewLinesInMarkdown,
@@ -102,15 +104,20 @@ export default function Editor(): JSX.Element {
       selectionAlwaysOnDisplay,
       listStrictIndent,
     },
+    extra: {placeholder: phr, showTreeView, showHeaderToolbar},
   } = useSettings();
+  const {preview} = useInstanceConfig();
   const isEditable = useLexicalEditable();
-  const placeholder = isCollab
-    ? 'Enter some collaborative rich text...'
-    : isRichText
-    ? 'Enter some rich text...'
-    : 'Enter some plain text...';
+  const placeholder =
+    phr ??
+    (isCollab
+      ? 'Enter some collaborative rich text...'
+      : isRichText
+      ? 'Enter some rich text...'
+      : 'Enter some plain text...');
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
+  const [treeViewOffset, setTreeViewOffset] = useState(100);
   const [isSmallWidthViewport, setIsSmallWidthViewport] =
     useState<boolean>(false);
   const [editor] = useLexicalComposerContext();
@@ -139,10 +146,10 @@ export default function Editor(): JSX.Element {
       window.removeEventListener('resize', updateViewPortWidth);
     };
   }, [isSmallWidthViewport]);
-
+  const isShowToolbar = isRichText && showHeaderToolbar !== false;
   return (
     <>
-      {isRichText && (
+      {isRichText && showHeaderToolbar !== false && (
         <ToolbarPlugin
           editor={editor}
           activeEditor={activeEditor}
@@ -157,8 +164,10 @@ export default function Editor(): JSX.Element {
         />
       )}
       <div
-        className={`editor-container ${showTreeView ? 'tree-view' : ''} ${
-          !isRichText ? 'plain-text' : ''
+        className={`top-container editor-container ${
+          showTreeView ? 'tree-view' : ''
+        } ${!isRichText ? 'plain-text' : ''} ${
+          isShowToolbar ? 'hasToolbar' : ''
         }`}>
         {isMaxLength && <MaxLengthPlugin maxLength={30} />}
         <DragDropPaste />
@@ -169,14 +178,14 @@ export default function Editor(): JSX.Element {
         <EmojiPickerPlugin />
         <AutoEmbedPlugin />
         <MentionsPlugin />
-        <EmojisPlugin />
+        {/* <EmojisPlugin /> */}
         <HashtagPlugin />
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        <CommentPlugin
+        {/* <CommentPlugin
           providerFactory={isCollab ? createWebsocketProvider : undefined}
-        />
+        /> */}
         {isRichText ? (
           <>
             {isCollab ? (
@@ -190,8 +199,10 @@ export default function Editor(): JSX.Element {
             )}
             <RichTextPlugin
               contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
+                <div className={Styles['editor-scroller']}>
+                  <div
+                    className={`floatingAnchor ${Styles.editor}`}
+                    ref={onRef}>
                     <ContentEditable placeholder={placeholder} />
                   </div>
                 </div>
@@ -199,6 +210,13 @@ export default function Editor(): JSX.Element {
               ErrorBoundary={LexicalErrorBoundary}
             />
             <MarkdownShortcutPlugin />
+            <InstancePlugin
+              placeholder={{
+                title: translateI18n('[TODO] 国际化', {
+                  placeholder: '请输入标题...',
+                }),
+              }}
+            />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
             <CheckListPlugin />
@@ -209,16 +227,16 @@ export default function Editor(): JSX.Element {
             />
             <TableCellResizer />
             <ImagesPlugin />
-            <InlineImagePlugin />
+            {/* <InlineImagePlugin /> */}
             <LinkPlugin hasLinkAttributes={hasLinkAttributes} />
-            <PollPlugin />
-            <TwitterPlugin />
-            <YouTubePlugin />
+            {/* <PollPlugin /> */}
+            {/* <TwitterPlugin /> */}
+            {/* <YouTubePlugin /> */}
             <FigmaPlugin />
             <ClickableLinkPlugin disabled={isEditable} />
             <HorizontalRulePlugin />
             <EquationsPlugin />
-            <ExcalidrawPlugin />
+            {/* <ExcalidrawPlugin /> */}
             <TabFocusPlugin />
             <TabIndentationPlugin maxIndent={7} />
             <CollapsiblePlugin />
@@ -237,15 +255,21 @@ export default function Editor(): JSX.Element {
                 />
               </>
             )}
-            {floatingAnchorElem && !isSmallWidthViewport && (
+            {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                {/* <DraggableBlockPlugin
+                  anchorElem={floatingAnchorElem}
+                  targetLineIndent={46}
+                  dragIcon={'='}
+                /> */}
+                {!preview ? (
+                  <FloatingTextFormatToolbarPlugin
+                    anchorElem={floatingAnchorElem}
+                    setIsLinkEditMode={setIsLinkEditMode}
+                  />
+                ) : null}
                 <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
                 <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin
-                  anchorElem={floatingAnchorElem}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
               </>
             )}
           </>
@@ -268,12 +292,14 @@ export default function Editor(): JSX.Element {
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
-        <ActionsPlugin
-          isRichText={isRichText}
-          shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
-        />
+        {/* {VITE_IS_DEVELOPMENT && (
+          <ActionsPlugin
+            isRichText={isRichText}
+            shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
+          />
+        )} */}
       </div>
-      {showTreeView && <TreeViewPlugin />}
+      {(showTreeView || VITE_IS_DEVELOPMENT) && <TreeViewPlugin />}
     </>
   );
 }

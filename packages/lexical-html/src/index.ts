@@ -89,7 +89,7 @@ export function $generateHtmlFromNodes(
   return container.innerHTML;
 }
 
-function $appendNodesToHTML(
+export function $appendNodesToHTML(
   editor: LexicalEditor,
   currentNode: LexicalNode,
   parentElement: HTMLElement | DocumentFragment,

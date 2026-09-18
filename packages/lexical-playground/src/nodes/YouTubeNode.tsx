@@ -24,6 +24,7 @@ import {
   DecoratorBlockNode,
   SerializedDecoratorBlockNode,
 } from '@lexical/react/LexicalDecoratorBlockNode';
+import {$createInstanceParagraphNode} from 'onchain-lexical-instance';
 import * as React from 'react';
 
 type YouTubeComponentProps = Readonly<{
@@ -153,6 +154,12 @@ export class YouTubeNode extends DecoratorBlockNode {
     _includeDirectionless?: false | undefined,
   ): string {
     return `https://www.youtube.com/watch?v=${this.__id}`;
+  }
+
+  remove(preserveEmptyParent?: boolean): void {
+    const node = $createInstanceParagraphNode();
+    this.replace(node);
+    node.select();
   }
 
   decorate(_editor: LexicalEditor, config: EditorConfig): JSX.Element {

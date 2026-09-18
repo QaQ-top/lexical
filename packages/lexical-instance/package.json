@@ -1,0 +1,45 @@
+{
+  "name": "onchain-lexical-instance",
+  "description": "This package provides the list feature for OnchainLexical.",
+  "keywords": [
+    "lexical",
+    "editor",
+    "instance"
+  ],
+  "license": "MIT",
+  "version": "0.0.17",
+  "types": "index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@lexical/clipboard": "^0.30.0",
+    "@lexical/code": "^0.30.0",
+    "@lexical/hashtag": "^0.30.0",
+    "@lexical/list": "^0.30.0",
+    "@lexical/react": "^0.30.0",
+    "@lexical/rich-text": "^0.30.0",
+    "@lexical/selection": "^0.30.0",
+    "@lexical/table": "^0.30.0",
+    "@lexical/utils": "^0.30.0",
+    "lexical": "0.30.0",
+    "onchain-lexical-context": "^0.0.15",
+    "onchain-lexical-markdown": "^0.0.16",
+    "onchain-lexical-ui": "^0.0.15",
+    "onchain-utility": "^0.0.17"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainLexicalInstance.mjs"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./dist/OnchainLexicalInstance.js"
+      }
+    }
+  }
+}

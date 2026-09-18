@@ -10,7 +10,9 @@
 // at import time (disableBeforeInput is used to test legacy events)
 // eslint-disable-next-line simple-import-sort/imports
 import setupEnv from './setupEnv';
-import './index.css';
+// import './index.css';
+
+import * as Packages from './index';
 
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -34,7 +36,7 @@ const showErrorOverlay = (err: Event) => {
     body.appendChild(overlay);
   }
 };
-
+const _packages = Packages;
 window.addEventListener('error', showErrorOverlay);
 window.addEventListener('unhandledrejection', ({reason}) =>
   showErrorOverlay(reason),
@@ -42,6 +44,34 @@ window.addEventListener('unhandledrejection', ({reason}) =>
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <App
+      namespace="Playground"
+      config={{
+        async cancelCheckout(instance) {},
+        async checkIn(instance) {},
+        async checkOut(instance) {},
+        generateNumber(nodeKey) {
+          return Promise.resolve('Number');
+        },
+        getInstanceIcon(apicode) {
+          return 'demand1';
+        },
+        icl: {
+          loading: true,
+          table: {
+            current: {},
+          },
+          verifyPermissions: false,
+        },
+        namespace: '',
+        setIcl(params) {},
+        uploadFiles(params) {
+          return Promise.resolve(params.map((i) => i.text));
+        },
+      }}
+      settings={{
+        iconScriptUrl: 'http://localhost:8017/font/iconfont.js',
+      }}
+    />
   </React.StrictMode>,
 );

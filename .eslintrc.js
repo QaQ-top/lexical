@@ -109,6 +109,8 @@ module.exports = {
         'packages/**/src/__tests__/**',
         'packages/lexical-playground/**',
         'packages/lexical-devtools/**',
+        'packages/lexical-instance/**',
+        'packages/onchain-utility/**',
       ],
       rules: {
         'lexical/no-optional-chaining': OFF,
@@ -118,6 +120,13 @@ module.exports = {
       files: ['packages/**/__tests__/**'],
       rules: {
         'lexical/no-imports-from-self': OFF,
+      },
+    },
+    {
+      files: ['packages/lexical-playground/scripts/**'],
+      rules: {
+        'ft-flow/sort-keys': OFF,
+        'no-console': OFF,
       },
     },
     {
@@ -174,6 +183,7 @@ module.exports = {
   // We're stricter than the default config, mostly. We'll override a few rules
   // and then enable some React specific ones.
   rules: {
+    '@typescript-eslint/no-explicit-any': OFF,
     'accessor-pairs': OFF,
     'consistent-return': OFF,
     curly: [ERROR, 'all'],
@@ -232,7 +242,7 @@ module.exports = {
 
     'no-restricted-syntax': [ERROR, 'WithStatement'],
 
-    'no-shadow': ERROR,
+    'no-shadow': OFF,
 
     'no-unused-expressions': ERROR,
 

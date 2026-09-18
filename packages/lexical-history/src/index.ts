@@ -42,6 +42,7 @@ export type HistoryStateEntry = {
   editorState: EditorState;
 };
 export type HistoryState = {
+  isEntry: boolean;
   current: null | HistoryStateEntry;
   redoStack: Array<HistoryStateEntry>;
   undoStack: Array<HistoryStateEntry>;
@@ -414,7 +415,10 @@ export function registerHistory(
     const undoStack = historyState.undoStack;
     const currentEditorState = current === null ? null : current.editorState;
 
-    if (current !== null && editorState === currentEditorState) {
+    if (
+      (current !== null && editorState === currentEditorState) ||
+      !historyState.isEntry
+    ) {
       return;
     }
 
@@ -498,6 +502,7 @@ export function registerHistory(
 export function createEmptyHistoryState(): HistoryState {
   return {
     current: null,
+    isEntry: true,
     redoStack: [],
     undoStack: [],
   };

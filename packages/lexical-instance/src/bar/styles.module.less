@@ -1,0 +1,82 @@
+@import './const.less';
+
+@PaddingLeft: 23px;
+.left {
+  width: 26px;
+  user-select: none;
+  position: absolute;
+  left: 0;
+  transform: translate(-26px, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .link {
+    margin-bottom: 6px;
+    > button > span > div {
+      position: relative;
+      > i {
+        position: absolute;
+        font-size: 10px;
+        color: #fff;
+        right: -2px;
+        bottom: -2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: flex;
+        font-style: normal;
+        align-items: center;
+        justify-content: center;
+        background-color: @themeColor;
+        &:empty {
+          display: none;
+        }
+      }
+    }
+  }
+  .hiddenLinkCount {
+    > button > span > div > i {
+      display: none;
+    }
+  }
+  > * {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  > span:nth-of-type(1) {
+    height: 38px;
+  }
+}
+.right {
+  user-select: none;
+  display: inline-flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  height: 38px;
+  align-items: center;
+  justify-content: flex-end;
+  > span {
+    cursor: pointer;
+    margin-left: 10px;
+  }
+}
+
+.selected {
+  color: @themeColor;
+}
+
+.hasChildren {
+  color: @themeColor;
+}
+
+.hover {
+  &:hover {
+    color: @themeColor;
+  }
+}
+.empty {
+  cursor: default !important;
+}

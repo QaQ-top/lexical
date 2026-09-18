@@ -6,6 +6,7 @@ base-build
 build
 coverage
 dist
+lib
 npm
 !scripts/npm
 .DS_Store
@@ -37,3 +38,7 @@ npm-debug.log*
 .idea/**/shelf
 
 .idea
+
+.claude/*
+
+onchain-rich-text-editor.usages.json

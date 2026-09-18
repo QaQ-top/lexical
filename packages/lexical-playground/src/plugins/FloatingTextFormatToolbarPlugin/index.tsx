@@ -8,8 +8,6 @@
 
 import type {JSX} from 'react';
 
-import './index.css';
-
 import {$isCodeHighlightNode} from '@lexical/code';
 import {$isLinkNode, TOGGLE_LINK_COMMAND} from '@lexical/link';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
@@ -25,14 +23,25 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {useSettings} from 'onchain-lexical-context/settings';
+import {
+  $isInternalLinkNode,
+  $isParametersNode,
+  INSERT_PARAMETERS,
+} from 'onchain-lexical-instance';
+import {Icon} from 'onchain-lexical-ui/Icon';
+import {translateI18n} from 'onchain-utility';
 import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
-import * as React from 'react';
 import {createPortal} from 'react-dom';
 
+import useContentEditable from '../../hooks/useContentEditable';
+import {useSelectedIds} from '../../hooks/useSelectedIds';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
 import {setFloatingElemPosition} from '../../utils/setFloatingElemPosition';
-import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
+import {INSERT_INLINE_COMMAND} from '../CommentPlugin/const';
+// import {INSERT_INLINE_COMMAND} from '../CommentPlugin';
+import Styles from './index.module.less';
 
 function TextFormatFloatingToolbar({
   editor,
@@ -65,8 +74,12 @@ function TextFormatFloatingToolbar({
   isUnderline: boolean;
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element {
+  const {
+    extra: {isCanComment, isCanParameter},
+  } = useSettings();
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
+  const {isTemporaryInstance} = useSelectedIds();
   const insertLink = useCallback(() => {
     if (!isLink) {
       setIsLinkEditMode(true);
@@ -79,6 +92,10 @@ function TextFormatFloatingToolbar({
 
   const insertComment = () => {
     editor.dispatchCommand(INSERT_INLINE_COMMAND, undefined);
+  };
+
+  const insertParameters = () => {
+    editor.dispatchCommand(INSERT_PARAMETERS, {});
   };
 
   function mouseMoveListener(e: MouseEvent) {
@@ -134,7 +151,8 @@ function TextFormatFloatingToolbar({
       nativeSelection !== null &&
       !nativeSelection.isCollapsed &&
       rootElement !== null &&
-      rootElement.contains(nativeSelection.anchorNode)
+      (rootElement.contains(nativeSelection.anchorNode) ||
+        isRootExtraContains(nativeSelection.anchorNode))
     ) {
       const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
 
@@ -192,7 +210,9 @@ function TextFormatFloatingToolbar({
   }, [editor, $updateTextFormatFloatingToolbar]);
 
   return (
-    <div ref={popupCharStylesEditorRef} className="floating-text-format-popup">
+    <div
+      ref={popupCharStylesEditorRef}
+      className={Styles['floating-text-format-popup']}>
       {editor.isEditable() && (
         <>
           <button
@@ -201,9 +221,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
             }}
             className={'popup-item spaced ' + (isBold ? 'active' : '')}
-            title="Bold"
+            title={translateI18n('[TODO] Bold', {placeholder: '粗体'})}
             aria-label="Format text as bold">
-            <i className="format bold" />
+            <i data-root-contains="1" className="format bold" />
           </button>
           <button
             type="button"
@@ -211,9 +231,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
             className={'popup-item spaced ' + (isItalic ? 'active' : '')}
-            title="Italic"
+            title={translateI18n('[TODO] Italic', {placeholder: '斜体'})}
             aria-label="Format text as italics">
-            <i className="format italic" />
+            <i data-root-contains="1" className="format italic" />
           </button>
           <button
             type="button"
@@ -221,9 +241,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
             }}
             className={'popup-item spaced ' + (isUnderline ? 'active' : '')}
-            title="Underline"
+            title={translateI18n('[TODO] Underline', {placeholder: '下划线'})}
             aria-label="Format text to underlined">
-            <i className="format underline" />
+            <i data-root-contains="1" className="format underline" />
           </button>
           <button
             type="button"
@@ -231,9 +251,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
             }}
             className={'popup-item spaced ' + (isStrikethrough ? 'active' : '')}
-            title="Strikethrough"
+            title={translateI18n('[TODO] Strikethrough', {placeholder: ''})}
             aria-label="Format text with a strikethrough">
-            <i className="format strikethrough" />
+            <i data-root-contains="1" className="format strikethrough" />
           </button>
           <button
             type="button"
@@ -241,9 +261,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript');
             }}
             className={'popup-item spaced ' + (isSubscript ? 'active' : '')}
-            title="Subscript"
+            title={translateI18n('[TODO] Subscript', {placeholder: '下标'})}
             aria-label="Format Subscript">
-            <i className="format subscript" />
+            <i data-root-contains="1" className="format subscript" />
           </button>
           <button
             type="button"
@@ -251,9 +271,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript');
             }}
             className={'popup-item spaced ' + (isSuperscript ? 'active' : '')}
-            title="Superscript"
+            title={translateI18n('[TODO] Superscript', {placeholder: '上'})}
             aria-label="Format Superscript">
-            <i className="format superscript" />
+            <i data-root-contains="1" className="format superscript" />
           </button>
           <button
             type="button"
@@ -261,9 +281,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'uppercase');
             }}
             className={'popup-item spaced ' + (isUppercase ? 'active' : '')}
-            title="Uppercase"
+            title={translateI18n('[TODO] Uppercase', {placeholder: '大写'})}
             aria-label="Format text to uppercase">
-            <i className="format uppercase" />
+            <i data-root-contains="1" className="format uppercase" />
           </button>
           <button
             type="button"
@@ -271,9 +291,9 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'lowercase');
             }}
             className={'popup-item spaced ' + (isLowercase ? 'active' : '')}
-            title="Lowercase"
+            title={translateI18n('[TODO] Lowercase', {placeholder: '小写'})}
             aria-label="Format text to lowercase">
-            <i className="format lowercase" />
+            <i data-root-contains="1" className="format lowercase" />
           </button>
           <button
             type="button"
@@ -281,9 +301,11 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'capitalize');
             }}
             className={'popup-item spaced ' + (isCapitalize ? 'active' : '')}
-            title="Capitalize"
+            title={translateI18n('[TODO] Capitalize', {
+              placeholder: '首字母大写',
+            })}
             aria-label="Format text to capitalize">
-            <i className="format capitalize" />
+            <i data-root-contains="1" className="format capitalize" />
           </button>
           <button
             type="button"
@@ -291,28 +313,68 @@ function TextFormatFloatingToolbar({
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
             }}
             className={'popup-item spaced ' + (isCode ? 'active' : '')}
-            title="Insert code block"
+            title={translateI18n('[TODO] Insert code block', {
+              placeholder: '行内代码块',
+            })}
             aria-label="Insert code block">
-            <i className="format code" />
+            <i data-root-contains="1" className="format code" />
           </button>
           <button
             type="button"
             onClick={insertLink}
             className={'popup-item spaced ' + (isLink ? 'active' : '')}
-            title="Insert link"
+            title={translateI18n('[TODO] Insert link', {
+              placeholder: '插入链接',
+            })}
             aria-label="Insert link">
-            <i className="format link" />
+            <i data-root-contains="1" className="format link" />
           </button>
+          {isCanParameter !== false ? (
+            <button
+              type="button"
+              onClick={insertParameters}
+              className={'popup-item spaced '}
+              title={translateI18n('[TODO] Insert parameter', {
+                placeholder: '插入参数',
+              })}
+              aria-label="Insert parameter">
+              <Icon
+                data-root-contains="1"
+                type="icon-front-parameterpool"
+                className="format"
+              />
+            </button>
+          ) : null}
+
+          {isCanComment !== false ? (
+            <button
+              type="button"
+              onClick={insertComment}
+              disabled={isTemporaryInstance}
+              className={'popup-item spaced insert-comment'}
+              title={translateI18n('[TODO] Insert comment', {
+                placeholder: '评论',
+              })}
+              aria-label="Insert comment"
+              tabIndex={0}>
+              <Icon
+                type="icon-front-comment"
+                data-root-contains="1"
+                className="format"
+              />
+            </button>
+          ) : null}
+          <i data-root-contains="1">{''}</i>
         </>
       )}
-      <button
+      {/* <button
         type="button"
         onClick={insertComment}
         className={'popup-item spaced insert-comment'}
         title="Insert comment"
         aria-label="Insert comment">
-        <i className="format add-comment" />
-      </button>
+        <i data-root-contains="1" className="format add-comment" />
+      </button> */}
     </div>
   );
 }
@@ -335,6 +397,8 @@ function useFloatingTextFormatToolbar(
   const [isSuperscript, setIsSuperscript] = useState(false);
   const [isCode, setIsCode] = useState(false);
 
+  const {contentEditable} = useContentEditable();
+
   const updatePopup = useCallback(() => {
     editor.getEditorState().read(() => {
       // Should not to pop up the floating toolbar when using IME input
@@ -349,7 +413,8 @@ function useFloatingTextFormatToolbar(
         nativeSelection !== null &&
         (!$isRangeSelection(selection) ||
           rootElement === null ||
-          !rootElement.contains(nativeSelection.anchorNode))
+          (!rootElement.contains(nativeSelection.anchorNode) &&
+            !isRootExtraContains(nativeSelection.anchorNode)))
       ) {
         setIsText(false);
         return;
@@ -385,7 +450,12 @@ function useFloatingTextFormatToolbar(
         !$isCodeHighlightNode(selection.anchor.getNode()) &&
         selection.getTextContent() !== ''
       ) {
-        setIsText($isTextNode(node) || $isParagraphNode(node));
+        setIsText(
+          $isTextNode(node) ||
+            $isParagraphNode(node) ||
+            $isParametersNode(node) ||
+            $isInternalLinkNode(node),
+        );
       } else {
         setIsText(false);
       }
@@ -421,25 +491,28 @@ function useFloatingTextFormatToolbar(
   if (!isText) {
     return null;
   }
-
-  return createPortal(
-    <TextFormatFloatingToolbar
-      editor={editor}
-      anchorElem={anchorElem}
-      isLink={isLink}
-      isBold={isBold}
-      isItalic={isItalic}
-      isUppercase={isUppercase}
-      isLowercase={isLowercase}
-      isCapitalize={isCapitalize}
-      isStrikethrough={isStrikethrough}
-      isSubscript={isSubscript}
-      isSuperscript={isSuperscript}
-      isUnderline={isUnderline}
-      isCode={isCode}
-      setIsLinkEditMode={setIsLinkEditMode}
-    />,
-    anchorElem,
+  return contentEditable ? (
+    createPortal(
+      <TextFormatFloatingToolbar
+        editor={editor}
+        anchorElem={anchorElem}
+        isLink={isLink}
+        isBold={isBold}
+        isItalic={isItalic}
+        isUppercase={isUppercase}
+        isLowercase={isLowercase}
+        isCapitalize={isCapitalize}
+        isStrikethrough={isStrikethrough}
+        isSubscript={isSubscript}
+        isSuperscript={isSuperscript}
+        isUnderline={isUnderline}
+        isCode={isCode}
+        setIsLinkEditMode={setIsLinkEditMode}
+      />,
+      anchorElem,
+    )
+  ) : (
+    <></>
   );
 }
 
@@ -452,4 +525,8 @@ export default function FloatingTextFormatToolbarPlugin({
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   return useFloatingTextFormatToolbar(editor, anchorElem, setIsLinkEditMode);
+}
+
+function isRootExtraContains(node?: Node | null) {
+  return node instanceof HTMLElement && node.hasAttribute('data-root-contains');
 }

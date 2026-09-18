@@ -19,6 +19,10 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
+import {$isSelectedTitleNode} from 'onchain-lexical-instance';
+import Button from 'onchain-lexical-ui/Button';
+import {DialogActions} from 'onchain-lexical-ui/Dialog';
+import TextInput from 'onchain-lexical-ui/TextInput';
 import {useEffect, useState} from 'react';
 import * as React from 'react';
 
@@ -27,9 +31,6 @@ import {
   createPollOption,
   PollNode,
 } from '../../nodes/PollNode';
-import Button from '../../ui/Button';
-import {DialogActions} from '../../ui/Dialog';
-import TextInput from '../../ui/TextInput';
 
 export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand(
   'INSERT_POLL_COMMAND',
@@ -71,6 +72,9 @@ export default function PollPlugin(): JSX.Element | null {
     return editor.registerCommand<string>(
       INSERT_POLL_COMMAND,
       (payload) => {
+        if ($isSelectedTitleNode()) {
+          return false;
+        }
         const pollNode = $createPollNode(payload, [
           createPollOption(),
           createPollOption(),

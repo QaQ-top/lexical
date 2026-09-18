@@ -53,7 +53,7 @@ export function createEmptyEditorState(): EditorState {
   return new EditorState(new Map([['root', $createRootNode()]]));
 }
 
-function exportNodeToJSON<SerializedNode extends SerializedLexicalNode>(
+export function exportNodeToJSON<SerializedNode extends SerializedLexicalNode>(
   node: LexicalNode,
 ): SerializedNode {
   const serializedNode = node.exportJSON();

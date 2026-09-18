@@ -14,8 +14,6 @@ import type {
 } from 'lexical';
 import type {JSX} from 'react';
 
-import './ImageNode.css';
-
 import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {useCollaborationContext} from '@lexical/react/LexicalCollaborationContext';
 import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
@@ -42,21 +40,22 @@ import {
   KEY_ESCAPE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import {createWebsocketProvider} from 'onchain-lexical-context/collaboration';
+import {useSettings} from 'onchain-lexical-context/settings';
+import {useSharedHistoryContext} from 'onchain-lexical-context/sharedHistory';
+import ContentEditable from 'onchain-lexical-ui/ContentEditable';
+import ImageResizer from 'onchain-lexical-ui/ImageResizer';
 import * as React from 'react';
 import {Suspense, useCallback, useEffect, useRef, useState} from 'react';
 
-import {createWebsocketProvider} from '../collaboration';
-import {useSettings} from '../context/SettingsContext';
-import {useSharedHistoryContext} from '../context/SharedHistoryContext';
 import brokenImage from '../images/image-broken.svg';
 import EmojisPlugin from '../plugins/EmojisPlugin';
 import KeywordsPlugin from '../plugins/KeywordsPlugin';
 import LinkPlugin from '../plugins/LinkPlugin';
 import MentionsPlugin from '../plugins/MentionsPlugin';
 import TreeViewPlugin from '../plugins/TreeViewPlugin';
-import ContentEditable from '../ui/ContentEditable';
-import ImageResizer from '../ui/ImageResizer';
 import {$isImageNode} from './ImageNode';
+import Styles from './ImageNode.module.less';
 
 const imageCache = new Map<string, Promise<boolean> | boolean>();
 
@@ -492,8 +491,8 @@ export default function ImageComponent({
                 contentEditable={
                   <ContentEditable
                     placeholder="Enter a caption..."
-                    placeholderClassName="ImageNode__placeholder"
-                    className="ImageNode__contentEditable"
+                    placeholderClassName={Styles.ImageNode__placeholder}
+                    className={Styles.ImageNode__contentEditable}
                   />
                 }
                 ErrorBoundary={LexicalErrorBoundary}

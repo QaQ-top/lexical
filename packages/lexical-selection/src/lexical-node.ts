@@ -15,6 +15,7 @@ import {
   $isElementNode,
   $isRangeSelection,
   $isRootNode,
+  $isTextDecoratorNode,
   $isTextNode,
   $isTokenOrSegmented,
   BaseSelection,
@@ -24,6 +25,7 @@ import {
   NodeKey,
   Point,
   RangeSelection,
+  TextDecoratorNode,
   TextNode,
 } from 'lexical';
 import invariant from 'shared/invariant';
@@ -251,7 +253,7 @@ export function $addNodeStyle(node: TextNode): void {
  * @param patch - The patch to apply, which can include multiple styles. \\{CSSProperty: value\\} . Can also accept a function that returns the new property value.
  */
 export function $patchStyle(
-  target: TextNode | RangeSelection | ElementNode,
+  target: TextNode | RangeSelection | ElementNode | TextDecoratorNode<unknown>,
   patch: Record<
     string,
     | string
@@ -262,7 +264,9 @@ export function $patchStyle(
   invariant(
     $isRangeSelection(target)
       ? target.isCollapsed()
-      : $isTextNode(target) || $isElementNode(target),
+      : $isTextNode(target) ||
+          $isElementNode(target) ||
+          $isTextDecoratorNode(target),
     '$patchStyle must only be called with a TextNode, ElementNode, or collapsed RangeSelection',
   );
   const prevStyles = getStyleObjectFromCSS(
@@ -309,7 +313,11 @@ export function $patchStyleText(
     | null
     | ((
         currentStyleValue: string | null,
-        target: TextNode | RangeSelection | ElementNode,
+        target:
+          | TextNode
+          | RangeSelection
+          | ElementNode
+          | TextDecoratorNode<unknown>,
       ) => string)
   >,
 ): void {
@@ -326,7 +334,7 @@ export function $patchStyleText(
 }
 
 export function $forEachSelectedTextNode(
-  fn: (textNode: TextNode) => void,
+  fn: (textNode: TextNode | TextDecoratorNode<unknown>) => void,
 ): void {
   const selection = $getSelection();
   if (!selection) {
@@ -356,6 +364,9 @@ export function $forEachSelectedTextNode(
   const selectedNodes = selection.getNodes();
   for (const selectedNode of selectedNodes) {
     if (!($isTextNode(selectedNode) && selectedNode.canHaveFormat())) {
+      if ($isTextDecoratorNode(selectedNode)) {
+        fn(selectedNode);
+      }
       continue;
     }
     const [startOffset, endOffset] = getSliceIndices(selectedNode);
